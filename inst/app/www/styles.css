@@ -47,7 +47,7 @@
 
 /* the Volatility tab is a column as tall as the window below the navigation bar: the controls
    and the cards take the height of their text, and the chart grows to fill the rest, like the
-   charts of the other tabs, but no less than 650px for its three panels, where the page scrolls.
+   charts of the other tabs, but no less than 600px for its three panels, where the page scrolls.
    The chart may shrink once the cards appear (min-height: 0), and Shiny then redraws it */
 .volatility-page {
   display: flex;
@@ -59,7 +59,7 @@
   flex: 1 1 0;
   display: flex;
   flex-direction: column;
-  min-height: 650px;
+  min-height: 600px;
 }
 
 #volatility-plot {

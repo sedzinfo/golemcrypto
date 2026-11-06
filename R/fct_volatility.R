@@ -298,6 +298,50 @@ kupiec_test <- function(exceedances, days, p) {
 ##########################################################################################
 #
 ##########################################################################################
+#' @title Volume of each day against the days before it
+#' @description Each day's volume divided by the median volume of the `days`
+#' days before it: 2 is twice the usual volume of the time, 0.5 half of it.
+#' The median keeps a single busy day from raising the bar, and the ratio
+#' follows the coin's volume as it grows over the years. Days without volume
+#' (0 or missing, as 'CoinMarketCap' has for the earliest days of some coins)
+#' are left out, and a day needs volume on two thirds of the days before it.
+#' @param volume Numeric vector of daily volumes, sorted by date.
+#' @param days Number of days before each day to compare with.
+#' @return A numeric vector as long as `volume`, `NA` where there is no
+#'   ratio.
+#' @keywords internal
+#' @examples
+#' golemcrypto:::volume_ratio(c(rep(100, 30), 300, 50), days = 30)
+volume_ratio <- function(volume, days = 30) {
+  volume[!is.finite(volume) | volume <= 0] <- NA
+  n <- length(volume)
+  if (n <= days) {
+    return(rep(NA_real_, n))
+  }
+  # a row per day from day days + 1: the day, then the days before it, latest first
+  window <- stats::embed(volume, days + 1)
+  usual <- apply(window[, -1, drop = FALSE], 1, function(x) {
+    if (sum(!is.na(x)) >= 2 / 3 * days) stats::median(x, na.rm = TRUE) else NA_real_
+  })
+  c(rep(NA_real_, days), window[, 1] / usual)
+}
+##########################################################################################
+#
+##########################################################################################
+#' @title How rare a volume is, in words
+#' @param one_in_days A volume this far from usual comes about once in so many
+#'   days.
+#' @return "normal", "unusual", "rare" or "very rare", with the thresholds of
+#'   [move_verdict()], or `NA`.
+#' @keywords internal
+#' @examples
+#' golemcrypto:::volume_verdict(c(10, 100, 1000, 5000))
+volume_verdict <- function(one_in_days) {
+  as.character(cut(one_in_days, c(-Inf, 30, year_days, 10 * year_days, Inf), c("normal", "unusual", "rare", "very rare"), right = FALSE))
+}
+##########################################################################################
+#
+##########################################################################################
 #' @title Volatility analysis of a coin
 #' @description Is the coin's recent volatility normal? The analysis looks at
 #' the daily log returns, `log(close(t) / close(t-1))`, in two ways.
@@ -312,9 +356,12 @@ kupiec_test <- function(exceedances, days, p) {
 #'
 #' **The last days** (`recent_days` days): their return against every past
 #' period of as many days; the same, in standard deviations of the year
-#' before; and a GARCH(1,1) model with Student-t errors (see [garch_fit()]),
+#' before; a GARCH(1,1) model with Student-t errors (see [garch_fit()]),
 #' fitted to the `garch_years` years before them, which judges each day
-#' against the volatility the model expected for it given the days before.
+#' against the volatility the model expected for it given the days before;
+#' and each day's volume against the `month_days` days before it (see
+#' [volume_ratio()]), judged by how often the coin's volume was as far from
+#' usual.
 #'
 #' **The next days** (`forecast_days` days): the same model, with its
 #' variance brought up to the last day, forecasts the volatility and the range
@@ -337,7 +384,8 @@ kupiec_test <- function(exceedances, days, p) {
 #'   * `coin`, `first_date` and `last_date`;
 #'   * `month`: a list of the month's measures, see the code;
 #'   * `recent`: a list of the measures of the last days, with a `days` data
-#'     frame of each day's return and GARCH measures;
+#'     frame of each day's return, GARCH measures, `volume`, `volume_ratio`
+#'     and `volume_one_in_days` (`NA` without volume);
 #'   * `garch`: the fitted model, or `NULL` when it could not be fitted or
 #'     there are fewer than 500 days before the last days;
 #'   * `forecast`: `NULL` without a model, otherwise a list with `days`, a
@@ -353,7 +401,8 @@ kupiec_test <- function(exceedances, days, p) {
 #'   * `history_risk`: `var` and `es` of the daily returns of the last
 #'     `days` (365) days, in percent;
 #'   * `series`: a data frame with a row per day and the columns `date`,
-#'     `close`, `return_pct`, `volatility_month` (annualized, in percent),
+#'     `close`, `volume`, `return_pct`, `volume_ratio` (see
+#'     [volume_ratio()]), `volatility_month` (annualized, in percent),
 #'     `garch_sigma` (the daily standard deviation the model expected, in
 #'     percent), `garch_z` (the day's move in those standard deviations) and
 #'     `garch_var` (the model's value at risk for the day, in percent);
@@ -431,7 +480,10 @@ volatility_analysis <- function(history, month_days = 30, recent_days = 2, garch
     per_year = year_days * mean(as_extreme(moves, move), na.rm = TRUE),
     z = z_move,
     z_per_year = year_days * mean(as_extreme(z_moves, z_move), na.rm = TRUE),
-    days = data.frame(date = utils::tail(dates, k), return_pct = pct(last_days), garch_z = NA_real_, one_in_days = NA_real_),
+    days = data.frame(
+      date = utils::tail(dates, k), return_pct = pct(last_days), garch_z = NA_real_, one_in_days = NA_real_,
+      volume = NA_real_, volume_ratio = NA_real_, volume_one_in_days = NA_real_
+    ),
     garch_z = NA_real_,
     one_in_days = NA_real_
   )
@@ -443,12 +495,23 @@ volatility_analysis <- function(history, month_days = 30, recent_days = 2, garch
   series <- data.frame(
     date = history$timestamp,
     close = history$close,
+    volume = if (is.null(history$volume)) NA_real_ else history$volume,
     return_pct = c(NA, pct(r)),
+    volume_ratio = if (is.null(history$volume)) NA_real_ else volume_ratio(history$volume, month_days),
     volatility_month = c(NA, 100 * volatility_month),
     garch_sigma = NA_real_,
     garch_z = NA_real_,
     garch_var = NA_real_
   )
+  # ---- volume of the last days, against how often the coin's volume was as far from usual
+  ratios <- series$volume_ratio[is.finite(series$volume_ratio)]
+  last_ratio <- utils::tail(series$volume_ratio, k)
+  if (length(ratios) > 0 && all(is.finite(last_ratio))) {
+    recent$days$volume <- utils::tail(series$volume, k)
+    recent$days$volume_ratio <- last_ratio
+    recent$days$volume_one_in_days <- 1 / vapply(last_ratio, function(x) mean(if (x >= 1) ratios >= x else ratios <= x), numeric(1))
+  }
+
   # ---- value at risk of the last year, without a model --------------------------------
   last_year <- pct(utils::tail(r, year_days))
   cutoff <- stats::quantile(last_year, 1 - level, names = FALSE)
@@ -553,6 +616,12 @@ ordinal <- function(x) {
 with_article <- function(x) paste(ifelse(grepl("^[aeiou]", x), "an", "a"), x)
 #' @noRd
 short_date <- function(date) paste(as.integer(format(date, "%d")), month.abb[as.integer(format(date, "%m"))])
+#' @noRd
+money_text <- function(x) {
+  units <- c(tn = 1e12, bn = 1e9, m = 1e6, k = 1e3)
+  i <- which(x >= units)[1]
+  if (is.na(i)) paste0("$", fmt(x, 0)) else paste0("$", fmt(x / units[i]), names(units)[i])
+}
 #' @noRd
 price_text <- function(x) {
   if (x >= 1000) {
@@ -676,6 +745,17 @@ volatility_text <- function(analysis) {
         fmt(d$one_in_days, 0), how_often(year_days / d$one_in_days)
       ))
     }
+  }
+  v <- r$days
+  if (all(is.finite(v$volume_ratio))) {
+    d <- v[which.max(v$volume_one_in_days), ]
+    points <- c(points, sprintf(
+      "Volume: %s, %s times the median of the %d days before; %s is %s for the coin, as volume that far %s its month came %s.",
+      paste(short_date(v$date), vapply(v$volume, money_text, character(1)), collapse = " and "),
+      paste(fmt(v$volume_ratio), collapse = " and "), analysis$settings$month_days, short_date(d$date),
+      volume_verdict(d$volume_one_in_days), if (d$volume_ratio >= 1) "above" else "below",
+      how_often(year_days / d$volume_one_in_days)
+    ))
   }
   recent <- list(
     headline = sprintf("Last %d days: %s%% together, %s", k, signed(r$return_pct), with_article(move_verdict(one_in, up))),

@@ -162,3 +162,35 @@ test_that("plot_volatility() has a panel for the forecast", {
   p <- plotly::plotly_build(plot_volatility(volatility_analysis(garch_history())))
   expect_true("yaxis3" %in% names(p$x$layout))
 })
+
+test_that("volume_ratio() compares each day with the median of the days before", {
+  ratio <- golemcrypto:::volume_ratio(c(rep(100, 30), 300, 50), days = 30)
+  expect_equal(utils::tail(ratio, 2), c(3, 0.5))
+  expect_true(all(is.na(ratio[1:30])))
+  # days without volume are left out, and too few of them leave no ratio
+  expect_true(is.na(utils::tail(golemcrypto:::volume_ratio(c(rep(0, 15), rep(100, 15), 200), 30), 1)))
+  expect_true(is.na(utils::tail(golemcrypto:::volume_ratio(c(rep(100, 30), 0), 30), 1)))
+  expect_equal(golemcrypto:::volume_verdict(c(10, 100, 1000, 5000)), c("normal", "unusual", "rare", "very rare"))
+})
+
+test_that("an unusually busy or quiet last day shows in the volume point", {
+  history <- garch_history()
+  set.seed(4)
+  history$volume <- 1e6 * exp(rnorm(nrow(history), sd = 0.2))
+  history$volume[nrow(history)] <- 6e6
+  analysis <- volatility_analysis(history)
+  expect_equal(analysis$recent$days$volume[2], 6e6)
+  expect_gt(analysis$recent$days$volume_ratio[2], 4)
+  volume <- grep("^Volume:", volatility_text(analysis)$recent$points, value = TRUE)
+  expect_match(volume, "\\$6\\.0m")
+  expect_match(volume, "is (rare|very rare) for the coin, as volume that far above its month")
+  history$volume[nrow(history)] <- 1e5
+  volume <- grep("^Volume:", volatility_text(volatility_analysis(history))$recent$points, value = TRUE)
+  expect_match(volume, "far below its month")
+})
+
+test_that("without volume the last days are judged on the price alone", {
+  analysis <- volatility_analysis(garch_history())
+  expect_true(all(is.na(analysis$recent$days$volume_ratio)))
+  expect_false(any(grepl("^Volume:", volatility_text(analysis)$recent$points)))
+})

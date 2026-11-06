@@ -142,7 +142,7 @@ test_that("the volatility module explains and charts the selected coin", {
     expect_no_error(output$plot)
     csv <- utils::read.csv(output$csv)
     expect_equal(names(csv), c(
-      "date", "close", "return_pct", "volatility_month", "garch_sigma", "garch_z", "garch_var",
+      "date", "close", "volume", "return_pct", "volume_ratio", "volatility_month", "garch_sigma", "garch_z", "garch_var",
       "forecast_sigma", "forecast_low", "forecast_low_50", "forecast_median", "forecast_high_50", "forecast_high"
     ))
     expect_equal(nrow(csv), 801 + 7)

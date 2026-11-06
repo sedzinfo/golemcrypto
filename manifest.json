@@ -2768,7 +2768,7 @@
       "checksum": "5e2ee811f1d20c81b234a6f9b6074cd9"
     },
     "inst/app/about.md": {
-      "checksum": "20c7fc9e65be96e12ba80b62af38e2d7"
+      "checksum": "f954187c6f437117d77e9e2f6b8d63d4"
     },
     "inst/app/www/analytics.js": {
       "checksum": "1918493ff537401c08c4ecd06ce1b03a"
@@ -2780,7 +2780,7 @@
       "checksum": "84de9cc0ea9c7d485fd4c993ededf1a1"
     },
     "inst/app/www/styles.css": {
-      "checksum": "e86c59fe87aea3cb0280e3ab76fdad03"
+      "checksum": "6bdc728fe86d728877b113887c718abc"
     },
     "NAMESPACE": {
       "checksum": "ee8d9b59caf830f5cc16d51b3cec4c9d"
@@ -2807,7 +2807,7 @@
       "checksum": "a355f2f43d05ddba791b150321fbcbbf"
     },
     "R/fct_volatility.R": {
-      "checksum": "ae163a13d7226ec11ac795378df12039"
+      "checksum": "c988006e8fb4336bf5fb5bd41b5fe4c0"
     },
     "R/mod_about.R": {
       "checksum": "788acfcacf9f8ff6c1fff97dabea164c"

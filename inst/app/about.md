@@ -146,6 +146,14 @@ The card compares it with the year before the 30 days, and with every 30-day per
 
 so a large move raises the volatility the model expects for the next days, which then fades at the rate β. The daily moves e / σ follow a Student-t distribution, whose fat tails allow more extreme days than the normal distribution. The model is fitted by maximum likelihood to the 4 years before the two days, so it judges them against the volatility it expected without having seen them. The probability of a move at least as large, p, gives *about 1 in 1/p days*. The verdict follows it: *normal* for about once a month or more often (under 30 days), *unusual* for less than monthly but more than once a year (under 365), *rare* for once in 1 to 10 years, and *very rare* beyond. The card also judges the most extreme of the two days alone, as a large move can hide in a 2-day total when the other day went the opposite way. A coin with less than 500 days before the two days has no model, and the verdict comes from the second measure.
 
+**Volume.** The last point of the card compares each day's volume, the US dollars traded, with the median volume of the 30 days before it:
+
+```
+volume ratio(t) = volume(t) / median(volume(t−30), …, volume(t−1))
+```
+
+2 is twice the usual volume of the time and 0.5 half of it. The median keeps a single busy day from raising the bar, and the ratio follows the coin's volume as it grows over the years. How unusual a ratio is comes from the coin's history: the share of days whose own ratio was at least as high, or as low for a quiet day, with the same words and thresholds as for the moves. A large move on unusually high volume had many traders behind it; on normal or low volume it happened in a thinner market, where smaller trades move the price more. Days without volume, which CoinMarketCap has for the earliest days of some coins, are left out.
+
 The history measures say how large a move is; the standard deviations and the model say how large it is given the volatility of the time, as a 5% day is a shock in a calm market and routine in a rough one. The probabilities hold if the model holds: in crashes the tails are often fatter still, so *1 in N days* tends to overstate how rare a move is.
 
 **The next days.** The third card looks ahead with the same model, its variance brought up to the last day. The variance of the next day follows from the last day, and later days fall back towards the model's long-run level at the rate α + β a day:
@@ -167,7 +175,7 @@ VaR = −(5th percentile of the daily returns)        ES = −(average of the re
 
 Losses are price falls in percent. The 95% range and the 95% VaR differ: the range leaves out 2.5% on each side, the VaR 5% on the downside alone, so the VaR is the smaller loss. The last point checks the model's VaR against the last 365 days with the Kupiec test: a well-calibrated VaR is exceeded on about 5% of the days, some 18 a year, and a p-value below 0.05 means it was exceeded more often, so the model understates the risk, or less often, so it overstates it. The forecast assumes that the model holds. It cannot foresee news: its ranges say how far the price usually moves at this level of volatility, not where it will go.
 
-**The chart.** At the top, the 30-day volatility over the whole history, with its median and 95th percentile. In the middle, each of the last 90 days in the standard deviations the model expected, with dashed lines at ±2 and dotted ones at ±4. At the bottom, the last 30 closes and the forecast of the next 7 days: the median close, the middle half of the outcomes (50%) and the 95% range; hover over the median for a day's ranges. The CSV button downloads the data day by day: the daily return, the 30-day volatility, the standard deviation and value at risk the model expected, and the forecast of the days ahead.
+**The chart.** At the top, the 30-day volatility over the whole history, with its median and 95th percentile. In the middle, each of the last 90 days in the standard deviations the model expected, with dashed lines at ±2 and dotted ones at ±4. At the bottom, the last 30 closes and the forecast of the next 7 days: the median close, the middle half of the outcomes (50%) and the 95% range; hover over the median for a day's ranges. The CSV button downloads the data day by day: the daily return, the volume and its ratio, the 30-day volatility, the standard deviation and value at risk the model expected, and the forecast of the days ahead.
 
 <h3 id="about-data">Data and updates</h3>
 

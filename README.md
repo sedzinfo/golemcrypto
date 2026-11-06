@@ -139,7 +139,7 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 - Monthly returns by year for the coin selected in the Timeseries tab
 
 ### Volatility Tab
-- For the coin selected in the Timeseries tab, two cards say in words whether the volatility of the last 30 days and the move of the last 2 days are normal: against the year before, against the coin's whole history, and against a GARCH(1,1) model with Student-t errors fitted to the 4 years before
+- For the coin selected in the Timeseries tab, two cards say in words whether the volatility of the last 30 days and the move of the last 2 days are normal: against the year before, against the coin's whole history, and against a GARCH(1,1) model with Student-t errors fitted to the 4 years before, and whether their volume is unusual for the coin
 - A third card forecasts the next 7 days with the same model: the 95% range of the price, the value at risk and expected shortfall of the next day and of the last year, and a Kupiec test of how well the model's value at risk held
 - A chart of the 30-day volatility over the whole history, of the last 90 days in the standard deviations the model expected, and of the forecast of the price
 

@@ -36,7 +36,8 @@ days, otherwise a list with
 \item \code{coin}, \code{first_date} and \code{last_date};
 \item \code{month}: a list of the month's measures, see the code;
 \item \code{recent}: a list of the measures of the last days, with a \code{days} data
-frame of each day's return and GARCH measures;
+frame of each day's return, GARCH measures, \code{volume}, \code{volume_ratio}
+and \code{volume_one_in_days} (\code{NA} without volume);
 \item \code{garch}: the fitted model, or \code{NULL} when it could not be fitted or
 there are fewer than 500 days before the last days;
 \item \code{forecast}: \code{NULL} without a model, otherwise a list with \code{days}, a
@@ -52,7 +53,8 @@ Kupiec test;
 \item \code{history_risk}: \code{var} and \code{es} of the daily returns of the last
 \code{days} (365) days, in percent;
 \item \code{series}: a data frame with a row per day and the columns \code{date},
-\code{close}, \code{return_pct}, \code{volatility_month} (annualized, in percent),
+\code{close}, \code{volume}, \code{return_pct}, \code{volume_ratio} (see
+\code{\link[=volume_ratio]{volume_ratio()}}), \code{volatility_month} (annualized, in percent),
 \code{garch_sigma} (the daily standard deviation the model expected, in
 percent), \code{garch_z} (the day's move in those standard deviations) and
 \code{garch_var} (the model's value at risk for the day, in percent);
@@ -74,9 +76,12 @@ period of the same length.
 
 \strong{The last days} (\code{recent_days} days): their return against every past
 period of as many days; the same, in standard deviations of the year
-before; and a GARCH(1,1) model with Student-t errors (see \code{\link[=garch_fit]{garch_fit()}}),
+before; a GARCH(1,1) model with Student-t errors (see \code{\link[=garch_fit]{garch_fit()}}),
 fitted to the \code{garch_years} years before them, which judges each day
-against the volatility the model expected for it given the days before.
+against the volatility the model expected for it given the days before;
+and each day's volume against the \code{month_days} days before it (see
+\code{\link[=volume_ratio]{volume_ratio()}}), judged by how often the coin's volume was as far from
+usual.
 
 \strong{The next days} (\code{forecast_days} days): the same model, with its
 variance brought up to the last day, forecasts the volatility and the range
