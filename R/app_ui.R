@@ -35,6 +35,7 @@ app_ui <- function(coins, top_coins, analytics = FALSE, keep_alive = TRUE) {
       tabPanel("Treemap", mod_treemap_ui("treemap")),
       tabPanel("Returns calendar", mod_returns_calendar_ui("returns_calendar")),
       tabPanel("Volatility", mod_volatility_ui("volatility")),
+      tabPanel("Drawdowns", mod_drawdowns_ui("drawdowns")),
       tabPanel("About", mod_about_ui("about")),
       bslib::nav_spacer(),
       bslib::nav_item(bslib::input_dark_mode(id = "dark_mode"))

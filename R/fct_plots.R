@@ -436,6 +436,170 @@ plot_forecast <- function(analysis, context_days) {
     plotly::layout(yaxis = list(title = "Next days, USD"), xaxis = list(title = ""))
 }
 ##########################################################################################
+#
+##########################################################################################
+#' @title Drawdown chart of a coin
+#' @description Two panels over the whole history. The upper one is the
+#' close on a log scale with the all-time high so far; the lower one is the
+#' drawdown, how far each close is below that high (see [drawdown()]), with
+#' a dashed line at `min_depth` percent. The falls of the analysis are shaded
+#' from their peak to their recovery, the current one in amber, and their
+#' troughs carry their rank, as in [drawdown_table()]; hover over a trough
+#' for its dates.
+#' @param analysis The result of [drawdown_analysis()].
+#' @inheritParams plot_timeseries
+#' @return A plotly object.
+#' @export
+#' @examples
+#' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
+#' plot_drawdowns(drawdown_analysis(btc))
+plot_drawdowns <- function(analysis, mode = "light") {
+  series <- analysis$series
+  episodes <- analysis$episodes
+  current <- "rgba(245,158,11,%s)"
+  price <- plotly::plot_ly(
+    x = series$date,
+    y = series$close,
+    type = "scatter",
+    mode = "lines",
+    line = list(width = 1, color = "#ff7f0e"),
+    name = "close",
+    hovertemplate = "%{x}<br>Close: $%{y:,.6~g}<extra></extra>"
+  ) %>%
+    plotly::add_lines(
+      x = series$date,
+      y = series$high,
+      inherit = FALSE,
+      line = list(width = 1, dash = "dot", color = text_color(mode)),
+      name = "All-time high so far",
+      hovertemplate = "%{x}<br>All-time high so far: $%{y:,.6~g}<extra></extra>"
+    ) %>%
+    plotly::layout(yaxis = list(title = "USD, log scale", type = "log"))
+  under <- plotly::plot_ly(
+    x = series$date,
+    y = series$drawdown_pct,
+    type = "scatter",
+    mode = "lines",
+    fill = "tozeroy",
+    line = list(width = 1, color = change_color(1, gain = FALSE)),
+    fillcolor = change_color(0.2, gain = FALSE),
+    name = "From high",
+    hovertemplate = "%{x}<br>From high: %{y:.1f}%<extra></extra>"
+  ) %>%
+    plotly::add_lines(
+      x = range(series$date), y = rep(-analysis$min_depth, 2), inherit = FALSE, showlegend = FALSE, hoverinfo = "skip",
+      line = list(width = 1, dash = "dash", color = text_color(mode))
+    )
+  shapes <- list()
+  if (nrow(episodes) > 0) {
+    end <- ifelse(episodes$ongoing, as.character(analysis$last_date), as.character(episodes$recovery_date))
+    back <- ifelse(
+      episodes$ongoing,
+      paste0("not back at the high yet, ", fmt(episodes$days_total, 0), " days so far"),
+      paste0("back at the high ", episodes$recovery_date, ", ", fmt(episodes$days_total, 0), " days after the peak")
+    )
+    under <- plotly::add_trace(under,
+      x = episodes$trough_date,
+      y = episodes$depth_pct,
+      type = "scatter",
+      mode = "markers+text",
+      inherit = FALSE,
+      text = episodes$rank,
+      textposition = "bottom center",
+      textfont = list(color = text_color(mode), size = 11),
+      marker = list(size = 7, color = ifelse(episodes$ongoing, sprintf(current, 1), change_color(1, gain = FALSE))),
+      name = paste0("Falls of ", analysis$min_depth, "% or more"),
+      customdata = paste0(
+        "#", episodes$rank, ": ", sprintf("%.1f", episodes$depth_pct), "%<br>",
+        "peak ", episodes$peak_date, ", trough ", episodes$trough_date, "<br>", back
+      ),
+      hovertemplate = "%{customdata}<extra></extra>"
+    )
+    shapes <- lapply(seq_len(nrow(episodes)), function(i) {
+      list(
+        type = "rect", xref = "x", yref = "paper", x0 = as.character(episodes$peak_date[i]), x1 = end[i], y0 = 0, y1 = 1,
+        fillcolor = if (episodes$ongoing[i]) sprintf(current, 0.15) else change_color(0.12, gain = FALSE),
+        line = list(width = 0), layer = "below"
+      )
+    })
+  }
+  under <- plotly::layout(under, yaxis = list(title = "From high", ticksuffix = "%"))
+  chart <- plotly::subplot(price, under, nrows = 2, heights = c(0.55, 0.45), shareX = TRUE, titleY = TRUE, margin = 0.03)
+  # set directly: layout() merges with modifyList(), which drops a list of shapes without names
+  chart$x$layout$shapes <- shapes
+  chart %>%
+    plotly::layout(
+      title = list(text = paste0(analysis$coin, ": falls from the all-time high"), x = 0.01, xanchor = "left"),
+      legend = list(orientation = "h", x = 0.5, xanchor = "center", y = 0, yanchor = "bottom", yref = "container"),
+      margin = list(b = 60),
+      xaxis = list(title = "")
+    ) %>%
+    plot_theme(mode)
+}
+##########################################################################################
+#
+##########################################################################################
+#' @title Table of the falls of a coin
+#' @description A sortable table of the falls of [drawdown_analysis()], the
+#' deepest first, with the numbers of the chart of [plot_drawdowns()]. The
+#' fall is shaded red, more strongly the deeper it is, and the current fall,
+#' which has not got back to its high, is in bold.
+#' @param analysis The result of [drawdown_analysis()].
+#' @return A DT datatable.
+#' @export
+#' @examples
+#' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
+#' drawdown_table(drawdown_analysis(btc))
+drawdown_table <- function(analysis) {
+  episodes <- analysis$episodes
+  table <- data.frame(
+    episodes$rank, episodes$peak_date, episodes$peak_price, episodes$trough_date, episodes$trough_price,
+    episodes$depth_pct, episodes$days_to_trough, episodes$recovery_date, episodes$days_to_recover, episodes$days_total,
+    episodes$ongoing
+  )
+  names(table) <- c(
+    "#", "Peak", "High", "Trough", "Low", "Fall", "Days to trough", "Back at high", "Days to recover", "Days in all", "ongoing"
+  )
+  # prices of a few dollars and of fractions of a cent in one column, as in the text of the cards
+  price <- DT::JS(
+    "function(data, type) {",
+    "  if (type !== 'display' || data === null) return data;",
+    "  var x = Number(data);",
+    "  if (x >= 1000) return '$' + x.toLocaleString('en-US', {maximumFractionDigits: 0});",
+    "  if (x >= 1) return '$' + x.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});",
+    "  return '$' + Number(x.toPrecision(4)).toLocaleString('en-US', {maximumSignificantDigits: 4});",
+    "}"
+  )
+  # the dates and days a fall that goes on does not have yet
+  missing <- function(text) DT::JS(sprintf("function(data, type) { return type === 'display' && data === null ? '%s' : data; }", text))
+  days <- DT::JS(
+    "function(data, type) {",
+    "  if (type !== 'display') return data;",
+    "  return data === null ? '\\u2013' : Number(data).toLocaleString('en-US');",
+    "}"
+  )
+  DT::datatable(table,
+    rownames = FALSE,
+    selection = "none",
+    options = list(
+      dom = if (nrow(table) > 20) "tp" else "t",
+      pageLength = 20,
+      columnDefs = list(
+        list(targets = c(2, 4), render = price),
+        list(targets = 7, render = missing("not yet")),
+        list(targets = c(6, 8, 9), render = days),
+        list(targets = 10, visible = FALSE),
+        list(targets = c(0, 2, 4:6, 8:9), className = "dt-right")
+      )
+    )
+  ) %>%
+    DT::formatCurrency("Fall", currency = "%", before = FALSE, digits = 1) %>%
+    DT::formatStyle("Fall", backgroundColor = DT::styleInterval(
+      seq(-90, -10, by = 10), change_color(seq(1, 0.1, length.out = 10), gain = FALSE)
+    )) %>%
+    DT::formatStyle(names(table), valueColumns = "ongoing", fontWeight = DT::styleEqual(TRUE, "bold"))
+}
+##########################################################################################
 # 
 ##########################################################################################
 #' @title Table of the market listings

@@ -18,7 +18,7 @@ mod_volatility_ui <- function(id) {
   # a column that fills the window: the cards take the height of their text and the chart
   # the rest, see styles.css
   div(
-    class = "volatility-page",
+    class = "fill-page",
     div(
       class = "d-flex align-items-center gap-3",
       helpText("Coin selected in the Timeseries tab"),
@@ -28,24 +28,6 @@ mod_volatility_ui <- function(id) {
     shinycssloaders::withSpinner(
       plotly::plotlyOutput(ns("plot"), width = "100%", height = "100%")
     )
-  )
-}
-##########################################################################################
-#
-##########################################################################################
-#' @title One card of the volatility summary
-#' @param part `month` or `recent` of [volatility_text()].
-#' @return A `bslib::card()`.
-#' @keywords internal
-#' @examples
-#' golemcrypto:::volatility_card(list(
-#'   headline = "Last 2 days: +1.0% together, a normal rise",
-#'   points = c("Day by day: 4 Nov +0.4%, 5 Nov +0.6%.", "...")
-#' ))
-volatility_card <- function(part) {
-  bslib::card(
-    bslib::card_header(tags$strong(part$headline)),
-    bslib::card_body(tags$ul(class = "mb-0", lapply(part$points, tags$li)))
   )
 }
 ##########################################################################################
@@ -88,9 +70,9 @@ mod_volatility_server <- function(id, history, dark_mode) {
       bslib::layout_columns(
         col_widths = bslib::breakpoints(sm = 12, lg = 6, xl = 4),
         class = "mt-2",
-        volatility_card(text$month),
-        volatility_card(text$recent),
-        volatility_card(text$forecast)
+        summary_card(text$month),
+        summary_card(text$recent),
+        summary_card(text$forecast)
       )
     })
 

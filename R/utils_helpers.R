@@ -142,3 +142,24 @@ updated_text <- function(time, problem = NULL) {
   }
   paste0("Data: CoinMarketCap, updated ", format(time, "%H:%M"), if (!is.null(problem)) paste(".", problem))
 }
+##########################################################################################
+#
+##########################################################################################
+#' @title One card of a summary in words
+#' @description A card of the Volatility and Drawdowns tabs: a headline and
+#' a list of sentences.
+#' @param part A list with a `headline` and `points`, as in the results of
+#'   [volatility_text()] and [drawdown_text()].
+#' @return A `bslib::card()`.
+#' @keywords internal
+#' @examples
+#' golemcrypto:::summary_card(list(
+#'   headline = "Last 2 days: +1.0% together, a normal rise",
+#'   points = c("Day by day: 4 Nov +0.4%, 5 Nov +0.6%.", "...")
+#' ))
+summary_card <- function(part) {
+  bslib::card(
+    bslib::card_header(tags$strong(part$headline)),
+    bslib::card_body(tags$ul(class = "mb-0", lapply(part$points, tags$li)))
+  )
+}

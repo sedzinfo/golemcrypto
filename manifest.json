@@ -2765,10 +2765,10 @@
       "checksum": "1a3dd156389b1d5b7901b7fb1a8fe0f8"
     },
     "DESCRIPTION": {
-      "checksum": "5e2ee811f1d20c81b234a6f9b6074cd9"
+      "checksum": "c712bf434ccda1c31879c24635ea0eb9"
     },
     "inst/app/about.md": {
-      "checksum": "f954187c6f437117d77e9e2f6b8d63d4"
+      "checksum": "30441a94bdfceb562fcea0e34560b744"
     },
     "inst/app/www/analytics.js": {
       "checksum": "1918493ff537401c08c4ecd06ce1b03a"
@@ -2780,10 +2780,10 @@
       "checksum": "84de9cc0ea9c7d485fd4c993ededf1a1"
     },
     "inst/app/www/styles.css": {
-      "checksum": "6bdc728fe86d728877b113887c718abc"
+      "checksum": "5ab4726149e80c422abd28dad9ec2656"
     },
     "NAMESPACE": {
-      "checksum": "ee8d9b59caf830f5cc16d51b3cec4c9d"
+      "checksum": "52327c7cdc2a240c46a6a7b99faf9193"
     },
     "R/_disable_autoload.R": {
       "checksum": "1178c335d6c11555fd1c4ec6098dfee6"
@@ -2792,10 +2792,10 @@
       "checksum": "9423799fb67bf03034f32a3cbcfd17b3"
     },
     "R/app_server.R": {
-      "checksum": "d30379b115c9df7d2a5b60711b86c810"
+      "checksum": "728314f97c0b2d0738e415975a047f1b"
     },
     "R/app_ui.R": {
-      "checksum": "67a39ea441fcdbc2c00ed45f73bcfe22"
+      "checksum": "e592bb832a0343288351e19a3a6fb645"
     },
     "R/fct_calc.R": {
       "checksum": "c9f494f79448562ffa43def5c7c0c5b1"
@@ -2803,8 +2803,11 @@
     "R/fct_data.R": {
       "checksum": "024cda7c667255c1fc8dc507c54f0a63"
     },
+    "R/fct_drawdown.R": {
+      "checksum": "578d31ebe60f9131080fc3a2f7a43659"
+    },
     "R/fct_plots.R": {
-      "checksum": "a355f2f43d05ddba791b150321fbcbbf"
+      "checksum": "8815cb3868e6566984d9b5b4d8214d11"
     },
     "R/fct_volatility.R": {
       "checksum": "c988006e8fb4336bf5fb5bd41b5fe4c0"
@@ -2814,6 +2817,9 @@
     },
     "R/mod_compare.R": {
       "checksum": "550db7604db545580f9189d3576cda9b"
+    },
+    "R/mod_drawdowns.R": {
+      "checksum": "f1b09428e199178ecdcea12a88d3d99d"
     },
     "R/mod_returns_calendar.R": {
       "checksum": "3db17591d3cee13a928a8947e2c6c885"
@@ -2828,7 +2834,7 @@
       "checksum": "f220ac395731f48dc1515d83d08fcc81"
     },
     "R/mod_volatility.R": {
-      "checksum": "0a2eaabae3cb7ec9430a48f6b2df3d7f"
+      "checksum": "c2a9626d13e58cef31a84cc7a5b78bf1"
     },
     "R/run_app.R": {
       "checksum": "c3b9257adf9c69b9b48b1424b2e59545"
@@ -2840,7 +2846,7 @@
       "checksum": "3a9802a0d4b974c57ea24bc0babb9b03"
     },
     "R/utils_helpers.R": {
-      "checksum": "ad5f5bc9aaeca427f459b6017c8f0056"
+      "checksum": "502e2e1e31c7b5e8f6f2abff23d39748"
     }
   },
   "users": null

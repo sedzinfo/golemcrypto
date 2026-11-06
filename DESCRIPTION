@@ -9,9 +9,10 @@ Description: A 'shiny' application for exploring cryptocurrency exchange rates.
     2013 for any active cryptocurrency, and shows a table of the top 100
     cryptocurrencies by market capitalisation with price changes over 24 hours
     to 90 days, market dominance and fully diluted market cap. Also compares
-    normalized prices of several coins, and shows a market cap treemap and a
-    calendar of monthly returns. Market data is retrieved from
-    'CoinMarketCap'.
+    normalized prices of several coins, and shows a market cap treemap, a
+    calendar of monthly returns, whether a coin's recent volatility is
+    normal, with a GARCH forecast, and its falls from its all-time high.
+    Market data is retrieved from 'CoinMarketCap'.
 Imports:
     shinycssloaders,
     bslib,

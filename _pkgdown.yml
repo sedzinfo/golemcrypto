@@ -28,6 +28,9 @@ reference:
       - monthly_returns
       - moving_average
       - drawdown
+      - drawdown_episodes
+      - drawdown_analysis
+      - drawdown_text
       - volatility_analysis
       - volatility_text
   - title: Charts and tables
@@ -36,8 +39,10 @@ reference:
       - plot_compare
       - plot_returns_calendar
       - plot_volatility
+      - plot_drawdowns
       - plot_treemap
       - listings_table
+      - drawdown_table
 
 navbar:
   structure:

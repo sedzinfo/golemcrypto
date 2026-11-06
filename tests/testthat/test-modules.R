@@ -118,7 +118,7 @@ test_that("the returns calendar needs at least two months of history", {
 
 test_that("the about tab explains every tab and every column of the top 100 table", {
   page <- htmltools::renderTags(mod_about_ui("about"))$html
-  for (tab in c("Timeseries", "Compare", "Top 100", "Treemap", "Returns calendar")) {
+  for (tab in c("Timeseries", "Compare", "Top 100", "Treemap", "Returns calendar", "Volatility", "Drawdowns")) {
     expect_match(page, paste0(">", tab, "</h3>"), fixed = TRUE, label = tab)
   }
   for (column in setdiff(names(listings_table(listings)$x$data), " ")) {
@@ -149,6 +149,25 @@ test_that("the volatility module explains and charts the selected coin", {
   })
   short <- reactive(history[history$name_symbol == "Alpha (A)", ])
   testServer(mod_volatility_server, args = list(history = short, dark_mode = light), {
+    expect_error(output$plot, "Not enough history")
+  })
+})
+
+test_that("the drawdowns module explains, charts and lists the falls of the selected coin", {
+  long <- garch_history(800)
+  testServer(mod_drawdowns_server, args = list(history = reactive(long), dark_mode = light), {
+    expect_match(output$summary$html, "from the all-time high|at an all-time high")
+    expect_match(output$summary$html, "falls? of 20% or more")
+    expect_no_error(output$plot)
+    expect_no_error(output$table)
+    csv <- utils::read.csv(output$csv)
+    expect_equal(names(csv)[c(1, 6)], c("rank", "fall_pct"))
+    expect_true(all(csv$fall_pct <= -20))
+    session$setInputs(min_depth = "10")
+    expect_gt(nrow(utils::read.csv(output$csv)), nrow(csv))
+  })
+  one_day <- reactive(history[history$name_symbol == "Alpha (A)", ][1, ])
+  testServer(mod_drawdowns_server, args = list(history = one_day, dark_mode = light), {
     expect_error(output$plot, "Not enough history")
   })
 })

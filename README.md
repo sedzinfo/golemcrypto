@@ -19,6 +19,7 @@ An interactive R Shiny application for visualizing cryptocurrency exchange rates
 - **Market Treemap**: The top 100 coins sized by market cap and colored by their 24h change
 - **Returns Calendar**: Monthly returns by year for any coin
 - **Volatility**: Whether the volatility of the last month and the move of the last 2 days are normal, against the coin's history and a GARCH model, and a forecast of the next 7 days with the value at risk, in words and as a chart
+- **Drawdowns**: How far the coin is below its all-time high, and how deep its earlier falls went and how long they took to recover, in words, as a chart and as a table
 - **Light and Dark Mode**: Switch with the toggle in the navigation bar
 - **CSV Downloads**: Download the data behind every tab as a CSV file
 - **About Tab**: What every tab shows and how its numbers are calculated, with the formulas
@@ -93,6 +94,12 @@ volatility_text(analysis)
 analysis$forecast$days   # the 95% range of the next 7 closes
 plot_volatility(analysis)
 
+# how far below its all-time high, against its earlier falls
+falls <- drawdown_analysis(get_history("Bitcoin (BTC)", as.Date("2013-04-29")))
+drawdown_text(falls)
+falls$episodes   # the falls of 20% or more, the deepest first
+plot_drawdowns(falls)
+
 # several coins over the last year, starting at 100
 history <- get_history(c("Bitcoin (BTC)", "Ethereum (ETH)", "Solana (SOL)"))
 plot_compare(normalize_prices(history))
@@ -143,6 +150,11 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 - A third card forecasts the next 7 days with the same model: the 95% range of the price, the value at risk and expected shortfall of the next day and of the last year, and a Kupiec test of how well the model's value at risk held
 - A chart of the 30-day volatility over the whole history, of the last 90 days in the standard deviations the model expected, and of the forecast of the price
 
+### Drawdowns Tab
+- For the coin selected in the Timeseries tab, two cards say in words how far the coin is below its all-time high, the rise it needs to get back there, and how long the earlier falls that went as deep took to recover, and sum up the falls of its history
+- A chart of the close on a log scale and of how far it is below its high, with each fall of 10%, 20%, 30% or 50% or more shaded and its trough numbered
+- A table of those falls, the deepest first: peak, trough, depth, days to the trough and back to the high
+
 ### About Tab
 - What every tab shows and how its numbers are calculated: the candles, moving averages and drawdown, the index of the Compare tab, the Top 100 columns, and the colors of the tables and charts
 - Linear and log scales: how each is drawn, with an example chart, and when a log scale helps
@@ -167,6 +179,9 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 
 ### Volatility
 ![Whether the volatility of Bitcoin's last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with its 30-day volatility since 2013, its last 90 days in GARCH standard deviations and the forecast range of the price](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
+
+### Drawdowns
+![How far Bitcoin is below its all-time high and its 15 falls of 20% or more since 2013, on a log-scale price chart and a chart of the distance from the high](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto7.png)
 
 ## Dependencies
 
@@ -203,7 +218,8 @@ The package follows the layout of a [golem](https://thinkr-open.github.io/golem/
 | `R/fct_data.R` | Downloads, and the cache of the market listings |
 | `R/fct_calc.R` | Calculations: normalized prices and monthly returns |
 | `R/fct_volatility.R` | The volatility analysis, with its GARCH model, forecast and value at risk, and its text |
-| `R/fct_plots.R` | The plotly charts and the Top 100 table |
+| `R/fct_drawdown.R` | The falls from the all-time high and their text |
+| `R/fct_plots.R` | The plotly charts and the tables of the Top 100 and of the falls |
 | `R/utils_helpers.R` | Color scales and light/dark mode helpers |
 | `inst/app/www/` | Favicon and the keep-alive script |
 | `inst/app/about.md` | The text of the About tab |

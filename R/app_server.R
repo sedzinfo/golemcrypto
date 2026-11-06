@@ -5,7 +5,7 @@
 #' @description Wires up the module of each tab. The market listings are
 #' refreshed every 10 minutes and shared by the Top 100 and Treemap tabs, and
 #' the price history of the coin picked in the Timeseries tab is shared with
-#' the Returns calendar and Volatility tabs.
+#' the Returns calendar, Volatility and Drawdowns tabs.
 #' @param coins Data frame of coins from `get_coins()`.
 #' @return A shiny server function, with the usual `input`, `output` and
 #'   `session` arguments.
@@ -30,6 +30,7 @@ app_server <- function(coins) {
     mod_treemap_server("treemap", listings, dark_mode)
     mod_returns_calendar_server("returns_calendar", history, dark_mode)
     mod_volatility_server("volatility", history, dark_mode)
+    mod_drawdowns_server("drawdowns", history, dark_mode)
     mod_about_server("about", dark_mode)
 
     output$keep_alive <- renderText({

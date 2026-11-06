@@ -1,6 +1,6 @@
 Crypto Time Series Analyzer shows the prices of cryptocurrencies from <a href="https://coinmarketcap.com" target="_blank" rel="noopener">CoinMarketCap</a>, in US dollars. This page explains what each tab shows and how its numbers are calculated. The CSV button of each tab downloads the data behind it, unrounded. The app is for exploring market data; it is not investment advice.
 
-**On this page:** [Timeseries](#about-timeseries) · [Compare](#about-compare) · [Linear and log scales](#about-scales) · [Top 100](#about-top100) · [Treemap](#about-treemap) · [Returns calendar](#about-calendar) · [Volatility](#about-volatility) · [Data and updates](#about-data)
+**On this page:** [Timeseries](#about-timeseries) · [Compare](#about-compare) · [Linear and log scales](#about-scales) · [Top 100](#about-top100) · [Treemap](#about-treemap) · [Returns calendar](#about-calendar) · [Volatility](#about-volatility) · [Drawdowns](#about-drawdowns) · [Data and updates](#about-data)
 
 <h3 id="about-timeseries">Timeseries</h3>
 
@@ -176,6 +176,24 @@ VaR = −(5th percentile of the daily returns)        ES = −(average of the re
 Losses are price falls in percent. The 95% range and the 95% VaR differ: the range leaves out 2.5% on each side, the VaR 5% on the downside alone, so the VaR is the smaller loss. The last point checks the model's VaR against the last 365 days with the Kupiec test: a well-calibrated VaR is exceeded on about 5% of the days, some 18 a year, and a p-value below 0.05 means it was exceeded more often, so the model understates the risk, or less often, so it overstates it. The forecast assumes that the model holds. It cannot foresee news: its ranges say how far the price usually moves at this level of volatility, not where it will go.
 
 **The chart.** At the top, the 30-day volatility over the whole history, with its median and 95th percentile. In the middle, each of the last 90 days in the standard deviations the model expected, with dashed lines at ±2 and dotted ones at ±4. At the bottom, the last 30 closes and the forecast of the next 7 days: the median close, the middle half of the outcomes (50%) and the 95% range; hover over the median for a day's ranges. The CSV button downloads the data day by day: the daily return, the volume and its ratio, the 30-day volatility, the standard deviation and value at risk the model expected, and the forecast of the days ahead.
+
+<h3 id="about-drawdowns">Drawdowns</h3>
+
+How far is the coin below its all-time high, and how long did its earlier falls take to recover? The tab answers for the coin picked in the Timeseries tab, in two cards, a chart and a table. It splits the history into **falls**: a fall starts on the last close at an all-time high, the *peak*, goes down to its lowest close, the *trough*, and ends on the first close back at or above the peak. The depth of a fall is
+
+```
+fall = (trough / peak − 1) × 100
+```
+
+and its days are calendar days: from the peak to the trough, from the trough back to the high, and in all. The highs are those of the history CoinMarketCap has, which for Bitcoin starts on 29 April 2013, so a coin whose history starts below an earlier high counts its first days as a fall.
+
+**Now.** How far the last close is below the all-time high, and the rise it needs to get back there (the formula of the Timeseries tab). The lowest close since the high gives the depth of the current fall so far, which ranks it among all the falls of the history, and the card lists the earlier falls that went at least as deep: how many days they took to get back to their high, from the peak and from the trough. Every earlier fall did get back, as only the last fall can still be open: coins that never recovered from a fall are the coins whose current fall is open. The days of the earlier falls describe the past, not when the current one will end.
+
+**The history.** The falls of 10%, 20% (the default), 30% or 50% or more, as picked above the cards: how many there were, the deepest, the median fall with the median days to its trough and back to its high, the share of days that closed that far below the high, and the days that closed at a new all-time high.
+
+**The chart.** At the top, the close on a log scale, on which equal distances are equal percentages, with the all-time high so far as a dotted line. At the bottom, how far each close is below that high, with a dashed line at the depth picked. Each fall of that depth or more is shaded from its peak to its recovery, the current one in amber, and its trough carries its rank; hover over a trough for its dates.
+
+**The table** lists the falls, the deepest first, with the rank of the chart; the current fall is in bold and has no recovery yet. The CSV button downloads it, with the dates and prices unrounded.
 
 <h3 id="about-data">Data and updates</h3>
 
