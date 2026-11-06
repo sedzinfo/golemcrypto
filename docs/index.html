@@ -13,8 +13,8 @@
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Interactive Cryptocurrency Time Series and Market Data Explorer">
-<meta name="description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap. Also compares normalized prices of several coins, and shows a market cap treemap and a calendar of monthly returns. Market data is retrieved from CoinMarketCap.">
-<meta property="og:description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap. Also compares normalized prices of several coins, and shows a market cap treemap and a calendar of monthly returns. Market data is retrieved from CoinMarketCap.">
+<meta name="description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap. Also compares normalized prices of several coins, and shows a market cap treemap, a calendar of monthly returns, whether a coins recent volatility is normal, with a GARCH forecast, and its falls from its all-time high. Market data is retrieved from CoinMarketCap'.">
+<meta property="og:description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap. Also compares normalized prices of several coins, and shows a market cap treemap, a calendar of monthly returns, whether a coins recent volatility is normal, with a GARCH forecast, and its falls from its all-time high. Market data is retrieved from CoinMarketCap'.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -80,9 +80,15 @@
 <li>
 <strong>Returns Calendar</strong>: Monthly returns by year for any coin</li>
 <li>
+<strong>Volatility</strong>: Whether the volatility of the last month and the move of the last 2 days are normal, against the coin’s history and a GARCH model, and a forecast of the next 7 days with the value at risk, in words and as a chart</li>
+<li>
+<strong>Drawdowns</strong>: How far the coin is below its all-time high, and how deep its earlier falls went and how long they took to recover, in words, as a chart and as a table</li>
+<li>
 <strong>Light and Dark Mode</strong>: Switch with the toggle in the navigation bar</li>
 <li>
 <strong>CSV Downloads</strong>: Download the data behind every tab as a CSV file</li>
+<li>
+<strong>About Tab</strong>: What every tab shows and how its numbers are calculated, with the formulas</li>
 </ul>
 </div>
 </div>
@@ -158,6 +164,18 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 <span><span class="fu"><a href="reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">btc</span>, averages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>   <span class="co"># other moving averages</span></span>
 <span><span class="fu"><a href="reference/plot_returns_calendar.html">plot_returns_calendar</a></span><span class="op">(</span><span class="fu"><a href="reference/monthly_returns.html">monthly_returns</a></span><span class="op">(</span><span class="va">btc</span><span class="op">)</span>, <span class="st">"Bitcoin (BTC)"</span>, mode <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># is the recent volatility normal? (needs more than a year of history)</span></span>
+<span><span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/volatility_analysis.html">volatility_analysis</a></span><span class="op">(</span><span class="fu"><a href="reference/get_history.html">get_history</a></span><span class="op">(</span><span class="st">"Bitcoin (BTC)"</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2013-04-29"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/volatility_text.html">volatility_text</a></span><span class="op">(</span><span class="va">analysis</span><span class="op">)</span></span>
+<span><span class="va">analysis</span><span class="op">$</span><span class="va">forecast</span><span class="op">$</span><span class="va">days</span>   <span class="co"># the 95% range of the next 7 closes</span></span>
+<span><span class="fu"><a href="reference/plot_volatility.html">plot_volatility</a></span><span class="op">(</span><span class="va">analysis</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># how far below its all-time high, against its earlier falls</span></span>
+<span><span class="va">falls</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/drawdown_analysis.html">drawdown_analysis</a></span><span class="op">(</span><span class="fu"><a href="reference/get_history.html">get_history</a></span><span class="op">(</span><span class="st">"Bitcoin (BTC)"</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2013-04-29"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/drawdown_text.html">drawdown_text</a></span><span class="op">(</span><span class="va">falls</span><span class="op">)</span></span>
+<span><span class="va">falls</span><span class="op">$</span><span class="va">episodes</span>   <span class="co"># the falls of 20% or more, the deepest first</span></span>
+<span><span class="fu"><a href="reference/plot_drawdowns.html">plot_drawdowns</a></span><span class="op">(</span><span class="va">falls</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># several coins over the last year, starting at 100</span></span>
 <span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_history.html">get_history</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bitcoin (BTC)"</span>, <span class="st">"Ethereum (ETH)"</span>, <span class="st">"Solana (SOL)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plot_compare.html">plot_compare</a></span><span class="op">(</span><span class="fu"><a href="reference/normalize_prices.html">normalize_prices</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span><span class="op">)</span></span>
@@ -225,6 +243,33 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 <li>Monthly returns by year for the coin selected in the Timeseries tab</li>
 </ul>
 </div>
+<div class="section level3">
+<h3 id="volatility-tab">Volatility Tab<a class="anchor" aria-label="anchor" href="#volatility-tab"></a>
+</h3>
+<ul>
+<li>For the coin selected in the Timeseries tab, two cards say in words whether the volatility of the last 30 days and the move of the last 2 days are normal: against the year before, against the coin’s whole history, and against a GARCH(1,1) model with Student-t errors fitted to the 4 years before, and whether their volume is unusual for the coin</li>
+<li>A third card forecasts the next 7 days with the same model: the 95% range of the price, the value at risk and expected shortfall of the next day and of the last year, and a Kupiec test of how well the model’s value at risk held</li>
+<li>A chart of the 30-day volatility over the whole history, of the last 90 days in the standard deviations the model expected, and of the forecast of the price</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="drawdowns-tab">Drawdowns Tab<a class="anchor" aria-label="anchor" href="#drawdowns-tab"></a>
+</h3>
+<ul>
+<li>For the coin selected in the Timeseries tab, two cards say in words how far the coin is below its all-time high, the rise it needs to get back there, and how long the earlier falls that went as deep took to recover, and sum up the falls of its history</li>
+<li>A chart of the close on a log scale and of how far it is below its high, with each fall of 10%, 20%, 30% or 50% or more shaded and its trough numbered</li>
+<li>A table of those falls, the deepest first: peak, trough, depth, days to the trough and back to the high</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="about-tab">About Tab<a class="anchor" aria-label="anchor" href="#about-tab"></a>
+</h3>
+<ul>
+<li>What every tab shows and how its numbers are calculated: the candles, moving averages and drawdown, the index of the Compare tab, the Top 100 columns, and the colors of the tables and charts</li>
+<li>Linear and log scales: how each is drawn, with an example chart, and when a log scale helps</li>
+<li>The text is in <code>inst/app/about.md</code>, so it can be edited without touching the R code</li>
+</ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="screenshots">Screenshots<a class="anchor" aria-label="anchor" href="#screenshots"></a>
@@ -262,6 +307,20 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 </h3>
 <div class="float">
 <img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto5.png" alt="Monthly returns of Bitcoin by year"><div class="figcaption">Monthly returns of Bitcoin by year</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="volatility">Volatility<a class="anchor" aria-label="anchor" href="#volatility"></a>
+</h3>
+<div class="float">
+<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png" alt="Whether the volatility of Bitcoin’s last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with its 30-day volatility since 2013, its last 90 days in GARCH standard deviations and the forecast range of the price"><div class="figcaption">Whether the volatility of Bitcoin’s last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with its 30-day volatility since 2013, its last 90 days in GARCH standard deviations and the forecast range of the price</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="drawdowns">Drawdowns<a class="anchor" aria-label="anchor" href="#drawdowns"></a>
+</h3>
+<div class="float">
+<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto7.png" alt="How far Bitcoin is below its all-time high and its 15 falls of 20% or more since 2013, on a log-scale price chart and a chart of the distance from the high"><div class="figcaption">How far Bitcoin is below its all-time high and its 15 falls of 20% or more since 2013, on a log-scale price chart and a chart of the distance from the high</div>
 </div>
 </div>
 </div>
@@ -334,8 +393,16 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 <td>Calculations: normalized prices and monthly returns</td>
 </tr>
 <tr>
+<td><code>R/fct_volatility.R</code></td>
+<td>The volatility analysis, with its GARCH model, forecast and value at risk, and its text</td>
+</tr>
+<tr>
+<td><code>R/fct_drawdown.R</code></td>
+<td>The falls from the all-time high and their text</td>
+</tr>
+<tr>
 <td><code>R/fct_plots.R</code></td>
-<td>The plotly charts and the Top 100 table</td>
+<td>The plotly charts and the tables of the Top 100 and of the falls</td>
 </tr>
 <tr>
 <td><code>R/utils_helpers.R</code></td>
@@ -344,6 +411,10 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 <tr>
 <td><code>inst/app/www/</code></td>
 <td>Favicon and the keep-alive script</td>
+</tr>
+<tr>
+<td><code>inst/app/about.md</code></td>
+<td>The text of the About tab</td>
 </tr>
 <tr>
 <td><code>tests/testthat/</code></td>
