@@ -41,3 +41,20 @@ listings <- data.frame(
   USD_fully_diluted_market_cap = c(2.1e12, 3e11, 1e6),
   USD_last_updated = "2024-03-31T12:00:00.000Z"
 )
+
+# a coin of 900 days whose returns follow a GARCH(1,1) model, so the analysis has a model to find
+garch_history <- function(days = 900, last = NULL, seed = 1) {
+  set.seed(seed)
+  r <- numeric(days)
+  variance <- 4
+  for (t in seq_len(days)) {
+    r[t] <- sqrt(variance) * stats::rt(1, df = 5) / sqrt(5 / 3)
+    variance <- 0.2 + 0.1 * r[t]^2 + 0.85 * variance
+  }
+  if (!is.null(last)) r[days - seq_along(last) + 1] <- rev(last)
+  data.frame(
+    name_symbol = "Alpha (A)",
+    timestamp = as.Date("2022-01-01") + 0:days,
+    close = 100 * exp(cumsum(c(0, r / 100)))
+  )
+}

@@ -18,6 +18,7 @@ An interactive R Shiny application for visualizing cryptocurrency exchange rates
 - **Coin Comparison**: Compare up to 10 coins, with their prices normalized to start at 100
 - **Market Treemap**: The top 100 coins sized by market cap and colored by their 24h change
 - **Returns Calendar**: Monthly returns by year for any coin
+- **Volatility**: Whether the volatility of the last month and the move of the last 2 days are normal, against the coin's history and a GARCH model, and a forecast of the next 7 days with the value at risk, in words and as a chart
 - **Light and Dark Mode**: Switch with the toggle in the navigation bar
 - **CSV Downloads**: Download the data behind every tab as a CSV file
 - **About Tab**: What every tab shows and how its numbers are calculated, with the formulas
@@ -86,6 +87,12 @@ plot_timeseries(btc)
 plot_timeseries(btc, averages = c(20, 100))   # other moving averages
 plot_returns_calendar(monthly_returns(btc), "Bitcoin (BTC)", mode = "dark")
 
+# is the recent volatility normal? (needs more than a year of history)
+analysis <- volatility_analysis(get_history("Bitcoin (BTC)", as.Date("2013-04-29")))
+volatility_text(analysis)
+analysis$forecast$days   # the 95% range of the next 7 closes
+plot_volatility(analysis)
+
 # several coins over the last year, starting at 100
 history <- get_history(c("Bitcoin (BTC)", "Ethereum (ETH)", "Solana (SOL)"))
 plot_compare(normalize_prices(history))
@@ -131,6 +138,11 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 ### Returns Calendar Tab
 - Monthly returns by year for the coin selected in the Timeseries tab
 
+### Volatility Tab
+- For the coin selected in the Timeseries tab, two cards say in words whether the volatility of the last 30 days and the move of the last 2 days are normal: against the year before, against the coin's whole history, and against a GARCH(1,1) model with Student-t errors fitted to the 4 years before
+- A third card forecasts the next 7 days with the same model: the 95% range of the price, the value at risk and expected shortfall of the next day and of the last year, and a Kupiec test of how well the model's value at risk held
+- A chart of the 30-day volatility over the whole history, of the last 90 days in the standard deviations the model expected, and of the forecast of the price
+
 ### About Tab
 - What every tab shows and how its numbers are calculated: the candles, moving averages and drawdown, the index of the Compare tab, the Top 100 columns, and the colors of the tables and charts
 - Linear and log scales: how each is drawn, with an example chart, and when a log scale helps
@@ -152,6 +164,9 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 
 ### Returns Calendar (dark mode)
 ![Monthly returns of Bitcoin by year](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto5.png)
+
+### Volatility
+![Whether the volatility of Bitcoin's last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with its 30-day volatility since 2013, its last 90 days in GARCH standard deviations and the forecast range of the price](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
 
 ## Dependencies
 
@@ -187,6 +202,7 @@ The package follows the layout of a [golem](https://thinkr-open.github.io/golem/
 | `R/mod_*.R` | One Shiny module per tab |
 | `R/fct_data.R` | Downloads, and the cache of the market listings |
 | `R/fct_calc.R` | Calculations: normalized prices and monthly returns |
+| `R/fct_volatility.R` | The volatility analysis, with its GARCH model, forecast and value at risk, and its text |
 | `R/fct_plots.R` | The plotly charts and the Top 100 table |
 | `R/utils_helpers.R` | Color scales and light/dark mode helpers |
 | `inst/app/www/` | Favicon and the keep-alive script |

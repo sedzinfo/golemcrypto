@@ -28,11 +28,14 @@ reference:
       - monthly_returns
       - moving_average
       - drawdown
+      - volatility_analysis
+      - volatility_text
   - title: Charts and tables
     contents:
       - plot_timeseries
       - plot_compare
       - plot_returns_calendar
+      - plot_volatility
       - plot_treemap
       - listings_table
 

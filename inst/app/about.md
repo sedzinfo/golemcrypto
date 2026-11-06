@@ -1,6 +1,6 @@
 Crypto Time Series Analyzer shows the prices of cryptocurrencies from <a href="https://coinmarketcap.com" target="_blank" rel="noopener">CoinMarketCap</a>, in US dollars. This page explains what each tab shows and how its numbers are calculated. The CSV button of each tab downloads the data behind it, unrounded. The app is for exploring market data; it is not investment advice.
 
-**On this page:** [Timeseries](#about-timeseries) · [Compare](#about-compare) · [Linear and log scales](#about-scales) · [Top 100](#about-top100) · [Treemap](#about-treemap) · [Returns calendar](#about-calendar) · [Data and updates](#about-data)
+**On this page:** [Timeseries](#about-timeseries) · [Compare](#about-compare) · [Linear and log scales](#about-scales) · [Top 100](#about-top100) · [Treemap](#about-treemap) · [Returns calendar](#about-calendar) · [Volatility](#about-volatility) · [Data and updates](#about-data)
 
 <h3 id="about-timeseries">Timeseries</h3>
 
@@ -115,6 +115,59 @@ return(year) = ((1 + r₁ / 100) × (1 + r₂ / 100) × … × (1 + r₁₂ / 10
 so +50% in one month and −50% in the next leave −25%, not 0.
 
 The colors are red for losses and green for gains, symmetric around 0, and reach their deepest at the 95th percentile of the coin's monthly returns in absolute value. They are scaled to the coin's own swings, so the same shade means a bigger move for a volatile coin than for a calm one. Reading down a column compares the same month across years; with a dozen years at most, a pattern there can easily be chance.
+
+<h3 id="about-volatility">Volatility</h3>
+
+Is the coin's recent volatility normal, and what may the next days bring? The tab answers for the coin picked in the Timeseries tab, in words in three cards and in a chart. Everything starts from the daily log returns,
+
+```
+r(t) = log(close(t) / close(t−1))
+```
+
+which add up over days; the percentages shown are converted back, (e^r − 1) × 100. A coin needs more than a year of history for the tab.
+
+**The last 30 days.** The volatility is the standard deviation of the 30 daily returns, annualized with the 365 days of a crypto year:
+
+```
+volatility = sd(r over 30 days) × √365 × 100        in % a year
+```
+
+The card compares it with the year before the 30 days, and with every 30-day period in the coin's history: its percentile among them gives the level, *normal* below the 60th, *elevated* to the 85th, *high* to the 95th and *extreme* above. Two tests ask whether the 30 days varied more than the year before: the F test of their variances, which a few extreme days can sway, and the Fligner-Killeen test, which they cannot. When only the F test finds a difference (p < 0.05), a few large days made the month look rough, not the month as a whole. The largest day is measured in standard deviations of the year before it, and the card says how often days moved that many of their own year's standard deviations in the coin's history. Last, the return of the 30 days is placed among all 30-day returns.
+
+**The last 2 days.** Three measures of how rare the move of the last two days is:
+
+1. **History**: the share of all 2-day moves in the coin's history that were as large in the same direction, as times a year.
+2. **Against the year before**: the move in standard deviations of the year before it, z = (r₁ + r₂) / (sd × √2), and how often 2-day moves reached as many standard deviations of their own year.
+3. **GARCH**: a model of how volatility clusters, the most used in finance. Each day's variance is expected from the day before:
+
+```
+σ²(t) = ω + α × e(t−1)² + β × σ²(t−1)        e = r − μ
+```
+
+so a large move raises the volatility the model expects for the next days, which then fades at the rate β. The daily moves e / σ follow a Student-t distribution, whose fat tails allow more extreme days than the normal distribution. The model is fitted by maximum likelihood to the 4 years before the two days, so it judges them against the volatility it expected without having seen them. The probability of a move at least as large, p, gives *about 1 in 1/p days*. The verdict follows it: *normal* for about once a month or more often (under 30 days), *unusual* for less than monthly but more than once a year (under 365), *rare* for once in 1 to 10 years, and *very rare* beyond. The card also judges the most extreme of the two days alone, as a large move can hide in a 2-day total when the other day went the opposite way. A coin with less than 500 days before the two days has no model, and the verdict comes from the second measure.
+
+The history measures say how large a move is; the standard deviations and the model say how large it is given the volatility of the time, as a 5% day is a shock in a calm market and routine in a rough one. The probabilities hold if the model holds: in crashes the tails are often fatter still, so *1 in N days* tends to overstate how rare a move is.
+
+**The next days.** The third card looks ahead with the same model, its variance brought up to the last day. The variance of the next day follows from the last day, and later days fall back towards the model's long-run level at the rate α + β a day:
+
+```
+σ²(T+1) = ω + α × e(T)² + β × σ²(T)
+σ²(T+h) = σ²∞ + (α + β)^(h−1) × (σ²(T+1) − σ²∞)        σ²∞ = ω / (1 − α − β)
+```
+
+The half-life, log(0.5) / log(α + β), is the number of days the volatility takes to get half-way back to that level. The card compares the next day's volatility with it rather than with the 30-day volatility of the first card: with fat tails, the model's standard deviation counts the rare extreme days, which a calm month may not have had, so it runs higher than the volatility measured over 30 days.
+
+The range of the next day comes straight from the model's Student-t distribution. The ranges of the next 7 days come from 50,000 simulated paths of the model, in which a large day raises the volatility of the days after it; the paths start from a fixed seed, so the numbers do not change when the chart is drawn again. A 95% range leaves 2.5% of the outcomes below it and 2.5% above.
+
+The value at risk (VaR) is the loss exceeded on the worst 5% of days, and the expected shortfall (ES) the average loss on those days. The card gives both for the next day, from the model, and for the last 365 days, from the daily returns themselves:
+
+```
+VaR = −(5th percentile of the daily returns)        ES = −(average of the returns below it)
+```
+
+Losses are price falls in percent. The 95% range and the 95% VaR differ: the range leaves out 2.5% on each side, the VaR 5% on the downside alone, so the VaR is the smaller loss. The last point checks the model's VaR against the last 365 days with the Kupiec test: a well-calibrated VaR is exceeded on about 5% of the days, some 18 a year, and a p-value below 0.05 means it was exceeded more often, so the model understates the risk, or less often, so it overstates it. The forecast assumes that the model holds. It cannot foresee news: its ranges say how far the price usually moves at this level of volatility, not where it will go.
+
+**The chart.** At the top, the 30-day volatility over the whole history, with its median and 95th percentile. In the middle, each of the last 90 days in the standard deviations the model expected, with dashed lines at ±2 and dotted ones at ±4. At the bottom, the last 30 closes and the forecast of the next 7 days: the median close, the middle half of the outcomes (50%) and the 95% range; hover over the median for a day's ranges. The CSV button downloads the data day by day: the daily return, the 30-day volatility, the standard deviation and value at risk the model expected, and the forecast of the days ahead.
 
 <h3 id="about-data">Data and updates</h3>
 

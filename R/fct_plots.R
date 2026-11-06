@@ -301,6 +301,141 @@ plot_returns_calendar <- function(calendar, label = NULL, mode = "light") {
     plot_theme(mode)
 }
 ##########################################################################################
+#
+##########################################################################################
+#' @title Volatility chart of a coin
+#' @description Three panels. The upper one is the volatility of every
+#' `month_days`-day period over the whole history, annualized, with its
+#' median and 95th percentile: where the line is now shows how rough the
+#' last month was. The middle one shows each of the last `days` days as a bar
+#' of its move in the standard deviations the GARCH model expected for it,
+#' red for falls and green for rises, with lines at 2 and 4 standard
+#' deviations. The lower one shows the last `context_days` closes and the
+#' forecast of the next days: the median close, and the ranges of the middle
+#' half and of probability `level` (see [volatility_analysis()]). Without a
+#' GARCH model only the upper panel is drawn.
+#' @param analysis The result of [volatility_analysis()].
+#' @param days Days of the middle panel.
+#' @param context_days Closes before the forecast in the lower panel.
+#' @inheritParams plot_timeseries
+#' @return A plotly object.
+#' @export
+#' @examples
+#' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
+#' plot_volatility(volatility_analysis(btc))
+plot_volatility <- function(analysis, mode = "light", days = 90, context_days = 30) {
+  series <- analysis$series
+  month <- analysis$settings$month_days
+  volatility <- series[!is.na(series$volatility_month), ]
+  level <- function(p, name, dash) {
+    value <- stats::quantile(volatility$volatility_month, p)
+    list(
+      x = range(volatility$date), y = rep(value, 2), name = name,
+      line = list(width = 1, dash = dash, color = average_colors[2]),
+      hovertemplate = paste0(name, ": %{y:.1f}%<extra></extra>")
+    )
+  }
+  upper <- plotly::plot_ly(
+    x = volatility$date,
+    y = volatility$volatility_month,
+    type = "scatter",
+    mode = "lines",
+    line = list(width = 1, color = "#ff7f0e"),
+    name = paste0(month, "-day volatility"),
+    hovertemplate = paste0("%{x}<br>", month, "-day volatility: %{y:.1f}% a year<extra></extra>")
+  )
+  for (line in list(level(0.5, "Median", "dash"), level(0.95, "95th percentile", "dot"))) {
+    upper <- do.call(plotly::add_lines, c(list(upper, inherit = FALSE), line))
+  }
+  upper <- plotly::layout(upper, yaxis = list(title = "% a year", ticksuffix = "%"), xaxis = list(title = ""))
+  title <- paste0(analysis$coin, ": volatility")
+  if (is.null(analysis$garch)) {
+    return(plotly::layout(upper, title = list(text = title, x = 0.01, xanchor = "left"), legend = list(orientation = "h", x = 0.5, xanchor = "center")) %>%
+      plot_theme(mode))
+  }
+  recent <- utils::tail(series[!is.na(series$garch_z), ], days)
+  lower <- plotly::plot_ly(
+    x = recent$date,
+    y = recent$garch_z,
+    type = "bar",
+    marker = list(color = ifelse(recent$garch_z < 0, change_color(1, gain = FALSE), change_color(1, gain = TRUE))),
+    customdata = recent$return_pct,
+    name = "Daily move in GARCH standard deviations",
+    hovertemplate = "%{x}<br>%{customdata:+.2f}%, %{y:+.1f} standard deviations<extra></extra>"
+  )
+  for (z in c(-4, -2, 2, 4)) {
+    lower <- plotly::add_lines(lower,
+      x = range(recent$date), y = c(z, z), inherit = FALSE, showlegend = FALSE, hoverinfo = "skip",
+      line = list(width = 1, dash = if (abs(z) == 2) "dash" else "dot", color = text_color(mode))
+    )
+  }
+  lower <- plotly::layout(lower, yaxis = list(title = paste("Last", days, "days, sd")), xaxis = list(title = ""))
+  ahead <- plot_forecast(analysis, context_days)
+  plotly::subplot(upper, lower, ahead, nrows = 3, heights = c(0.38, 0.31, 0.31), titleY = TRUE, margin = 0.05) %>%
+    plotly::layout(
+      title = list(text = title, x = 0.01, xanchor = "left"),
+      # below the dates of the lower panel, which plotly would otherwise draw it over
+      legend = list(orientation = "h", x = 0.5, xanchor = "center", y = 0, yanchor = "bottom", yref = "container"),
+      margin = list(b = 90),
+      bargap = 0.2
+    ) %>%
+    plot_theme(mode)
+}
+##########################################################################################
+#
+##########################################################################################
+#' @title Forecast panel of the volatility chart
+#' @description The last closes and the forecast ranges of the next days,
+#' which start from the last close, for [plot_volatility()]. Hover over the
+#' median line for the ranges of a day.
+#' @param analysis The result of [volatility_analysis()], with a forecast.
+#' @param context_days Closes before the forecast.
+#' @return A plotly object.
+#' @keywords internal
+#' @examples
+#' \dontrun{
+#' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
+#' golemcrypto:::plot_forecast(volatility_analysis(btc), 30)
+#' }
+plot_forecast <- function(analysis, context_days) {
+  level <- round(100 * analysis$settings$level)
+  closes <- utils::tail(analysis$series, context_days)
+  last <- utils::tail(closes, 1)
+  # the ranges start from the last close
+  columns <- c("low", "low_50", "median", "high_50", "high")
+  start <- data.frame(date = last$date, matrix(last$close, 1, 5, dimnames = list(NULL, columns)))
+  cone <- rbind(start, analysis$forecast$days[c("date", columns)])
+  color <- average_colors[1]
+  band <- function(alpha) sprintf("rgba(59,130,246,%s)", alpha)
+  plotly::plot_ly(
+    x = closes$date,
+    y = closes$close,
+    type = "scatter",
+    mode = "lines",
+    line = list(width = 1.5, color = color),
+    name = "Close",
+    hovertemplate = "%{x}<br>Close: $%{y:,.6~g}<extra></extra>"
+  ) %>%
+    plotly::add_ribbons(
+      x = cone$date, ymin = cone$low, ymax = cone$high, inherit = FALSE,
+      name = paste0(level, "% range"), fillcolor = band(0.15), line = list(width = 0), hoverinfo = "skip"
+    ) %>%
+    plotly::add_ribbons(
+      x = cone$date, ymin = cone$low_50, ymax = cone$high_50, inherit = FALSE,
+      name = "50% range", fillcolor = band(0.3), line = list(width = 0), hoverinfo = "skip"
+    ) %>%
+    plotly::add_lines(
+      x = cone$date, y = cone$median, inherit = FALSE, name = "Forecast median",
+      line = list(width = 1.5, dash = "dash", color = color),
+      customdata = lapply(seq_len(nrow(cone)), function(i) unname(unlist(cone[i, c("low", "low_50", "high_50", "high")]))),
+      hovertemplate = paste0(
+        "%{x}<br>Median: $%{y:,.6~g}<br>50%: $%{customdata[1]:,.6~g} to $%{customdata[2]:,.6~g}<br>",
+        level, "%: $%{customdata[0]:,.6~g} to $%{customdata[3]:,.6~g}<extra></extra>"
+      )
+    ) %>%
+    plotly::layout(yaxis = list(title = "Next days, USD"), xaxis = list(title = ""))
+}
+##########################################################################################
 # 
 ##########################################################################################
 #' @title Table of the market listings

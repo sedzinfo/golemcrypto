@@ -133,3 +133,22 @@ test_that("the about tab explains every tab and every column of the top 100 tabl
     expect_no_error(output$example)
   })
 })
+
+test_that("the volatility module explains and charts the selected coin", {
+  long <- garch_history(800)
+  testServer(mod_volatility_server, args = list(history = reactive(long), dark_mode = light), {
+    expect_match(output$summary$html, "Volatility of the last 30 days")
+    expect_match(output$summary$html, "Expected move on")
+    expect_no_error(output$plot)
+    csv <- utils::read.csv(output$csv)
+    expect_equal(names(csv), c(
+      "date", "close", "return_pct", "volatility_month", "garch_sigma", "garch_z", "garch_var",
+      "forecast_sigma", "forecast_low", "forecast_low_50", "forecast_median", "forecast_high_50", "forecast_high"
+    ))
+    expect_equal(nrow(csv), 801 + 7)
+  })
+  short <- reactive(history[history$name_symbol == "Alpha (A)", ])
+  testServer(mod_volatility_server, args = list(history = short, dark_mode = light), {
+    expect_error(output$plot, "Not enough history")
+  })
+})
