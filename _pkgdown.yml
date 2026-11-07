@@ -33,6 +33,9 @@ reference:
       - drawdown_text
       - volatility_analysis
       - volatility_text
+      - seasonal_returns
+      - seasonality_analysis
+      - seasonality_text
   - title: Charts and tables
     contents:
       - plot_timeseries
@@ -40,9 +43,11 @@ reference:
       - plot_returns_calendar
       - plot_volatility
       - plot_drawdowns
+      - plot_seasonality
       - plot_treemap
       - listings_table
       - drawdown_table
+      - seasonality_table
 
 navbar:
   structure:

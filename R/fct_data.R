@@ -346,7 +346,8 @@ has_gaps <- function(history) {
 #' \dontrun{
 #' coins <- get_coins()
 #' btc <- coins[coins$name_symbol == "Bitcoin (BTC)", ]
-#' golemcrypto:::keep_history("history_1", golemcrypto:::download_history(btc, Sys.Date() - 30), Sys.Date() - 30)
+#' history <- golemcrypto:::download_history(btc, Sys.Date() - 30)
+#' golemcrypto:::keep_history("history_1", history, Sys.Date() - 30)
 #' }
 keep_history <- function(key, history, from) {
   if (is.null(history)) {

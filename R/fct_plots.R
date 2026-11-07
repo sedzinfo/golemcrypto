@@ -230,7 +230,7 @@ plot_scales <- function(mode = "light") {
 #' @inheritParams plot_timeseries
 #' @return A plotly object.
 #' @export
-#' @examples
+#' @examplesIf nzchar(Sys.getenv("COINMARKETCAP_APIKEY"))
 #' plot_treemap(get_listings()$data)
 plot_treemap <- function(listings, mode = "light") {
   top <- utils::head(listings, 100)
@@ -600,6 +600,130 @@ drawdown_table <- function(analysis) {
     DT::formatStyle(names(table), valueColumns = "ongoing", fontWeight = DT::styleEqual(TRUE, "bold"))
 }
 ##########################################################################################
+#
+##########################################################################################
+#' @title Seasonality chart of a coin
+#' @description Two panels with a bar per group of [seasonality_analysis()].
+#' The upper one shows the mean return, green above 0 and red below, with the
+#' median as a diamond; the lower one shows the share of the returns above 0,
+#' with a dashed line at 50%. Hover over a bar for all the numbers of its
+#' group.
+#' @param analysis The result of [seasonality_analysis()].
+#' @inheritParams plot_timeseries
+#' @return A plotly object.
+#' @export
+#' @examples
+#' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
+#' plot_seasonality(seasonality_analysis(btc, "month"))
+#' plot_seasonality(seasonality_analysis(btc, "day"), mode = "dark")
+plot_seasonality <- function(analysis, mode = "light") {
+  groups <- analysis$groups
+  words <- seasonality_periods[[analysis$period]]
+  digits <- return_digits(analysis$period)
+  # plotly reads week numbers as numbers, so the groups are text on a category axis
+  x <- as.character(groups$group)
+  number <- function(value) sprintf(paste0("%+.", digits, "f%%"), value)
+  hover <- paste0(
+    words$group, ": ", x, "<br>",
+    "Mean: ", number(groups$mean_pct), "<br>",
+    "Median: ", number(groups$median_pct), "<br>",
+    "Up: ", round(groups$up_pct * groups$returns / 100), " of ", groups$returns, " (", sprintf("%.0f", groups$up_pct), "%)<br>",
+    "Best: ", number(groups$best_pct), ", worst: ", number(groups$worst_pct)
+  )
+  returns <- plotly::plot_ly(
+    x = x,
+    y = groups$mean_pct,
+    type = "bar",
+    marker = list(color = ifelse(groups$mean_pct >= 0, change_color(1, gain = TRUE), change_color(1, gain = FALSE))),
+    name = "Mean",
+    customdata = hover,
+    hovertemplate = "%{customdata}<extra></extra>"
+  ) %>%
+    plotly::add_trace(
+      x = x,
+      y = groups$median_pct,
+      type = "scatter",
+      mode = "markers",
+      inherit = FALSE,
+      marker = list(symbol = "diamond", size = 8, color = text_color(mode)),
+      name = "Median",
+      customdata = hover,
+      hovertemplate = "%{customdata}<extra></extra>"
+    ) %>%
+    plotly::layout(yaxis = list(title = "Return", ticksuffix = "%"))
+  up <- plotly::plot_ly(
+    x = x,
+    y = groups$up_pct,
+    type = "bar",
+    marker = list(color = ifelse(groups$up_pct >= 50, change_color(0.5, gain = TRUE), change_color(0.5, gain = FALSE))),
+    name = "Share up",
+    customdata = hover,
+    hovertemplate = "%{customdata}<extra></extra>"
+  ) %>%
+    plotly::layout(yaxis = list(title = "Up", ticksuffix = "%", range = c(0, 100)))
+  chart <- plotly::subplot(returns, up, nrows = 2, heights = c(0.6, 0.4), shareX = TRUE, titleY = TRUE, margin = 0.03)
+  # set directly: layout() merges with modifyList(), which drops a list of shapes without names
+  chart$x$layout$shapes <- list(list(
+    type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y2", y0 = 50, y1 = 50,
+    line = list(width = 1, dash = "dash", color = text_color(mode))
+  ))
+  chart %>%
+    plotly::layout(
+      title = list(text = paste0(analysis$coin, ": ", words$title), x = 0.01, xanchor = "left"),
+      legend = list(orientation = "h", x = 0.5, xanchor = "center", y = 0, yanchor = "bottom", yref = "container"),
+      margin = list(b = 60),
+      xaxis = list(title = "", type = "category", categoryorder = "array", categoryarray = x)
+    ) %>%
+    plot_theme(mode)
+}
+##########################################################################################
+#
+##########################################################################################
+#' @title Table of the seasonality of a coin
+#' @description A table with a row per group of [seasonality_analysis()], in
+#' their natural order, with the numbers of the chart of
+#' [plot_seasonality()]. The mean and the median are shaded red below 0 and
+#' green above it, and the share up red below 50% and green above it, more
+#' strongly the further they are from the middle.
+#' @param analysis The result of [seasonality_analysis()].
+#' @return A DT datatable.
+#' @export
+#' @examples
+#' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
+#' seasonality_table(seasonality_analysis(btc, "month"))
+seasonality_table <- function(analysis) {
+  groups <- analysis$groups
+  digits <- return_digits(analysis$period)
+  # week numbers sort as numbers when a header is clicked
+  group <- if (analysis$period == "week") as.integer(as.character(groups$group)) else as.character(groups$group)
+  table <- data.frame(group, groups$returns, groups$mean_pct, groups$median_pct, groups$up_pct, groups$best_pct, groups$worst_pct)
+  names(table) <- c(seasonality_periods[[analysis$period]]$group, "Returns", "Mean", "Median", "Up", "Best", "Worst")
+  # 5 shades on each side of the middle, up to the largest distance from it
+  shade <- function(values, middle) {
+    limit <- max(abs(values - middle), 1e-9)
+    steps <- c(1, 0.8, 0.6, 0.4, 0.2)
+    DT::styleInterval(
+      middle + limit * seq(-0.9, 0.9, by = 0.2),
+      c(change_color(steps, gain = FALSE), change_color(0, gain = TRUE), change_color(rev(steps), gain = TRUE))
+    )
+  }
+  DT::datatable(table,
+    rownames = FALSE,
+    selection = "none",
+    options = list(
+      dom = "t",
+      pageLength = nrow(table),
+      # the natural order of the groups, not the alphabetical one
+      order = list(),
+      columnDefs = list(list(targets = 1:6, className = "dt-right"))
+    )
+  ) %>%
+    DT::formatCurrency(c("Mean", "Median", "Best", "Worst"), currency = "%", before = FALSE, digits = digits) %>%
+    DT::formatCurrency("Up", currency = "%", before = FALSE, digits = 0) %>%
+    DT::formatStyle(c("Mean", "Median"), backgroundColor = shade(c(groups$mean_pct, groups$median_pct), 0)) %>%
+    DT::formatStyle("Up", backgroundColor = shade(groups$up_pct, 50))
+}
+##########################################################################################
 # 
 ##########################################################################################
 #' @title Table of the market listings
@@ -612,7 +736,7 @@ drawdown_table <- function(analysis) {
 #' @param listings The `data` of [get_listings()].
 #' @return A DT datatable.
 #' @export
-#' @examples
+#' @examplesIf nzchar(Sys.getenv("COINMARKETCAP_APIKEY"))
 #' listings_table(get_listings()$data)
 listings_table <- function(listings) {
   names(listings) <- gsub("USD_|percent_", "", names(listings))

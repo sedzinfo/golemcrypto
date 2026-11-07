@@ -22,5 +22,7 @@ of the changes, so a few outliers do not wash out the rest. Coins without
 24h change are labelled n/a and colored white.
 }
 \examples{
+\dontshow{if (nzchar(Sys.getenv("COINMARKETCAP_APIKEY"))) withAutoprint(\{ # examplesIf}
 plot_treemap(get_listings()$data)
+\dontshow{\}) # examplesIf}
 }

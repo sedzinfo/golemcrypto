@@ -16,3 +16,4 @@
 ^\.rscignore$
 ^rsconnect$
 ^\.Renviron$
+^manifest\.json$

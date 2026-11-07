@@ -82,3 +82,17 @@ test_that("listings_table() renames the columns shown in the table", {
   table <- listings_table(listings)
   expect_true(all(c("price", "change_24h", "market_cap") %in% names(table$x$data)))
 })
+
+test_that("the seasonality chart and table have a bar and a row per group, in their natural order", {
+  analysis <- seasonality_analysis(garch_history(800), "week")
+  for (mode in c("light", "dark")) {
+    expect_no_error(plotly::plotly_build(plot_seasonality(analysis, mode)))
+  }
+  built <- plotly::plotly_build(plot_seasonality(analysis))$x
+  expect_equal(built$layout$xaxis$type, "category")
+  expect_equal(as.character(built$data[[1]]$x), as.character(analysis$groups$group))
+  expect_equal(built$layout$shapes[[1]]$y0, 50)
+  table <- seasonality_table(analysis)$x$data
+  expect_equal(names(table), c("Week of the year", "Returns", "Mean", "Median", "Up", "Best", "Worst"))
+  expect_equal(table[[1]], seq_len(nrow(analysis$groups)))
+})

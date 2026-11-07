@@ -54,6 +54,10 @@ first date all of them have data.}
 change.}
 \item{Returns calendar}{Monthly returns by year for the coin selected
 in the Timeseries tab.}
+\item{Seasonality}{The returns of the coin selected in the Timeseries
+tab by day of the week, week of the year, month or year of the
+halving cycle, with a test of whether the differences could be
+chance.}
 }
 Market listings are downloaded when the app starts and refreshed every 10
 minutes. When they cannot be downloaded, for example because the API key

@@ -1,8 +1,8 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://sedzinfo.github.io/golemcrypto/404.html</loc></url>
-<url><loc>https://sedzinfo.github.io/golemcrypto/LICENSE-text.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/authors.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/index.html</loc></url>
+<url><loc>https://sedzinfo.github.io/golemcrypto/LICENSE-text.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/news/index.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/about_text.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/analytics_footer.html</loc></url>
@@ -75,9 +75,9 @@
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/rolling_sum.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/shift.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/summary_card.html</loc></url>
-<url><loc>https://sedzinfo.github.io/golemcrypto/reference/t_quantile.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/tail_probability.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/text_color.html</loc></url>
+<url><loc>https://sedzinfo.github.io/golemcrypto/reference/t_quantile.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/updated_text.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/use_api_key.html</loc></url>
 <url><loc>https://sedzinfo.github.io/golemcrypto/reference/volatility_analysis.html</loc></url>

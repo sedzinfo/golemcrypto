@@ -18,6 +18,7 @@ An interactive R Shiny application for visualizing cryptocurrency exchange rates
 - **Coin Comparison**: Compare up to 10 coins, with their prices normalized to start at 100
 - **Market Treemap**: The top 100 coins sized by market cap and colored by their 24h change
 - **Returns Calendar**: Monthly returns by year for any coin
+- **Seasonality**: Whether some days of the week, weeks of the year, months or years of the halving cycle bring better returns than others, with a test of whether the differences could be chance, in words, as a chart and as a table
 - **Volatility**: Whether the volatility of the last month and the move of the last 2 days are normal, against the coin's history and a GARCH model, and a forecast of the next 7 days with the value at risk, in words and as a chart
 - **Drawdowns**: How far the coin is below its all-time high, and how deep its earlier falls went and how long they took to recover, in words, as a chart and as a table
 - **Light and Dark Mode**: Switch with the toggle in the navigation bar
@@ -144,6 +145,11 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 
 ### Returns Calendar Tab
 - Monthly returns by year for the coin selected in the Timeseries tab
+
+### Seasonality Tab
+- For the coin selected in the Timeseries tab, the returns of complete days, weeks, months or years, grouped by day of the week, ISO week of the year, month or year of Bitcoin's 4-year halving cycle
+- Two cards name the best and the worst group, by their mean return with its median and how often it rose, and say whether the differences could be chance, with a Kruskal-Wallis test
+- A chart of the mean and median return of each group and of the share of its returns that were gains, and a table of the groups with their best and worst return
 
 ### Volatility Tab
 - For the coin selected in the Timeseries tab, two cards say in words whether the volatility of the last 30 days and the move of the last 2 days are normal: against the year before, against the coin's whole history, and against a GARCH(1,1) model with Student-t errors fitted to the 4 years before, and whether their volume is unusual for the coin

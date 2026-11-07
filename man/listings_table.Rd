@@ -21,5 +21,7 @@ zero keep the table's own background, so the table suits the light and the
 dark mode.
 }
 \examples{
+\dontshow{if (nzchar(Sys.getenv("COINMARKETCAP_APIKEY"))) withAutoprint(\{ # examplesIf}
 listings_table(get_listings()$data)
+\dontshow{\}) # examplesIf}
 }

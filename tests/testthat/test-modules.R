@@ -118,7 +118,7 @@ test_that("the returns calendar needs at least two months of history", {
 
 test_that("the about tab explains every tab and every column of the top 100 table", {
   page <- htmltools::renderTags(mod_about_ui("about"))$html
-  for (tab in c("Timeseries", "Compare", "Top 100", "Treemap", "Returns calendar", "Volatility", "Drawdowns")) {
+  for (tab in c("Timeseries", "Compare", "Top 100", "Treemap", "Returns calendar", "Seasonality", "Volatility", "Drawdowns")) {
     expect_match(page, paste0(">", tab, "</h3>"), fixed = TRUE, label = tab)
   }
   for (column in setdiff(names(listings_table(listings)$x$data), " ")) {
@@ -169,5 +169,26 @@ test_that("the drawdowns module explains, charts and lists the falls of the sele
   one_day <- reactive(history[history$name_symbol == "Alpha (A)", ][1, ])
   testServer(mod_drawdowns_server, args = list(history = one_day, dark_mode = light), {
     expect_error(output$plot, "Not enough history")
+  })
+})
+
+test_that("the seasonality module explains, charts and lists the returns of the selected coin", {
+  long <- garch_history(800)
+  testServer(mod_seasonality_server, args = list(history = reactive(long), dark_mode = light), {
+    expect_match(output$summary$html, "Best month")
+    expect_match(output$summary$html, "Kruskal-Wallis")
+    expect_no_error(output$plot)
+    expect_no_error(output$table)
+    csv <- utils::read.csv(output$csv)
+    expect_equal(names(csv), c("month", "returns", "mean_pct", "median_pct", "up_pct", "best_pct", "worst_pct"))
+    expect_equal(csv$month, month.abb)
+    session$setInputs(period = "day")
+    expect_match(output$summary$html, "Best day")
+    expect_equal(utils::read.csv(output$csv)$day_of_the_week, weekday_names)
+  })
+  short <- reactive(history[history$name_symbol == "Alpha (A)", ])
+  testServer(mod_seasonality_server, args = list(history = short, dark_mode = light), {
+    session$setInputs(period = "year")
+    expect_error(output$plot, "Not enough history: the returns need at least two complete years in a row")
   })
 })

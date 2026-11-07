@@ -1,6 +1,6 @@
 Crypto Time Series Analyzer shows the prices of cryptocurrencies from <a href="https://coinmarketcap.com" target="_blank" rel="noopener">CoinMarketCap</a>, in US dollars. This page explains what each tab shows and how its numbers are calculated. The CSV button of each tab downloads the data behind it, unrounded. The app is for exploring market data; it is not investment advice.
 
-**On this page:** [Timeseries](#about-timeseries) · [Compare](#about-compare) · [Linear and log scales](#about-scales) · [Top 100](#about-top100) · [Treemap](#about-treemap) · [Returns calendar](#about-calendar) · [Volatility](#about-volatility) · [Drawdowns](#about-drawdowns) · [Data and updates](#about-data)
+**On this page:** [Timeseries](#about-timeseries) · [Compare](#about-compare) · [Linear and log scales](#about-scales) · [Top 100](#about-top100) · [Treemap](#about-treemap) · [Returns calendar](#about-calendar) · [Seasonality](#about-seasonality) · [Volatility](#about-volatility) · [Drawdowns](#about-drawdowns) · [Data and updates](#about-data)
 
 <h3 id="about-timeseries">Timeseries</h3>
 
@@ -114,7 +114,36 @@ return(year) = ((1 + r₁ / 100) × (1 + r₂ / 100) × … × (1 + r₁₂ / 10
 
 so +50% in one month and −50% in the next leave −25%, not 0.
 
-The colors are red for losses and green for gains, symmetric around 0, and reach their deepest at the 95th percentile of the coin's monthly returns in absolute value. They are scaled to the coin's own swings, so the same shade means a bigger move for a volatile coin than for a calm one. Reading down a column compares the same month across years; with a dozen years at most, a pattern there can easily be chance.
+The colors are red for losses and green for gains, symmetric around 0, and reach their deepest at the 95th percentile of the coin's monthly returns in absolute value. They are scaled to the coin's own swings, so the same shade means a bigger move for a volatile coin than for a calm one. Reading down a column compares the same month across years; with a dozen years at most, a pattern there can easily be chance, which the Seasonality tab tests.
+
+<h3 id="about-seasonality">Seasonality</h3>
+
+Do some days, weeks, months or years bring better returns than others? The tab answers for the coin picked in the Timeseries tab, for the returns picked above the cards:
+
+| Returns of | Grouped by |
+|---|---|
+| days | the day of the week, a UTC day from 00:00 to 23:59:59 |
+| weeks | the week of the year, Monday to Sunday, numbered as in ISO 8601: week 1 holds the first Thursday of the year, so the first days of January can belong to week 52 or 53 of the year before, and only some years have a week 53 |
+| months | the month |
+| years | the year of the 4-year cycle of Bitcoin's halvings |
+
+Each return covers a whole period, from the last close of the period before to the last close of the period:
+
+```
+return(period) = (last close of the period / last close of the period before − 1) × 100
+```
+
+so a Monday's return is the move from Sunday's close to Monday's, and the monthly returns are those of the Returns calendar. Only complete periods count: the coin's first period, which has none before it, the current one, which has not ended, and the periods next to days missing from the data are left out.
+
+**The halving cycle.** About every four years the reward for mining a Bitcoin block halves, which slows the supply of new coins: in 2012, 2016, 2020 and 2024, all years divisible by 4. Many traders see a 4-year cycle in the market around them. The tab puts each year in it: *Halving year* (2016, 2020, 2024), *Halving + 1* (2017, 2021, 2025), *Halving + 2* (2014, 2018, 2022) and *Halving + 3* (2015, 2019, 2023). The halvings are Bitcoin's, but as the rest of the market tends to follow Bitcoin, the cycle is applied to every coin. With Bitcoin's prices starting in 2013, each year of the cycle has only a handful of returns, too few for firm conclusions.
+
+**Best and worst.** The first card names the groups with the highest and lowest mean return, with their median and how often they rose. The mean is the average return, and one huge month can carry it, as Bitcoin's +454% of November 2013 does for its Novembers; the median, the middle return, is the typical one. When the two disagree, the median is the safer guide. Groups with fewer than half the returns of the others, such as week 53, are left out of the best and the worst, as a group of one or two returns ranks by luck. The last point gives the same numbers for all the returns together, to compare each group with.
+
+**Chance.** Any history has a best and a worst group, so the second card asks whether the differences are larger than chance would give. The Kruskal-Wallis test compares the ranks of the returns of the groups rather than their values, so a few extreme returns do not decide it. Its p-value is the probability of differences at least as large as these in a history in which the group made no difference: below 0.05 they are unlikely to be chance alone, above it they could well be. A p-value says nothing about the size of a difference, nor whether it will last. The test takes the returns as independent, which crypto returns are only roughly, as calm and wild stretches come in runs, and the more groups there are, the more one of them stands out by luck: with 52 weeks to choose from, the best week of a coin's history usually looks remarkable.
+
+**The chart.** At the top, the mean return of each group as a bar, green for gains and red for losses, with the median as a diamond. At the bottom, the share of the group's returns that were gains, with a dashed line at 50%. Hover over a bar for all the numbers of its group.
+
+**The table** lists the groups in their natural order: the returns counted, the mean and the median, the share up, and the best and the worst return. The mean and the median are shaded red below 0 and green above it, and the share up red below 50% and green above it, more strongly the further they are from the middle. The CSV button downloads it, unrounded.
 
 <h3 id="about-volatility">Volatility</h3>
 
