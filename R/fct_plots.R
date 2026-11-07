@@ -26,9 +26,15 @@ average_colors <- c("#3b82f6", "#a855f7", "#14b8a6", "#eab308")
 #' @title Candlestick chart of a coin's prices
 #' @description Plots the daily open, high, low and close prices, with a line
 #' through the close, its moving averages, date range buttons and a range
-#' slider. Underneath, smaller charts show the trading volume and the 
+#' slider. Underneath, smaller charts show the trading volume and the
 #' drawdown: how far the price is below its all-time high so far. A click on
 #' a legend entry hides or shows that line.
+#'
+#' The vertical axes follow the days in view: zoomed in, each runs from the
+#' lowest to the highest value of those days, so a week's candles fill the
+#' chart instead of lying flat on an axis that reaches up to the all-time
+#' high. The Linear and Log buttons switch the axis of the prices; on the log
+#' axis equal distances are equal percentages, which suits the whole history.
 #' @param history Price history of one coin from [get_history()]. The
 #'   averages and the drawdown use the whole history, so pass all of it and
 #'   zoom with the range buttons.
@@ -123,7 +129,24 @@ plot_timeseries <- function(history, mode = "light", averages = c(50, 200), show
     heights <- c(0.65, 0.15, 0.2)
   }
   plotly::subplot(panels, heights = heights, nrows = length(panels), shareX = TRUE, titleY = TRUE) %>%
-    plot_theme(mode)
+    plotly::layout(updatemenus = list(list(
+      type = "buttons",
+      direction = "right",
+      # at the right of the row of the range buttons
+      x = 1,
+      xanchor = "right",
+      y = 1,
+      yanchor = "bottom",
+      # light in both modes, as plotly draws the active button light, as on the Compare chart
+      bgcolor = "#eeeeee",
+      font = list(color = "#212529"),
+      buttons = list(
+        list(label = "Linear", method = "relayout", args = list("yaxis.type", "linear")),
+        list(label = "Log", method = "relayout", args = list("yaxis.type", "log"))
+      )
+    ))) %>%
+    plot_theme(mode) %>%
+    htmlwidgets::onRender(paste(readLines(app_sys("js/fit_y_axes.js"), warn = FALSE), collapse = "\n"))
 }
 ##########################################################################################
 # 

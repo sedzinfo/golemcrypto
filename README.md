@@ -122,6 +122,7 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 - Built-in date range selector with preset options
 - Volume chart synchronized with the main price chart
 - 50- and 200-day moving averages; click a legend entry to hide or show a line
+- The vertical axes follow the days in view, so a week's candles fill the chart; a Linear/Log switch shows the whole history in proportion
 - Drawdown chart: how far the price is below its all-time high
 
 ### Top 100 Tab

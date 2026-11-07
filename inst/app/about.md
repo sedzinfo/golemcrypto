@@ -32,7 +32,9 @@ It is 0% on a day that closes at a new high, and −50% at half of it. The high 
 rise needed = (100 / (100 + from high) − 1) × 100
 ```
 
-**Zoom** with the buttons above the chart (7 days to all) or the slider under it; the averages and the drawdown always use the whole history. Click a legend entry to hide or show its line.
+**Zoom** with the buttons above the chart (7 days to all) or the slider under it; the averages and the drawdown always use the whole history. The buttons count back from the right edge of the chart as it is, so after dragging the slider, *7 days* shows the week before the new edge, and *all* brings back the whole history. Each vertical axis follows the days in view, from their lowest to their highest value, so the candles of a week fill the chart and their lows and highs can be compared; the volume and the drawdown keep 0 in view. Click a legend entry to hide or show its line.
+
+**Linear and Log** switch the axis of the prices (see [Linear and log scales](#about-scales)). Over the whole history the log axis is the fairer view: on the linear one Bitcoin's first four years, all below $1,200, lie flat next to today's tens of thousands, while on the log axis a 10% move is equally tall in any year.
 
 <h3 id="about-compare">Compare</h3>
 

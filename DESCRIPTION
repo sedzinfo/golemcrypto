@@ -21,6 +21,7 @@ Imports:
     crypto2,
     curl,
     DT,
+    htmlwidgets,
     jsonlite,
     plotly,
     shiny,

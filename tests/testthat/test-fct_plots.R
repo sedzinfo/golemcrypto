@@ -96,3 +96,14 @@ test_that("the seasonality chart and table have a bar and a row per group, in th
   expect_equal(names(table), c("Week of the year", "Returns", "Mean", "Median", "Up", "Best", "Worst"))
   expect_equal(table[[1]], seq_len(nrow(analysis$groups)))
 })
+
+test_that("the timeseries chart switches between a linear and a log axis and fits its axes to the days in view", {
+  alpha <- history[history$name_symbol == "Alpha (A)", ]
+  chart <- plot_timeseries(alpha)
+  buttons <- plotly::plotly_build(chart)$x$layout$updatemenus[[1]]$buttons
+  expect_equal(vapply(buttons, function(button) button$label, ""), c("Linear", "Log"))
+  expect_equal(buttons[[2]]$args, list("yaxis.type", "log"))
+  hook <- paste(unlist(chart$jsHooks$render), collapse = "\n")
+  expect_match(hook, "plotly_relayout", fixed = TRUE)
+  expect_match(hook, "candlestick", fixed = TRUE)
+})

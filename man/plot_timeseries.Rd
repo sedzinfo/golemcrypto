@@ -33,6 +33,12 @@ through the close, its moving averages, date range buttons and a range
 slider. Underneath, smaller charts show the trading volume and the
 drawdown: how far the price is below its all-time high so far. A click on
 a legend entry hides or shows that line.
+
+The vertical axes follow the days in view: zoomed in, each runs from the
+lowest to the highest value of those days, so a week's candles fill the
+chart instead of lying flat on an axis that reaches up to the all-time
+high. The Linear and Log buttons switch the axis of the prices; on the log
+axis equal distances are equal percentages, which suits the whole history.
 }
 \examples{
 btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
