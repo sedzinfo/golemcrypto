@@ -155,6 +155,8 @@ r(t) = log(close(t) / close(t−1))
 
 which add up over days; the percentages shown are converted back, (e^r − 1) × 100. A coin needs more than a year of history for the tab.
 
+**The windows.** The first card looks at the last 30 days and the second at the move of the last 2 days, unless other days are picked above the cards: *Volatility over* 7, 14, 30, 60 or 90 days, and *Recent move* over 1, 2, 3 or 7 days. The text below uses the defaults. Each window is compared with every past window of the same length, so the verdicts stay fair at any length, but a short window is noisier: the volatility of 7 days has about twice the random error of that of 30 days, so its level jumps around more, while 90 days are steadier and slower to react.
+
 **The last 30 days.** The volatility is the standard deviation of the 30 daily returns, annualized with the 365 days of a crypto year:
 
 ```
@@ -166,7 +168,7 @@ The card compares it with the year before the 30 days, and with every 30-day per
 **The last 2 days.** Three measures of how rare the move of the last two days is:
 
 1. **History**: the share of all 2-day moves in the coin's history that were as large in the same direction, as times a year.
-2. **Against the year before**: the move in standard deviations of the year before it, z = (r₁ + r₂) / (sd × √2), and how often 2-day moves reached as many standard deviations of their own year.
+2. **Against the year before**: the move in standard deviations of the year before it, z = (r₁ + r₂) / (sd × √2), and how often 2-day moves reached as many standard deviations of their own year. Over n days, the sum of the n returns is divided by sd × √n.
 3. **GARCH**: a model of how volatility clusters, the most used in finance. Each day's variance is expected from the day before:
 
 ```
@@ -175,7 +177,7 @@ The card compares it with the year before the 30 days, and with every 30-day per
 
 so a large move raises the volatility the model expects for the next days, which then fades at the rate β. The daily moves e / σ follow a Student-t distribution, whose fat tails allow more extreme days than the normal distribution. The model is fitted by maximum likelihood to the 4 years before the two days, so it judges them against the volatility it expected without having seen them. The probability of a move at least as large, p, gives *about 1 in 1/p days*. The verdict follows it: *normal* for about once a month or more often (under 30 days), *unusual* for less than monthly but more than once a year (under 365), *rare* for once in 1 to 10 years, and *very rare* beyond. The card also judges the most extreme of the two days alone, as a large move can hide in a 2-day total when the other day went the opposite way. A coin with less than 500 days before the two days has no model, and the verdict comes from the second measure.
 
-**Volume.** The last point of the card compares each day's volume, the US dollars traded, with the median volume of the 30 days before it:
+**Volume.** The last point of the card compares each day's volume, the US dollars traded, with the median volume of the 30 days before it, whatever window is picked:
 
 ```
 volume ratio(t) = volume(t) / median(volume(t−30), …, volume(t−1))

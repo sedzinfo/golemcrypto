@@ -346,7 +346,7 @@ volume_verdict <- function(one_in_days) {
 #' @description Is the coin's recent volatility normal? The analysis looks at
 #' the daily log returns, `log(close(t) / close(t-1))`, in two ways.
 #'
-#' **The last month** (`month_days` days): its volatility, the standard
+#' **The last month** (`month_days` days, 30 by default): its volatility, the standard
 #' deviation of the daily returns times `sqrt(365)`, against the year before
 #' it and against every past period of the same length; an F test and the
 #' Fligner-Killeen test, which is robust to a few extreme days, of whether
@@ -359,7 +359,7 @@ volume_verdict <- function(one_in_days) {
 #' before; a GARCH(1,1) model with Student-t errors (see [garch_fit()]),
 #' fitted to the `garch_years` years before them, which judges each day
 #' against the volatility the model expected for it given the days before;
-#' and each day's volume against the `month_days` days before it (see
+#' and each day's volume against the `volume_days` days before it (see
 #' [volume_ratio()]), judged by how often the coin's volume was as far from
 #' usual.
 #'
@@ -372,15 +372,19 @@ volume_verdict <- function(one_in_days) {
 #' year's daily returns are given without the model too.
 #' @param history Price history of one coin from [get_history()], sorted by
 #'   date. The comparisons use the whole history, so pass all of it.
-#' @param month_days Days in the month.
-#' @param recent_days Days in the recent move.
+#' @param month_days Days of the volatility window, the "month": 30, or
+#'   for example 7 for the last week or 90 for the last quarter.
+#' @param recent_days Days in the recent move, such as 1 for the last day
+#'   alone.
 #' @param garch_years Years of history to fit the GARCH model to.
 #' @param forecast_days Days to forecast.
 #' @param level Probability of the forecast ranges, and of the value at risk:
 #'   0.95 is the 95% range and the worst 5% of days.
-#' @return `NULL` when the history is shorter than a year and a month, or
-#'   the price did not move at all in the year before the month or the last
-#'   days, otherwise a list with
+#' @param volume_days Days before each day whose median volume the day's
+#'   volume is compared with.
+#' @return `NULL` when the history is not longer than a year and the longer
+#'   of `month_days` and `recent_days`, or the price did not move at all in
+#'   the year before the month or the last days, otherwise a list with
 #'   * `coin`, `first_date` and `last_date`;
 #'   * `month`: a list of the month's measures, see the code;
 #'   * `recent`: a list of the measures of the last days, with a `days` data
@@ -402,12 +406,13 @@ volume_verdict <- function(one_in_days) {
 #'     `days` (365) days, in percent;
 #'   * `series`: a data frame with a row per day and the columns `date`,
 #'     `close`, `volume`, `return_pct`, `volume_ratio` (see
-#'     [volume_ratio()]), `volatility_month` (annualized, in percent),
+#'     [volume_ratio()]), `volatility_month` (of the `month_days` days up
+#'     to the day, annualized, in percent),
 #'     `garch_sigma` (the daily standard deviation the model expected, in
 #'     percent), `garch_z` (the day's move in those standard deviations) and
 #'     `garch_var` (the model's value at risk for the day, in percent);
 #'   * `settings`: `month_days`, `recent_days`, `garch_years`,
-#'     `forecast_days` and `level`.
+#'     `forecast_days`, `level` and `volume_days`.
 #' @export
 #' @examples
 #' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
@@ -416,8 +421,10 @@ volume_verdict <- function(one_in_days) {
 #' analysis$recent$days
 #' analysis$forecast$days
 #' volatility_text(analysis)
+#' # the volatility of the last week, and the move of the last day
+#' volatility_text(volatility_analysis(btc, month_days = 7, recent_days = 1))$month$headline
 volatility_analysis <- function(history, month_days = 30, recent_days = 2, garch_years = 4,
-                                forecast_days = 7, level = 0.95) {
+                                forecast_days = 7, level = 0.95, volume_days = 30) {
   check_one_coin(history)
   history <- history[is.finite(history$close) & history$close > 0, ]
   r <- diff(log(history$close))
@@ -497,7 +504,7 @@ volatility_analysis <- function(history, month_days = 30, recent_days = 2, garch
     close = history$close,
     volume = if (is.null(history$volume)) NA_real_ else history$volume,
     return_pct = c(NA, pct(r)),
-    volume_ratio = if (is.null(history$volume)) NA_real_ else volume_ratio(history$volume, month_days),
+    volume_ratio = if (is.null(history$volume)) NA_real_ else volume_ratio(history$volume, volume_days),
     volatility_month = c(NA, 100 * volatility_month),
     garch_sigma = NA_real_,
     garch_z = NA_real_,
@@ -565,7 +572,7 @@ volatility_analysis <- function(history, month_days = 30, recent_days = 2, garch
     series = series,
     settings = list(
       month_days = month_days, recent_days = recent_days, garch_years = garch_years,
-      forecast_days = forecast_days, level = level
+      forecast_days = forecast_days, level = level, volume_days = volume_days
     )
   )
 }
@@ -614,6 +621,10 @@ ordinal <- function(x) {
 }
 #' @noRd
 with_article <- function(x) paste(ifelse(grepl("^[aeiou]", x), "an", "a"), x)
+#' @noRd
+and_list <- function(x) {
+  if (length(x) <= 2) paste(x, collapse = " and ") else paste0(paste(utils::head(x, -1), collapse = ", "), " and ", utils::tail(x, 1))
+}
 #' @noRd
 short_date <- function(date) paste(as.integer(format(date, "%d")), month.abb[as.integer(format(date, "%m"))])
 #' @noRd
@@ -674,27 +685,29 @@ volatility_text <- function(analysis) {
   m <- analysis$month
   since <- format(analysis$first_date, "%Y")
   days <- analysis$settings$month_days
+  # the window is a month by default, and a period of the days picked otherwise
+  stretch <- if (days == 30) "month" else "period"
   significant <- function(p) isTRUE(p < 0.05)
   p_text <- function(p) if (is.na(p)) "n/a" else format(signif(p, 2), scientific = FALSE)
   comparison <- if (significant(m$p_f) && significant(m$p_fligner)) {
-    sprintf("Its variance is %s times that of the year before, significant in both tests: the whole month was rougher.", fmt(m$variance_ratio))
+    sprintf("Its variance is %s times that of the year before, significant in both tests: the whole %s was rougher.", fmt(m$variance_ratio), stretch)
   } else if (significant(m$p_f)) {
     sprintf(
-      "Its variance is %s times that of the year before (F test p = %s), but the robust Fligner test finds no difference (p = %s): a few very large days, not a rougher month overall.",
-      fmt(m$variance_ratio), p_text(m$p_f), p_text(m$p_fligner)
+      "Its variance is %s times that of the year before (F test p = %s), but the robust Fligner test finds no difference (p = %s): a few very large days, not a rougher %s overall.",
+      fmt(m$variance_ratio), p_text(m$p_f), p_text(m$p_fligner), stretch
     )
   } else {
     sprintf("No significant difference from the year before (variance ratio %s, p = %s and %s).", fmt(m$variance_ratio, 2), p_text(m$p_f), p_text(m$p_fligner))
   }
   big_word <- if (m$biggest_per_year < 1) "rare" else if (m$biggest_per_year < 3) "unusual" else "common"
   return_word <- if (m$return_percentile < 5 || m$return_percentile > 95) {
-    "one of the most extreme months"
+    paste0("one of the most extreme ", stretch, "s")
   } else if (m$return_percentile < 15) {
-    "a weak month"
+    paste("a weak", stretch)
   } else if (m$return_percentile > 85) {
-    "a strong month"
+    paste("a strong", stretch)
   } else {
-    "an ordinary month"
+    paste("an ordinary", stretch)
   }
   month <- list(
     headline = sprintf("Volatility of the last %d days: %s", days, m$level),
@@ -722,8 +735,11 @@ volatility_text <- function(analysis) {
   # without the model, the rarity comes from the moves in standard deviations of their year before
   one_in <- if (is.na(r$one_in_days)) year_days / r$z_per_year else r$one_in_days
   points <- c(
-    sprintf("Day by day: %s.", day_moves),
-    sprintf("Since %s, %d-day moves this large came %s (the %s percentile).", since, k, how_often(r$per_year), ordinal(r$percentile)),
+    if (k > 1) sprintf("Day by day: %s.", day_moves),
+    sprintf(
+      "Since %s, %s moves this large came %s (the %s percentile).",
+      since, if (k == 1) "daily" else paste0(k, "-day"), how_often(r$per_year), ordinal(r$percentile)
+    ),
     sprintf(
       "Against the volatility of the year before, the move is %s standard deviations, which came %s.",
       signed(r$z), how_often(r$z_per_year)
@@ -733,8 +749,9 @@ volatility_text <- function(analysis) {
     z <- r$days$garch_z
     opposite <- if (length(z) > 1 && length(unique(sign(z))) > 1) " The days went opposite ways, so they partly cancel out." else ""
     points <- c(points, sprintf(
-      "A GARCH model fitted to the %d years before saw %s standard deviations (%s together), given the volatility it expected: about 1 in %s days.%s",
-      analysis$settings$garch_years, paste(signed(z), collapse = " and "), signed(r$garch_z), fmt(r$one_in_days, 0), opposite
+      "A GARCH model fitted to the %d years before saw %s standard deviations%s, given the volatility it expected: about 1 in %s days.%s",
+      analysis$settings$garch_years, and_list(signed(z)), if (k > 1) sprintf(" (%s together)", signed(r$garch_z)) else "",
+      fmt(r$one_in_days, 0), opposite
     ))
     if (length(z) > 1) {
       worst <- which.max(abs(z))
@@ -749,16 +766,31 @@ volatility_text <- function(analysis) {
   v <- r$days
   if (all(is.finite(v$volume_ratio))) {
     d <- v[which.max(v$volume_one_in_days), ]
-    points <- c(points, sprintf(
-      "Volume: %s, %s times the median of the %d days before; %s is %s for the coin, as volume that far %s its month came %s.",
-      paste(short_date(v$date), vapply(v$volume, money_text, character(1)), collapse = " and "),
-      paste(fmt(v$volume_ratio), collapse = " and "), analysis$settings$month_days, short_date(d$date),
-      volume_verdict(d$volume_one_in_days), if (d$volume_ratio >= 1) "above" else "below",
-      how_often(year_days / d$volume_one_in_days)
-    ))
+    verdict <- sprintf(
+      "%s for the coin, as volume that far %s its month came %s.",
+      volume_verdict(d$volume_one_in_days), if (d$volume_ratio >= 1) "above" else "below", how_often(year_days / d$volume_one_in_days)
+    )
+    # a week of volumes and ratios is too long a list: their range and the most unusual day
+    points <- c(points, if (k <= 3) {
+      sprintf(
+        "Volume: %s, %s times the median of the %d days before; %s is %s",
+        and_list(paste(short_date(v$date), vapply(v$volume, money_text, character(1)))),
+        and_list(fmt(v$volume_ratio)), analysis$settings$volume_days, short_date(d$date), verdict
+      )
+    } else {
+      sprintf(
+        "Volume: %s to %s times the median of the %d days before each day; the most unusual, %s (%s, %s times), is %s",
+        fmt(min(v$volume_ratio)), fmt(max(v$volume_ratio)), analysis$settings$volume_days, short_date(d$date),
+        money_text(d$volume), fmt(d$volume_ratio), verdict
+      )
+    })
   }
   recent <- list(
-    headline = sprintf("Last %d days: %s%% together, %s", k, signed(r$return_pct), with_article(move_verdict(one_in, up))),
+    headline = if (k == 1) {
+      sprintf("Last day, %s: %s%%, %s", short_date(r$days$date), signed(r$return_pct), with_article(move_verdict(one_in, up)))
+    } else {
+      sprintf("Last %d days: %s%% together, %s", k, signed(r$return_pct), with_article(move_verdict(one_in, up)))
+    },
     points = points
   )
 

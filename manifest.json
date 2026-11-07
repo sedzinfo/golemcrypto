@@ -3115,7 +3115,7 @@
       "checksum": "84c028f37f01d028c7e5c2a83dcfb355"
     },
     "inst/app/about.md": {
-      "checksum": "8e7cd91c491902e94a854e078ab00ce2"
+      "checksum": "e84d22a7eb938916e628684f63dd3f5d"
     },
     "inst/app/www/analytics.js": {
       "checksum": "1918493ff537401c08c4ecd06ce1b03a"
@@ -3160,7 +3160,7 @@
       "checksum": "483d7a199ccf5ed518e39f7fbb1501e5"
     },
     "R/fct_volatility.R": {
-      "checksum": "0abea6fa9a335116d11288049ba5cd0f"
+      "checksum": "5a84f594ff603bc1be3b3c033c6c3d0c"
     },
     "R/mod_about.R": {
       "checksum": "90ba0113af72556885f49ca57ba5b865"
@@ -3187,7 +3187,7 @@
       "checksum": "4ddc4f2e2a00a00fec01c88d3e546064"
     },
     "R/mod_volatility.R": {
-      "checksum": "8559ddb6ab23bcfc75b19bca731dfd6e"
+      "checksum": "c1da5f4d90143caccfbe2bd687f09a49"
     },
     "R/run_app.R": {
       "checksum": "deaaaddcc16c29f7261d803dc3332291"

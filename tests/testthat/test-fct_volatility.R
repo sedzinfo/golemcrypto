@@ -194,3 +194,32 @@ test_that("without volume the last days are judged on the price alone", {
   expect_true(all(is.na(analysis$recent$days$volume_ratio)))
   expect_false(any(grepl("^Volume:", volatility_text(analysis)$recent$points)))
 })
+
+test_that("the window and the recent move can be other lengths, and the text follows them", {
+  history <- garch_history(last = c(-25, -20))
+  set.seed(4)
+  history$volume <- 1e6 * exp(rnorm(nrow(history), sd = 0.2))
+  week <- volatility_analysis(history, month_days = 7, recent_days = 7)
+  expect_equal(week$settings[c("month_days", "recent_days", "volume_days")], list(month_days = 7, recent_days = 7, volume_days = 30))
+  expect_equal(nrow(week$recent$days), 7)
+  expect_equal(week$month$from, week$last_date - 6)
+  # the volatility of each 7 days up to the day, and the volume still against the 30 days before
+  expect_equal(utils::tail(week$series$volatility_month, 1), week$month$volatility)
+  expect_equal(week$series$volume_ratio, volatility_analysis(history)$series$volume_ratio)
+  text <- volatility_text(week)
+  expect_match(text$month$headline, "^Volatility of the last 7 days: ")
+  expect_no_match(paste(text$month$points, collapse = " "), "month")
+  expect_match(text$recent$headline, "^Last 7 days: ")
+  expect_match(text$recent$points, "Since 2022, 7-day moves this large", fixed = TRUE, all = FALSE)
+  # seven days in a list, with commas and a last "and"
+  garch <- grep("GARCH", text$recent$points, value = TRUE)
+  expect_match(garch, "^A GARCH model fitted to the 4 years before saw ([^ ]+, ){5}[^ ]+ and [^ ]+ standard deviations \\(")
+  # a week of volumes is summed up by its range and the most unusual day
+  volume <- grep("^Volume:", text$recent$points, value = TRUE)
+  expect_match(volume, "^Volume: [0-9.]+ to [0-9.]+ times the median of the 30 days before each day; the most unusual, ")
+  # the last day alone
+  day <- volatility_text(volatility_analysis(history, recent_days = 1))$recent
+  expect_match(day$headline, "^Last day, [0-9]+ [A-Z][a-z]{2}: −18[.][0-9]%, an? ")
+  expect_false(any(grepl("Day by day|together|single day", day$points)))
+  expect_match(day$points, "daily moves this large", fixed = TRUE, all = FALSE)
+})

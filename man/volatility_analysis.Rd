@@ -10,16 +10,19 @@ volatility_analysis(
   recent_days = 2,
   garch_years = 4,
   forecast_days = 7,
-  level = 0.95
+  level = 0.95,
+  volume_days = 30
 )
 }
 \arguments{
 \item{history}{Price history of one coin from \code{\link[=get_history]{get_history()}}, sorted by
 date. The comparisons use the whole history, so pass all of it.}
 
-\item{month_days}{Days in the month.}
+\item{month_days}{Days of the volatility window, the "month": 30, or
+for example 7 for the last week or 90 for the last quarter.}
 
-\item{recent_days}{Days in the recent move.}
+\item{recent_days}{Days in the recent move, such as 1 for the last day
+alone.}
 
 \item{garch_years}{Years of history to fit the GARCH model to.}
 
@@ -27,11 +30,14 @@ date. The comparisons use the whole history, so pass all of it.}
 
 \item{level}{Probability of the forecast ranges, and of the value at risk:
 0.95 is the 95\% range and the worst 5\% of days.}
+
+\item{volume_days}{Days before each day whose median volume the day's
+volume is compared with.}
 }
 \value{
-\code{NULL} when the history is shorter than a year and a month, or
-the price did not move at all in the year before the month or the last
-days, otherwise a list with
+\code{NULL} when the history is not longer than a year and the longer
+of \code{month_days} and \code{recent_days}, or the price did not move at all in
+the year before the month or the last days, otherwise a list with
 \itemize{
 \item \code{coin}, \code{first_date} and \code{last_date};
 \item \code{month}: a list of the month's measures, see the code;
@@ -54,19 +60,20 @@ Kupiec test;
 \code{days} (365) days, in percent;
 \item \code{series}: a data frame with a row per day and the columns \code{date},
 \code{close}, \code{volume}, \code{return_pct}, \code{volume_ratio} (see
-\code{\link[=volume_ratio]{volume_ratio()}}), \code{volatility_month} (annualized, in percent),
+\code{\link[=volume_ratio]{volume_ratio()}}), \code{volatility_month} (of the \code{month_days} days up
+to the day, annualized, in percent),
 \code{garch_sigma} (the daily standard deviation the model expected, in
 percent), \code{garch_z} (the day's move in those standard deviations) and
 \code{garch_var} (the model's value at risk for the day, in percent);
 \item \code{settings}: \code{month_days}, \code{recent_days}, \code{garch_years},
-\code{forecast_days} and \code{level}.
+\code{forecast_days}, \code{level} and \code{volume_days}.
 }
 }
 \description{
 Is the coin's recent volatility normal? The analysis looks at
 the daily log returns, \code{log(close(t) / close(t-1))}, in two ways.
 
-\strong{The last month} (\code{month_days} days): its volatility, the standard
+\strong{The last month} (\code{month_days} days, 30 by default): its volatility, the standard
 deviation of the daily returns times \code{sqrt(365)}, against the year before
 it and against every past period of the same length; an F test and the
 Fligner-Killeen test, which is robust to a few extreme days, of whether
@@ -79,7 +86,7 @@ period of as many days; the same, in standard deviations of the year
 before; a GARCH(1,1) model with Student-t errors (see \code{\link[=garch_fit]{garch_fit()}}),
 fitted to the \code{garch_years} years before them, which judges each day
 against the volatility the model expected for it given the days before;
-and each day's volume against the \code{month_days} days before it (see
+and each day's volume against the \code{volume_days} days before it (see
 \code{\link[=volume_ratio]{volume_ratio()}}), judged by how often the coin's volume was as far from
 usual.
 
@@ -98,4 +105,6 @@ analysis$month$level
 analysis$recent$days
 analysis$forecast$days
 volatility_text(analysis)
+# the volatility of the last week, and the move of the last day
+volatility_text(volatility_analysis(btc, month_days = 7, recent_days = 1))$month$headline
 }

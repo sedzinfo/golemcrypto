@@ -2,10 +2,11 @@
 #
 ##########################################################################################
 #' @title Volatility module - UI
-#' @description For the coin selected in the Timeseries tab: three cards that
-#' say in words whether the volatility of the last month and the move of the
-#' last days are normal, and what the next days may bring, a button that
-#' downloads the daily data behind them as CSV, and the volatility chart.
+#' @description For the coin selected in the Timeseries tab: a choice of the
+#' days of the volatility window and of the recent move, a button that
+#' downloads the daily data behind them as CSV, three cards that say in words
+#' whether the volatility of the window and the recent move are normal, and
+#' what the next days may bring, and the volatility chart.
 #' @param id Character. Module namespace id.
 #' @return A `tagList` of Shiny UI elements.
 #' @keywords internal
@@ -20,8 +21,24 @@ mod_volatility_ui <- function(id) {
   div(
     class = "fill-page",
     div(
-      class = "d-flex align-items-center gap-3",
+      class = "d-flex flex-wrap align-items-center gap-3 inline-controls",
       helpText("Coin selected in the Timeseries tab"),
+      div(
+        class = "d-flex align-items-center gap-2",
+        tags$label(`for` = ns("month_days"), class = "form-label mb-0", "Volatility over"),
+        selectInput(ns("month_days"), NULL,
+          choices = c("7 days" = 7, "14 days" = 14, "30 days" = 30, "60 days" = 60, "90 days" = 90),
+          selected = 30, selectize = FALSE, width = "7rem"
+        )
+      ),
+      div(
+        class = "d-flex align-items-center gap-2",
+        tags$label(`for` = ns("recent_days"), class = "form-label mb-0", "Recent move"),
+        selectInput(ns("recent_days"), NULL,
+          choices = c("1 day" = 1, "2 days" = 2, "3 days" = 3, "7 days" = 7),
+          selected = 2, selectize = FALSE, width = "7rem"
+        )
+      ),
       downloadButton(ns("csv"), "CSV", class = "btn-sm")
     ),
     uiOutput(ns("summary")),
@@ -35,8 +52,9 @@ mod_volatility_ui <- function(id) {
 ##########################################################################################
 #' @title Volatility module - server
 #' @description Analyses the price history of the coin selected in the
-#' Timeseries tab with [volatility_analysis()], once per coin, and shows it in
-#' words and as a chart. The CSV file, named like
+#' Timeseries tab with [volatility_analysis()], with the days of the
+#' volatility window and of the recent move chosen above the cards, and
+#' shows it in words and as a chart. The CSV file, named like
 #' `bitcoin-btc-volatility-2026-11-06.csv`, holds [volatility_csv()]: a row
 #' per day, the days of the forecast included.
 #' @param id Character. Module namespace id, must match the id used in
@@ -58,9 +76,12 @@ mod_volatility_ui <- function(id) {
 #' }
 mod_volatility_server <- function(id, history, dark_mode) {
   moduleServer(id, function(input, output, session) {
+    month_days <- reactive(if (is.null(input$month_days)) 30 else as.numeric(input$month_days))
+    recent_days <- reactive(if (is.null(input$recent_days)) 2 else as.numeric(input$recent_days))
+
     analysis <- reactive({
       validate(need(history(), "Data not available for this coin"))
-      analysis <- volatility_analysis(history())
+      analysis <- volatility_analysis(history(), month_days = month_days(), recent_days = recent_days())
       validate(need(analysis, "Not enough history for the volatility analysis: it needs more than a year of prices that move"))
       analysis
     })

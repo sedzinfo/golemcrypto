@@ -146,6 +146,10 @@ test_that("the volatility module explains and charts the selected coin", {
       "forecast_sigma", "forecast_low", "forecast_low_50", "forecast_median", "forecast_high_50", "forecast_high"
     ))
     expect_equal(nrow(csv), 801 + 7)
+    session$setInputs(month_days = "7", recent_days = "1")
+    expect_match(output$summary$html, "Volatility of the last 7 days")
+    expect_match(output$summary$html, "Last day, ")
+    expect_no_error(output$plot)
   })
   short <- reactive(history[history$name_symbol == "Alpha (A)", ])
   testServer(mod_volatility_server, args = list(history = short, dark_mode = light), {
