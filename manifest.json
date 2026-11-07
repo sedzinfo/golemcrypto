@@ -3112,10 +3112,10 @@
       "checksum": "f12d88d8dd79d72455499a5d9f3e556c"
     },
     "DESCRIPTION": {
-      "checksum": "84c028f37f01d028c7e5c2a83dcfb355"
+      "checksum": "4f6d9532e810004e5b459a7c414a27eb"
     },
     "inst/app/about.md": {
-      "checksum": "e84d22a7eb938916e628684f63dd3f5d"
+      "checksum": "2676acfa7c31d57c5738a848b1904201"
     },
     "inst/app/www/analytics.js": {
       "checksum": "1918493ff537401c08c4ecd06ce1b03a"
@@ -3128,6 +3128,9 @@
     },
     "inst/app/www/styles.css": {
       "checksum": "241fc1f1159f7cada39c9ab8ce1b1427"
+    },
+    "inst/js/fit_y_axes.js": {
+      "checksum": "0fe3cf27a6db9ecafc2ae38cfe946ba1"
     },
     "NAMESPACE": {
       "checksum": "ec1acc3b0e66308a07645dc3a33f252b"
@@ -3154,7 +3157,7 @@
       "checksum": "2c8facc03544ac9425ddc4cc61ecccd8"
     },
     "R/fct_plots.R": {
-      "checksum": "c1c9a28be1def451ed6c9b9c68a13f20"
+      "checksum": "f73e58cd2ba4c718eb318c742924b54c"
     },
     "R/fct_seasonality.R": {
       "checksum": "483d7a199ccf5ed518e39f7fbb1501e5"
