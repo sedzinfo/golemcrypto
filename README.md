@@ -171,7 +171,10 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 ## Screenshots
 
 ### Cryptocurrency Price Chart
-![Candlestick and volume chart of Bitcoin since 2013](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png)
+![Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log scale](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png)
+
+### Zoomed In
+![The last 3 months of Bitcoin, with the vertical axes fitted to the days in view](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto9.png)
 
 ### Top 100 Market Overview
 ![Table of the top 100 coins with color-coded price changes](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto2.png)
@@ -185,8 +188,11 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 ### Returns Calendar (dark mode)
 ![Monthly returns of Bitcoin by year](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto5.png)
 
+### Seasonality (dark mode)
+![Bitcoin's monthly returns by month since 2013, with the best and the worst month and a Kruskal-Wallis test of whether the differences could be chance](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto8.png)
+
 ### Volatility
-![Whether the volatility of Bitcoin's last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with its 30-day volatility since 2013, its last 90 days in GARCH standard deviations and the forecast range of the price](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
+![Whether the volatility of Bitcoin's last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with pickers for the length of both windows, its 30-day volatility since 2013 and its last 90 days in GARCH standard deviations](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
 
 ### Drawdowns
 ![How far Bitcoin is below its all-time high and its 15 falls of 20% or more since 2013, on a log-scale price chart and a chart of the distance from the high](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto7.png)
