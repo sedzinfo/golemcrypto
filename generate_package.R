@@ -16,7 +16,7 @@ directory <- dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(directory)
 # usethis::create_package("golemcrypto")
 document()
-if ("golemcrypto" %in% loadedNamespaces()) unloadNamespace("golemcrypto") # an old version still loaded would make the reinstalled one look corrupt
+if ("golemcrypto" %in% loadedNamespaces()) unloadNamespace("golemcrypto")
 if ("golemcrypto" %in% rownames(installed.packages())) remove.packages("golemcrypto")
 install()
 library(golemcrypto)
