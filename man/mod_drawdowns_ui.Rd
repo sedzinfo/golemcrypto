@@ -13,11 +13,11 @@ mod_drawdowns_ui(id)
 A \code{tagList} of Shiny UI elements.
 }
 \description{
-For the coin selected in the Timeseries tab: two cards that
-say in words how far the coin is below its all-time high and how that
-compares with its earlier falls, a choice of the smallest fall to list, a
-button that downloads the falls as CSV, the drawdown chart and the table
-of the falls.
+For the coin selected in the Timeseries tab: a choice of the
+smallest fall to list, a button that downloads the falls as CSV, the
+drawdown chart, the table of the falls, and under it two cards that say in
+words how far the coin is below its all-time high and how that compares
+with its earlier falls.
 }
 \examples{
 \dontrun{

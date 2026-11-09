@@ -15,9 +15,9 @@ A \code{tagList} of Shiny UI elements.
 \description{
 For the coin selected in the Timeseries tab: a choice of the
 days of the volatility window and of the recent move, a button that
-downloads the daily data behind them as CSV, three cards that say in words
-whether the volatility of the window and the recent move are normal, and
-what the next days may bring, and the volatility chart.
+downloads the daily data behind them as CSV, the volatility chart, and
+under it three cards that say in words whether the volatility of the
+window and the recent move are normal, and what the next days may bring.
 }
 \examples{
 \dontrun{

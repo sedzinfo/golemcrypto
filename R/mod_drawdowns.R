@@ -2,11 +2,11 @@
 #
 ##########################################################################################
 #' @title Drawdowns module - UI
-#' @description For the coin selected in the Timeseries tab: two cards that
-#' say in words how far the coin is below its all-time high and how that
-#' compares with its earlier falls, a choice of the smallest fall to list, a
-#' button that downloads the falls as CSV, the drawdown chart and the table
-#' of the falls.
+#' @description For the coin selected in the Timeseries tab: a choice of the
+#' smallest fall to list, a button that downloads the falls as CSV, the
+#' drawdown chart, the table of the falls, and under it two cards that say in
+#' words how far the coin is below its all-time high and how that compares
+#' with its earlier falls.
 #' @param id Character. Module namespace id.
 #' @return A `tagList` of Shiny UI elements.
 #' @keywords internal
@@ -17,7 +17,7 @@
 mod_drawdowns_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    # the cards and the chart fill the window, as in the Volatility tab, and the table follows
+    # the chart fills the window, as in the Volatility tab, and the table and the cards follow
     div(
       class = "fill-page two-panels",
       div(
@@ -33,12 +33,12 @@ mod_drawdowns_ui <- function(id) {
         ),
         downloadButton(ns("csv"), "CSV", class = "btn-sm")
       ),
-      uiOutput(ns("summary")),
       shinycssloaders::withSpinner(
         plotly::plotlyOutput(ns("plot"), width = "100%", height = "100%")
       )
     ),
-    div(class = "mt-3 mb-4", DT::DTOutput(ns("table")))
+    div(class = "mt-3", DT::DTOutput(ns("table"))),
+    div(class = "mt-3 mb-4", uiOutput(ns("summary")))
   )
 }
 ##########################################################################################

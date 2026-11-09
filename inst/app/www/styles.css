@@ -46,10 +46,10 @@
 }
 
 /* the Volatility, Drawdowns and Seasonality tabs are a column as tall as the window below the navigation bar:
-   the controls and the cards take the height of their text, and the chart grows to fill the rest,
-   like the charts of the other tabs, but no less than its minimum below, where the page scrolls.
-   The chart may shrink once the cards appear (min-height: 0), and Shiny then redraws it.
-   The tables of the Drawdowns and Seasonality tabs follow below the column */
+   the controls take the height of their text, and the chart grows to fill the rest, like the charts
+   of the other tabs, but no less than its minimum below, where the page scrolls.
+   Below the column follow the cards of the Volatility tab, and the table and then the cards of the
+   Drawdowns and Seasonality tabs */
 .fill-page {
   display: flex;
   flex-direction: column;

@@ -4,9 +4,9 @@
 #' @title Volatility module - UI
 #' @description For the coin selected in the Timeseries tab: a choice of the
 #' days of the volatility window and of the recent move, a button that
-#' downloads the daily data behind them as CSV, three cards that say in words
-#' whether the volatility of the window and the recent move are normal, and
-#' what the next days may bring, and the volatility chart.
+#' downloads the daily data behind them as CSV, the volatility chart, and
+#' under it three cards that say in words whether the volatility of the
+#' window and the recent move are normal, and what the next days may bring.
 #' @param id Character. Module namespace id.
 #' @return A `tagList` of Shiny UI elements.
 #' @keywords internal
@@ -16,35 +16,37 @@
 #' }
 mod_volatility_ui <- function(id) {
   ns <- NS(id)
-  # a column that fills the window: the cards take the height of their text and the chart
-  # the rest, see styles.css
-  div(
-    class = "fill-page",
+  tagList(
+    # a column that fills the window: the controls take the height of their text and the chart
+    # the rest, see styles.css; the cards follow below it
     div(
-      class = "d-flex flex-wrap align-items-center gap-3 inline-controls",
-      helpText("Coin selected in the Timeseries tab"),
+      class = "fill-page",
       div(
-        class = "d-flex align-items-center gap-2",
-        tags$label(`for` = ns("month_days"), class = "form-label mb-0", "Volatility over"),
-        selectInput(ns("month_days"), NULL,
-          choices = c("7 days" = 7, "14 days" = 14, "30 days" = 30, "60 days" = 60, "90 days" = 90),
-          selected = 30, selectize = FALSE, width = "7rem"
-        )
+        class = "d-flex flex-wrap align-items-center gap-3 inline-controls",
+        helpText("Coin selected in the Timeseries tab"),
+        div(
+          class = "d-flex align-items-center gap-2",
+          tags$label(`for` = ns("month_days"), class = "form-label mb-0", "Volatility over"),
+          selectInput(ns("month_days"), NULL,
+            choices = c("7 days" = 7, "14 days" = 14, "30 days" = 30, "60 days" = 60, "90 days" = 90),
+            selected = 30, selectize = FALSE, width = "7rem"
+          )
+        ),
+        div(
+          class = "d-flex align-items-center gap-2",
+          tags$label(`for` = ns("recent_days"), class = "form-label mb-0", "Recent move"),
+          selectInput(ns("recent_days"), NULL,
+            choices = c("1 day" = 1, "2 days" = 2, "3 days" = 3, "7 days" = 7),
+            selected = 2, selectize = FALSE, width = "7rem"
+          )
+        ),
+        downloadButton(ns("csv"), "CSV", class = "btn-sm")
       ),
-      div(
-        class = "d-flex align-items-center gap-2",
-        tags$label(`for` = ns("recent_days"), class = "form-label mb-0", "Recent move"),
-        selectInput(ns("recent_days"), NULL,
-          choices = c("1 day" = 1, "2 days" = 2, "3 days" = 3, "7 days" = 7),
-          selected = 2, selectize = FALSE, width = "7rem"
-        )
-      ),
-      downloadButton(ns("csv"), "CSV", class = "btn-sm")
+      shinycssloaders::withSpinner(
+        plotly::plotlyOutput(ns("plot"), width = "100%", height = "100%")
+      )
     ),
-    uiOutput(ns("summary")),
-    shinycssloaders::withSpinner(
-      plotly::plotlyOutput(ns("plot"), width = "100%", height = "100%")
-    )
+    div(class = "mt-3 mb-4", uiOutput(ns("summary")))
   )
 }
 ##########################################################################################
@@ -53,7 +55,7 @@ mod_volatility_ui <- function(id) {
 #' @title Volatility module - server
 #' @description Analyses the price history of the coin selected in the
 #' Timeseries tab with [volatility_analysis()], with the days of the
-#' volatility window and of the recent move chosen above the cards, and
+#' volatility window and of the recent move chosen above the chart, and
 #' shows it in words and as a chart. The CSV file, named like
 #' `bitcoin-btc-volatility-2026-11-06.csv`, holds [volatility_csv()]: a row
 #' per day, the days of the forecast included.

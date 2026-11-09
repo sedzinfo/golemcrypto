@@ -187,7 +187,7 @@ minutes.
   history, and against a GARCH(1,1) model with Student-t errors fitted
   to the 4 years before, and whether their volume is unusual for the
   coin
-- Pickers above the cards measure the volatility over 7, 14, 30, 60 or
+- Pickers above the chart measure the volatility over 7, 14, 30, 60 or
   90 days, and the recent move over 1, 2, 3 or 7 days
 - A third card forecasts the next 7 days with the same model: the 95%
   range of the price, the value at risk and expected shortfall of the

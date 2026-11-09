@@ -5,9 +5,9 @@
 #' @description For the coin selected in the Timeseries tab: a choice of
 #' the returns to compare (days by day of the week, weeks by week of the
 #' year, months by month or years by year of the halving cycle), a button
-#' that downloads the numbers as CSV, two cards that name the best and the
-#' worst group and say whether the differences could be chance, the
-#' seasonality chart and the table of the groups.
+#' that downloads the numbers as CSV, the seasonality chart, the table of the
+#' groups, and under it two cards that name the best and the worst group and
+#' say whether the differences could be chance.
 #' @param id Character. Module namespace id.
 #' @return A `tagList` of Shiny UI elements.
 #' @keywords internal
@@ -18,7 +18,7 @@
 mod_seasonality_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    # the cards and the chart fill the window, as in the Drawdowns tab, and the table follows
+    # the chart fills the window, as in the Volatility tab, and the table and the cards follow
     div(
       class = "fill-page two-panels",
       div(
@@ -39,12 +39,12 @@ mod_seasonality_ui <- function(id) {
         ),
         downloadButton(ns("csv"), "CSV", class = "btn-sm")
       ),
-      uiOutput(ns("summary")),
       shinycssloaders::withSpinner(
         plotly::plotlyOutput(ns("plot"), width = "100%", height = "100%")
       )
     ),
-    div(class = "mt-3 mb-4", DT::DTOutput(ns("table")))
+    div(class = "mt-3", DT::DTOutput(ns("table"))),
+    div(class = "mt-3 mb-4", uiOutput(ns("summary")))
   )
 }
 ##########################################################################################

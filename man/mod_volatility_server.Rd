@@ -22,7 +22,7 @@ None. Called for its side effect of registering the module server.
 \description{
 Analyses the price history of the coin selected in the
 Timeseries tab with \code{\link[=volatility_analysis]{volatility_analysis()}}, with the days of the
-volatility window and of the recent move chosen above the cards, and
+volatility window and of the recent move chosen above the chart, and
 shows it in words and as a chart. The CSV file, named like
 \verb{bitcoin-btc-volatility-2026-11-06.csv}, holds \code{\link[=volatility_csv]{volatility_csv()}}: a row
 per day, the days of the forecast included.

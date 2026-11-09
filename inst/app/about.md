@@ -120,7 +120,7 @@ The colors are red for losses and green for gains, symmetric around 0, and reach
 
 <h3 id="about-seasonality">Seasonality</h3>
 
-Do some days, weeks, months or years bring better returns than others? The tab answers for the coin picked in the Timeseries tab, for the returns picked above the cards:
+Do some days, weeks, months or years bring better returns than others? The tab answers for the coin picked in the Timeseries tab, for the returns picked above the chart:
 
 | Returns of | Grouped by |
 |---|---|
@@ -149,7 +149,7 @@ so a Monday's return is the move from Sunday's close to Monday's, and the monthl
 
 <h3 id="about-volatility">Volatility</h3>
 
-Is the coin's recent volatility normal, and what may the next days bring? The tab answers for the coin picked in the Timeseries tab, in words in three cards and in a chart. Everything starts from the daily log returns,
+Is the coin's recent volatility normal, and what may the next days bring? The tab answers for the coin picked in the Timeseries tab, in a chart and, under it, in words in three cards. Everything starts from the daily log returns,
 
 ```
 r(t) = log(close(t) / close(t−1))
@@ -157,7 +157,7 @@ r(t) = log(close(t) / close(t−1))
 
 which add up over days; the percentages shown are converted back, (e^r − 1) × 100. A coin needs more than a year of history for the tab.
 
-**The windows.** The first card looks at the last 30 days and the second at the move of the last 2 days, unless other days are picked above the cards: *Volatility over* 7, 14, 30, 60 or 90 days, and *Recent move* over 1, 2, 3 or 7 days. The text below uses the defaults. Each window is compared with every past window of the same length, so the verdicts stay fair at any length, but a short window is noisier: the volatility of 7 days has about twice the random error of that of 30 days, so its level jumps around more, while 90 days are steadier and slower to react.
+**The windows.** The first card looks at the last 30 days and the second at the move of the last 2 days, unless other days are picked above the chart: *Volatility over* 7, 14, 30, 60 or 90 days, and *Recent move* over 1, 2, 3 or 7 days. The text below uses the defaults. Each window is compared with every past window of the same length, so the verdicts stay fair at any length, but a short window is noisier: the volatility of 7 days has about twice the random error of that of 30 days, so its level jumps around more, while 90 days are steadier and slower to react.
 
 **The last 30 days.** The volatility is the standard deviation of the 30 daily returns, annualized with the 365 days of a crypto year:
 
@@ -212,7 +212,7 @@ Losses are price falls in percent. The 95% range and the 95% VaR differ: the ran
 
 <h3 id="about-drawdowns">Drawdowns</h3>
 
-How far is the coin below its all-time high, and how long did its earlier falls take to recover? The tab answers for the coin picked in the Timeseries tab, in two cards, a chart and a table. It splits the history into **falls**: a fall starts on the last close at an all-time high, the *peak*, goes down to its lowest close, the *trough*, and ends on the first close back at or above the peak. The depth of a fall is
+How far is the coin below its all-time high, and how long did its earlier falls take to recover? The tab answers for the coin picked in the Timeseries tab, in a chart, a table and, under them, two cards. It splits the history into **falls**: a fall starts on the last close at an all-time high, the *peak*, goes down to its lowest close, the *trough*, and ends on the first close back at or above the peak. The depth of a fall is
 
 ```
 fall = (trough / peak − 1) × 100
@@ -222,7 +222,7 @@ and its days are calendar days: from the peak to the trough, from the trough bac
 
 **Now.** How far the last close is below the all-time high, and the rise it needs to get back there (the formula of the Timeseries tab). The lowest close since the high gives the depth of the current fall so far, which ranks it among all the falls of the history, and the card lists the earlier falls that went at least as deep: how many days they took to get back to their high, from the peak and from the trough. Every earlier fall did get back, as only the last fall can still be open: coins that never recovered from a fall are the coins whose current fall is open. The days of the earlier falls describe the past, not when the current one will end.
 
-**The history.** The falls of 10%, 20% (the default), 30% or 50% or more, as picked above the cards: how many there were, the deepest, the median fall with the median days to its trough and back to its high, the share of days that closed that far below the high, and the days that closed at a new all-time high.
+**The history.** The falls of 10%, 20% (the default), 30% or 50% or more, as picked above the chart: how many there were, the deepest, the median fall with the median days to its trough and back to its high, the share of days that closed that far below the high, and the days that closed at a new all-time high.
 
 **The chart.** At the top, the close on a log scale, on which equal distances are equal percentages, with the all-time high so far as a dotted line. At the bottom, how far each close is below that high, with a dashed line at the depth picked. Each fall of that depth or more is shaded from its peak to its recovery, the current one in amber, and its trough carries its rank; hover over a trough for its dates.
 
