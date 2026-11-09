@@ -2,6 +2,10 @@
 
 plot crypto exchange rate time series
 
+**[Open the live
+app](https://sedzinfo-golemcrypto.share.connect.posit.cloud/)** ·
+[Website](https://sedzinfo.github.io/golemcrypto/)
+
 An interactive R Shiny application for visualizing cryptocurrency
 exchange rates and market data with real-time updates and historical
 time series analysis.
@@ -31,6 +35,10 @@ time series analysis.
 - **Market Treemap**: The top 100 coins sized by market cap and colored
   by their 24h change
 - **Returns Calendar**: Monthly returns by year for any coin
+- **Seasonality**: Whether some days of the week, weeks of the year,
+  months or years of the halving cycle bring better returns than others,
+  with a test of whether the differences could be chance, in words, as a
+  chart and as a table
 - **Volatility**: Whether the volatility of the last month and the move
   of the last 2 days are normal, against the coin’s history and a GARCH
   model, and a forecast of the next 7 days with the value at risk, in
@@ -126,6 +134,8 @@ minutes.
 - Volume chart synchronized with the main price chart
 - 50- and 200-day moving averages; click a legend entry to hide or show
   a line
+- The vertical axes follow the days in view, so a week’s candles fill
+  the chart; a Linear/Log switch shows the whole history in proportion
 - Drawdown chart: how far the price is below its all-time high
 
 ### Top 100 Tab
@@ -157,6 +167,18 @@ minutes.
 
 - Monthly returns by year for the coin selected in the Timeseries tab
 
+### Seasonality Tab
+
+- For the coin selected in the Timeseries tab, the returns of complete
+  days, weeks, months or years, grouped by day of the week, ISO week of
+  the year, month or year of Bitcoin’s 4-year halving cycle
+- Two cards name the best and the worst group, by their mean return with
+  its median and how often it rose, and say whether the differences
+  could be chance, with a Kruskal-Wallis test
+- A chart of the mean and median return of each group and of the share
+  of its returns that were gains, and a table of the groups with their
+  best and worst return
+
 ### Volatility Tab
 
 - For the coin selected in the Timeseries tab, two cards say in words
@@ -165,6 +187,8 @@ minutes.
   history, and against a GARCH(1,1) model with Student-t errors fitted
   to the 4 years before, and whether their volume is unusual for the
   coin
+- Pickers above the cards measure the volatility over 7, 14, 30, 60 or
+  90 days, and the recent move over 1, 2, 3 or 7 days
 - A third card forecasts the next 7 days with the same model: the 95%
   range of the price, the value at risk and expected shortfall of the
   next day and of the last year, and a Kupiec test of how well the
@@ -199,10 +223,20 @@ minutes.
 
 ### Cryptocurrency Price Chart
 
-![Candlestick and volume chart of Bitcoin since
-2013](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png)
+![Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log
+scale](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png)
 
-Candlestick and volume chart of Bitcoin since 2013
+Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log
+scale
+
+### Zoomed In
+
+![The last 3 months of Bitcoin, with the vertical axes fitted to the
+days in
+view](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto9.png)
+
+The last 3 months of Bitcoin, with the vertical axes fitted to the days
+in view
 
 ### Top 100 Market Overview
 
@@ -233,18 +267,29 @@ year](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto5.png)
 
 Monthly returns of Bitcoin by year
 
+### Seasonality (dark mode)
+
+![Bitcoin’s monthly returns by month since 2013, with the best and the
+worst month and a Kruskal-Wallis test of whether the differences could
+be
+chance](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto8.png)
+
+Bitcoin’s monthly returns by month since 2013, with the best and the
+worst month and a Kruskal-Wallis test of whether the differences could
+be chance
+
 ### Volatility
 
 ![Whether the volatility of Bitcoin’s last 30 days and the move of its
 last 2 days are normal, and the forecast of its next 7 days with the
-value at risk, with its 30-day volatility since 2013, its last 90 days
-in GARCH standard deviations and the forecast range of the
-price](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
+value at risk, with pickers for the length of both windows, its 30-day
+volatility since 2013 and its last 90 days in GARCH standard
+deviations](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
 
 Whether the volatility of Bitcoin’s last 30 days and the move of its
 last 2 days are normal, and the forecast of its next 7 days with the
-value at risk, with its 30-day volatility since 2013, its last 90 days
-in GARCH standard deviations and the forecast range of the price
+value at risk, with pickers for the length of both windows, its 30-day
+volatility since 2013 and its last 90 days in GARCH standard deviations
 
 ### Drawdowns
 
@@ -383,6 +428,12 @@ Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/golemcryp
   : Volatility analysis of a coin
 - [`volatility_text()`](https://sedzinfo.github.io/golemcrypto/reference/volatility_text.md)
   : The volatility analysis in words
+- [`seasonal_returns()`](https://sedzinfo.github.io/golemcrypto/reference/seasonal_returns.md)
+  : The return of each complete period of a coin
+- [`seasonality_analysis()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_analysis.md)
+  : Seasonality analysis of a coin
+- [`seasonality_text()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_text.md)
+  : The seasonality analysis in words
 
 ## Charts and tables
 
@@ -396,10 +447,14 @@ Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/golemcryp
   : Volatility chart of a coin
 - [`plot_drawdowns()`](https://sedzinfo.github.io/golemcrypto/reference/plot_drawdowns.md)
   : Drawdown chart of a coin
+- [`plot_seasonality()`](https://sedzinfo.github.io/golemcrypto/reference/plot_seasonality.md)
+  : Seasonality chart of a coin
 - [`plot_treemap()`](https://sedzinfo.github.io/golemcrypto/reference/plot_treemap.md)
   : Treemap of the top 100 coins
 - [`listings_table()`](https://sedzinfo.github.io/golemcrypto/reference/listings_table.md)
   : Table of the market listings
 - [`drawdown_table()`](https://sedzinfo.github.io/golemcrypto/reference/drawdown_table.md)
   : Table of the falls of a coin
+- [`seasonality_table()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_table.md)
+  : Table of the seasonality of a coin
 

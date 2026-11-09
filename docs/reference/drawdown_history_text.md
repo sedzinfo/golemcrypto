@@ -30,6 +30,6 @@ golemcrypto:::drawdown_history_text(drawdown_analysis(btc))
 #> $points
 #> [1] "The deepest: −84.5%, from $1,151 on 4 Dec 2013 to $178.10 on 14 Jan 2015; the price was back at the high on 4 Jan 2017, 1,127 days after the peak."
 #> [2] "The median fall: −34.8%, with the trough 67 days after the peak; the falls that ended got back to the high a median of 86 days after it."          
-#> [3] "Of its 4,940 days, 75% closed 20% or more below the high so far, and 179 days set a new all-time high."                                            
+#> [3] "Of its 4,941 days, 75% closed 20% or more below the high so far, and 179 days set a new all-time high."                                            
 #> 
 ```

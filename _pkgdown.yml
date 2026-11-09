@@ -52,8 +52,13 @@ reference:
 navbar:
   structure:
     left: [intro, reference, articles, news]
-    right: [sedzinfo, github]
+    right: [app, sedzinfo, github]
   components:
+    app:
+      icon: fas fa-play
+      text: live app
+      href: https://sedzinfo-golemcrypto.share.connect.posit.cloud/
+      aria-label: Open the live app
     sedzinfo:
       icon: fas fa-house
       text: home

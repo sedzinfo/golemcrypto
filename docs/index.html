@@ -37,6 +37,7 @@
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
+<li class="nav-item"><a class="external-link nav-link" href="https://sedzinfo-golemcrypto.share.connect.posit.cloud/" aria-label="Open the live app"><span class="fa fas fa-play"></span> live app</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://sedzinfo.github.io/" aria-label="sedzinfo home page"><span class="fa fas fa-house"></span> home</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/sedzinfo/golemcrypto" aria-label="GitHub"><span class="fa fab fa-github"></span></a></li>
       </ul>
@@ -50,6 +51,7 @@
 <div class="page-header"><h1 id="crypto-time-series-analyzer">Crypto Time Series Analyzer<a class="anchor" aria-label="anchor" href="#crypto-time-series-analyzer"></a>
 </h1></div>
 <p>plot crypto exchange rate time series</p>
+<p><strong><a href="https://sedzinfo-golemcrypto.share.connect.posit.cloud/" class="external-link">Open the live app</a></strong> · <a href="https://sedzinfo.github.io/golemcrypto/">Website</a></p>
 <p>An interactive R Shiny application for visualizing cryptocurrency exchange rates and market data with real-time updates and historical time series analysis.</p>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
@@ -79,6 +81,8 @@
 <strong>Market Treemap</strong>: The top 100 coins sized by market cap and colored by their 24h change</li>
 <li>
 <strong>Returns Calendar</strong>: Monthly returns by year for any coin</li>
+<li>
+<strong>Seasonality</strong>: Whether some days of the week, weeks of the year, months or years of the halving cycle bring better returns than others, with a test of whether the differences could be chance, in words, as a chart and as a table</li>
 <li>
 <strong>Volatility</strong>: Whether the volatility of the last month and the move of the last 2 days are normal, against the coin’s history and a GARCH model, and a forecast of the next 7 days with the value at risk, in words and as a chart</li>
 <li>
@@ -199,6 +203,7 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 <li>Built-in date range selector with preset options</li>
 <li>Volume chart synchronized with the main price chart</li>
 <li>50- and 200-day moving averages; click a legend entry to hide or show a line</li>
+<li>The vertical axes follow the days in view, so a week’s candles fill the chart; a Linear/Log switch shows the whole history in proportion</li>
 <li>Drawdown chart: how far the price is below its all-time high</li>
 </ul>
 </div>
@@ -244,10 +249,20 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 </ul>
 </div>
 <div class="section level3">
+<h3 id="seasonality-tab">Seasonality Tab<a class="anchor" aria-label="anchor" href="#seasonality-tab"></a>
+</h3>
+<ul>
+<li>For the coin selected in the Timeseries tab, the returns of complete days, weeks, months or years, grouped by day of the week, ISO week of the year, month or year of Bitcoin’s 4-year halving cycle</li>
+<li>Two cards name the best and the worst group, by their mean return with its median and how often it rose, and say whether the differences could be chance, with a Kruskal-Wallis test</li>
+<li>A chart of the mean and median return of each group and of the share of its returns that were gains, and a table of the groups with their best and worst return</li>
+</ul>
+</div>
+<div class="section level3">
 <h3 id="volatility-tab">Volatility Tab<a class="anchor" aria-label="anchor" href="#volatility-tab"></a>
 </h3>
 <ul>
 <li>For the coin selected in the Timeseries tab, two cards say in words whether the volatility of the last 30 days and the move of the last 2 days are normal: against the year before, against the coin’s whole history, and against a GARCH(1,1) model with Student-t errors fitted to the 4 years before, and whether their volume is unusual for the coin</li>
+<li>Pickers above the cards measure the volatility over 7, 14, 30, 60 or 90 days, and the recent move over 1, 2, 3 or 7 days</li>
 <li>A third card forecasts the next 7 days with the same model: the 95% range of the price, the value at risk and expected shortfall of the next day and of the last year, and a Kupiec test of how well the model’s value at risk held</li>
 <li>A chart of the 30-day volatility over the whole history, of the last 90 days in the standard deviations the model expected, and of the forecast of the price</li>
 </ul>
@@ -278,7 +293,14 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 <h3 id="cryptocurrency-price-chart">Cryptocurrency Price Chart<a class="anchor" aria-label="anchor" href="#cryptocurrency-price-chart"></a>
 </h3>
 <div class="float">
-<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png" alt="Candlestick and volume chart of Bitcoin since 2013"><div class="figcaption">Candlestick and volume chart of Bitcoin since 2013</div>
+<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png" alt="Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log scale"><div class="figcaption">Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log scale</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="zoomed-in">Zoomed In<a class="anchor" aria-label="anchor" href="#zoomed-in"></a>
+</h3>
+<div class="float">
+<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto9.png" alt="The last 3 months of Bitcoin, with the vertical axes fitted to the days in view"><div class="figcaption">The last 3 months of Bitcoin, with the vertical axes fitted to the days in view</div>
 </div>
 </div>
 <div class="section level3">
@@ -310,10 +332,17 @@ installation instructions can be found here: <a href="https://posit.co/downloads
 </div>
 </div>
 <div class="section level3">
+<h3 id="seasonality-dark-mode">Seasonality (dark mode)<a class="anchor" aria-label="anchor" href="#seasonality-dark-mode"></a>
+</h3>
+<div class="float">
+<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto8.png" alt="Bitcoin’s monthly returns by month since 2013, with the best and the worst month and a Kruskal-Wallis test of whether the differences could be chance"><div class="figcaption">Bitcoin’s monthly returns by month since 2013, with the best and the worst month and a Kruskal-Wallis test of whether the differences could be chance</div>
+</div>
+</div>
+<div class="section level3">
 <h3 id="volatility">Volatility<a class="anchor" aria-label="anchor" href="#volatility"></a>
 </h3>
 <div class="float">
-<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png" alt="Whether the volatility of Bitcoin’s last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with its 30-day volatility since 2013, its last 90 days in GARCH standard deviations and the forecast range of the price"><div class="figcaption">Whether the volatility of Bitcoin’s last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with its 30-day volatility since 2013, its last 90 days in GARCH standard deviations and the forecast range of the price</div>
+<img src="https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png" alt="Whether the volatility of Bitcoin’s last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with pickers for the length of both windows, its 30-day volatility since 2013 and its last 90 days in GARCH standard deviations"><div class="figcaption">Whether the volatility of Bitcoin’s last 30 days and the move of its last 2 days are normal, and the forecast of its next 7 days with the value at risk, with pickers for the length of both windows, its 30-day volatility since 2013 and its last 90 days in GARCH standard deviations</div>
 </div>
 </div>
 <div class="section level3">

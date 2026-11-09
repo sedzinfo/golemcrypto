@@ -18,3 +18,11 @@ test_that("the keep-alive pings can be turned off", {
   expect_no_match(off$head, "keep_alive.js", fixed = TRUE)
   expect_no_match(off$html, "keep_alive", fixed = TRUE)
 })
+
+test_that("the head has the description and the address of the live app for link previews", {
+  head <- htmltools::renderTags(app_ui(coins, "Alpha (A)"))$head
+  expect_match(head, paste0("<meta name=\"description\" content=\"", app_meta$description, "\"/>"), fixed = TRUE)
+  expect_match(head, "<meta property=\"og:url\" content=\"https://sedzinfo-golemcrypto.share.connect.posit.cloud/\"/>", fixed = TRUE)
+  # search engines cut descriptions longer than about 160 characters
+  expect_lte(nchar(app_meta$description), 160)
+})

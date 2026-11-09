@@ -1,9 +1,10 @@
 # Volatility module - UI
 
-For the coin selected in the Timeseries tab: three cards that say in
-words whether the volatility of the last month and the move of the last
-days are normal, and what the next days may bring, a button that
-downloads the daily data behind them as CSV, and the volatility chart.
+For the coin selected in the Timeseries tab: a choice of the days of the
+volatility window and of the recent move, a button that downloads the
+daily data behind them as CSV, three cards that say in words whether the
+volatility of the window and the recent move are normal, and what the
+next days may bring, and the volatility chart.
 
 ## Usage
 

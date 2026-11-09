@@ -35,7 +35,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 License: GPL-3
-URL: https://sedzinfo.github.io/golemcrypto/, https://github.com/sedzinfo/golemcrypto
+URL: https://sedzinfo.github.io/golemcrypto/, https://github.com/sedzinfo/golemcrypto, https://sedzinfo-golemcrypto.share.connect.posit.cloud/
 BugReports: https://github.com/sedzinfo/golemcrypto/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

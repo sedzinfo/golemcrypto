@@ -46,12 +46,28 @@ app_ui <- function(coins, top_coins, analytics = FALSE, keep_alive = TRUE) {
   )
 }
 ##########################################################################################
-# 
+#
+##########################################################################################
+#' @title Address and description of the live app, for search engines and link previews
+#' @description Used by `add_external_resources()` for the description that
+#' search engines show and the Open Graph tags of the preview that other sites
+#' show for a link to the app. `title` is the window title that `app_ui()` gives
+#' the page, and `image` the first screenshot of the README.
+#' @noRd
+app_meta <- list(
+  url = "https://sedzinfo-golemcrypto.share.connect.posit.cloud/",
+  title = "Crypto Time Series Analyzer",
+  description = "Explore cryptocurrency prices since 2013 with interactive candlestick charts, the top 100 coins by market cap, returns, volatility and drawdowns.",
+  image = "https://raw.githubusercontent.com/sedzinfo/golemcrypto/main/screenshots/crypto1.png"
+)
+##########################################################################################
+#
 ##########################################################################################
 #' @title Add external resources to the application
 #' @description Serves `inst/app/www` under the `www/` path and adds the
-#' favicon and the stylesheet to the head of the page, and the keep-alive
-#' script and Google Analytics when asked for.
+#' description and Open Graph tags of `app_meta`, the favicon and the
+#' stylesheet to the head of the page, and the keep-alive script and Google
+#' Analytics when asked for.
 #' @param analytics `TRUE` to add Google Analytics and its cookie banner.
 #' @param keep_alive `TRUE` to add the script that pings the server every 15
 #'   seconds.
@@ -65,6 +81,14 @@ app_ui <- function(coins, top_coins, analytics = FALSE, keep_alive = TRUE) {
 add_external_resources <- function(analytics = FALSE, keep_alive = TRUE) {
   addResourcePath("www", app_sys("app/www"))
   tags$head(
+    tags$meta(name = "description", content = app_meta$description),
+    tags$meta(property = "og:type", content = "website"),
+    tags$meta(property = "og:site_name", content = "sedzinfo"),
+    tags$meta(property = "og:title", content = app_meta$title),
+    tags$meta(property = "og:description", content = app_meta$description),
+    tags$meta(property = "og:url", content = app_meta$url),
+    tags$meta(property = "og:image", content = app_meta$image),
+    tags$meta(name = "twitter:card", content = "summary_large_image"),
     tags$link(rel = "icon", type = "image/svg+xml", href = "www/favicon.svg"),
     tags$link(rel = "stylesheet", href = "www/styles.css"),
     if (keep_alive) tags$script(src = "www/keep_alive.js"),

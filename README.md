@@ -2,6 +2,8 @@
 
 plot crypto exchange rate time series
 
+**[Open the live app](https://sedzinfo-golemcrypto.share.connect.posit.cloud/)** · [Website](https://sedzinfo.github.io/golemcrypto/)
+
 An interactive R Shiny application for visualizing cryptocurrency exchange rates and market data with real-time updates and historical time series analysis.
 
 ## Features

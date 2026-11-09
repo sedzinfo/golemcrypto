@@ -34,6 +34,12 @@
   : Volatility analysis of a coin
 - [`volatility_text()`](https://sedzinfo.github.io/golemcrypto/reference/volatility_text.md)
   : The volatility analysis in words
+- [`seasonal_returns()`](https://sedzinfo.github.io/golemcrypto/reference/seasonal_returns.md)
+  : The return of each complete period of a coin
+- [`seasonality_analysis()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_analysis.md)
+  : Seasonality analysis of a coin
+- [`seasonality_text()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_text.md)
+  : The seasonality analysis in words
 
 ## Charts and tables
 
@@ -47,9 +53,13 @@
   : Volatility chart of a coin
 - [`plot_drawdowns()`](https://sedzinfo.github.io/golemcrypto/reference/plot_drawdowns.md)
   : Drawdown chart of a coin
+- [`plot_seasonality()`](https://sedzinfo.github.io/golemcrypto/reference/plot_seasonality.md)
+  : Seasonality chart of a coin
 - [`plot_treemap()`](https://sedzinfo.github.io/golemcrypto/reference/plot_treemap.md)
   : Treemap of the top 100 coins
 - [`listings_table()`](https://sedzinfo.github.io/golemcrypto/reference/listings_table.md)
   : Table of the market listings
 - [`drawdown_table()`](https://sedzinfo.github.io/golemcrypto/reference/drawdown_table.md)
   : Table of the falls of a coin
+- [`seasonality_table()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_table.md)
+  : Table of the seasonality of a coin

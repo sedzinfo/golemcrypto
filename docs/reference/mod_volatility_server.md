@@ -3,8 +3,9 @@
 Analyses the price history of the coin selected in the Timeseries tab
 with
 [`volatility_analysis()`](https://sedzinfo.github.io/golemcrypto/reference/volatility_analysis.md),
-once per coin, and shows it in words and as a chart. The CSV file, named
-like `bitcoin-btc-volatility-2026-11-06.csv`, holds
+with the days of the volatility window and of the recent move chosen
+above the cards, and shows it in words and as a chart. The CSV file,
+named like `bitcoin-btc-volatility-2026-11-06.csv`, holds
 [`volatility_csv()`](https://sedzinfo.github.io/golemcrypto/reference/volatility_csv.md):
 a row per day, the days of the forecast included.
 
