@@ -1,3 +1,10 @@
+/* the height of the theme's dropdowns and text boxes (a line of its 15px text, their padding and
+   border): every control that has to line up with them uses it, so a change of the theme is one
+   change here */
+:root {
+  --control-height: calc(1.5 * 0.9375rem + 0.75rem + calc(var(--bs-border-width) * 2));  /* 36.5px */
+}
+
 /* bootstrap-select copies .form-control onto the box around its button, and the padding and
    border of .form-control make the coin pickers taller than the inputs and buttons next to them */
 .bootstrap-select.form-control {
@@ -6,12 +13,11 @@
   background-color: transparent;
 }
 
-/* the coin pickers and the CSV buttons next to them get the height of a Bootstrap text box,
-   like the start date, so the controls above the charts line up (the small CSV buttons that
-   sit next to text are left as they are) */
+/* the coin pickers and every CSV button (the small ones keep their smaller text) get the height
+   of the dropdowns and text boxes, like the start date, so the controls line up on every tab */
 .bootstrap-select > .dropdown-toggle,
-.shiny-download-link:not(.btn-sm) {
-  height: calc(1.5em + 0.75rem + calc(var(--bs-border-width) * 2));
+.shiny-download-link {
+  height: var(--control-height);
   padding-top: 0;
   padding-bottom: 0;
   display: inline-flex;
@@ -24,9 +30,12 @@
   align-items: center;
 }
 
-/* as a flex box, the button drops the space between the download icon and "CSV" */
-.shiny-download-link:not(.btn-sm) {
+/* as a flex box, the button drops the space between the download icon and "CSV"; in a row with
+   a long line of text, a flex box would squeeze it until its icon sits above "CSV" */
+.shiny-download-link {
   gap: 0.375rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* the charts fill the window below their controls (see the modules), but no less than this,
