@@ -122,3 +122,31 @@
 div:has(> a[href="#cookie-settings"]) {
   margin-top: 2rem;
 }
+/* phones: wide content wraps or scrolls in its own box instead of making the whole page wider than
+   the screen (the browser would then zoom the page out), and the Timeseries and Compare charts end
+   at the bottom of the screen below their controls, which wrap onto more lines here. 100dvh is the
+   height without the address bar of the phone's browser, 100vh where the browser does not know it */
+@media (max-width: 767.98px) {
+  #drawdowns-table {
+    overflow-x: auto;
+  }
+
+  .about :not(pre) > code {
+    overflow-wrap: anywhere;
+  }
+
+  #timeseries-plot {
+    height: calc(100vh - 240px) !important;
+    height: calc(100dvh - 240px) !important;
+  }
+
+  #compare-plot {
+    height: calc(100vh - 335px) !important;
+    height: calc(100dvh - 335px) !important;
+  }
+
+  /* smaller chart titles, so they run less into the zoom buttons and the Linear / Log buttons */
+  .js-plotly-plot .gtitle {
+    font-size: 14px !important;
+  }
+}
