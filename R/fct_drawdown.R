@@ -16,7 +16,7 @@
 #'   all.
 #' @return A data frame with a row per fall, the deepest first:
 #'   `peak_date` and `peak_price`, `trough_date` and `trough_price`,
-#'   `depth_pct` (from −100 to 0), `days_to_trough` (from the peak),
+#'   `depth_pct` (from -100 to 0), `days_to_trough` (from the peak),
 #'   `recovery_date` (`NA` while the fall goes on), `days_to_recover` (from
 #'   the trough), `days_total` (from the peak to the recovery, or to the last
 #'   date while the fall goes on) and `ongoing`.

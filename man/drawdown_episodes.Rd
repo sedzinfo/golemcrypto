@@ -18,7 +18,7 @@ all.}
 \value{
 A data frame with a row per fall, the deepest first:
 \code{peak_date} and \code{peak_price}, \code{trough_date} and \code{trough_price},
-\code{depth_pct} (from −100 to 0), \code{days_to_trough} (from the peak),
+\code{depth_pct} (from -100 to 0), \code{days_to_trough} (from the peak),
 \code{recovery_date} (\code{NA} while the fall goes on), \code{days_to_recover} (from
 the trough), \code{days_total} (from the peak to the recovery, or to the last
 date while the fall goes on) and \code{ongoing}.
