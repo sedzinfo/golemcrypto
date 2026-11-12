@@ -2779,7 +2779,7 @@
       "checksum": "84de9cc0ea9c7d485fd4c993ededf1a1"
     },
     "inst/app/www/styles.css": {
-      "checksum": "cbab4293bd10ff52f5eceb4b20e7b4e7"
+      "checksum": "104f5e07dc3e1438d7666a6585202c1c"
     },
     "inst/js/fit_y_axes.js": {
       "checksum": "0fe3cf27a6db9ecafc2ae38cfe946ba1"
@@ -2809,7 +2809,7 @@
       "checksum": "578d31ebe60f9131080fc3a2f7a43659"
     },
     "R/fct_plots.R": {
-      "checksum": "adf29692144b8e1395654c98e7ef0d7b"
+      "checksum": "e900c4430ce734a11bbbf69da623ff83"
     },
     "R/fct_seasonality.R": {
       "checksum": "483d7a199ccf5ed518e39f7fbb1501e5"
