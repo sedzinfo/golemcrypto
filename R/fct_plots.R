@@ -137,9 +137,9 @@ plot_timeseries <- function(history, mode = "light", averages = c(50, 200), show
       xanchor = "right",
       y = 1,
       yanchor = "bottom",
-      # light in both modes, as plotly draws the active button light, as on the Compare chart
-      bgcolor = "#eeeeee",
-      font = list(color = "#212529"),
+      # the colors of the range buttons; the text takes the mode's from plot_theme(). plotly
+      # paints the active button its own light color, which styles.css darkens in dark mode
+      bgcolor = button_colors(mode)$bgcolor,
       buttons = list(
         list(label = "Linear", method = "relayout", args = list("yaxis.type", "linear")),
         list(label = "Log", method = "relayout", args = list("yaxis.type", "log"))
@@ -180,10 +180,10 @@ plot_compare <- function(prices, mode = "light") {
         direction = "right",
         x = 0,
         y = 1.08,
-        # plotly draws the active button light in both modes, so the other buttons get a
-        # light background too, instead of the page's, and all of them dark text
-        bgcolor = "#eeeeee",
-        font = list(color = "#212529"),
+        # the colors of the range buttons of Timeseries; the text takes the mode's from
+        # plot_theme(). plotly paints the active button its own light color, which styles.css
+        # darkens in dark mode
+        bgcolor = button_colors(mode)$bgcolor,
         buttons = list(
           list(label = "Linear", method = "relayout", args = list("yaxis.type", "linear")),
           list(label = "Log", method = "relayout", args = list("yaxis.type", "log"))

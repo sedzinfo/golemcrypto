@@ -131,6 +131,37 @@
 div:has(> a[href="#cookie-settings"]) {
   margin-top: 2rem;
 }
+
+/* plotly's toolbar (modebar): plotly colors it from the chart's background, which plot_theme()
+   makes transparent, so it was a half-black box with white icons in light and dark mode alike.
+   As over a white chart instead: the page's color at half opacity (white, or the dark mode's),
+   gray icons (light in dark mode), stronger on hover and for the active button */
+.js-plotly-plot .modebar-group {
+  background-color: rgba(var(--bs-body-bg-rgb), 0.5) !important;
+}
+.js-plotly-plot .modebar-btn .icon path {
+  fill: rgba(68, 68, 68, 0.3) !important;
+}
+.js-plotly-plot .modebar-btn:hover .icon path,
+.js-plotly-plot .modebar-btn.active .icon path {
+  fill: rgba(68, 68, 68, 0.7) !important;
+}
+[data-bs-theme="dark"] .js-plotly-plot .modebar-btn .icon path {
+  fill: rgba(255, 255, 255, 0.35) !important;
+}
+[data-bs-theme="dark"] .js-plotly-plot .modebar-btn:hover .icon path,
+[data-bs-theme="dark"] .js-plotly-plot .modebar-btn.active .icon path {
+  fill: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* the Linear / Log buttons (plotly's updatemenus) take the colors of the range buttons in R
+   (button_colors()), but plotly paints the active button, and the one under the mouse, its own
+   fixed light color (#F4FAFF), with no setting for it: in dark mode, the range buttons' active
+   color instead, under the light text */
+[data-bs-theme="dark"] .js-plotly-plot .updatemenu-item-rect[style*="fill: rgb(244, 250, 255)"] {
+  fill: #6c757d !important;
+}
+
 /* phones: wide content wraps or scrolls in its own box instead of making the whole page wider than
    the screen (the browser would then zoom the page out), and the Timeseries and Compare charts end
    at the bottom of the screen below their controls, which wrap onto more lines here. 100dvh is the
