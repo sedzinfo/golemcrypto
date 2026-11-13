@@ -101,7 +101,7 @@ add_external_resources <- function(analytics = FALSE, keep_alive = TRUE) {
           bootstrap.Collapse.getOrCreateInstance(menu).hide();
       });"
     )),
-    if (keep_alive) tags$script(src = "www/keep_alive.js"),
+    if (keep_alive) tags$script(src = paste0(shared_url, "keep_alive.js")),
     if (analytics) analytics_resources()
   )
 }

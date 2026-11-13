@@ -12,10 +12,9 @@ A \code{tagList} for the head of the page.
 \description{
 Loads the cookie banner shared with the sites of
 sedzinfo.github.io, which loads Google Analytics only after the visitor
-accepts, and the script that reports the tabs and the CSV downloads of the
-app as pages and downloads. The stylesheet of the app gives the banner the
-navy of those sites, because the orange primary color of the app is too
-pale behind its white text.
+accepts and gives the banner the navy of those sites, and the script shared
+by the apps that reports the tabs and the CSV downloads of the app as pages
+and downloads (\code{https://sedzinfo.github.io/shiny/analytics.js}).
 }
 \examples{
 golemcrypto:::analytics_resources()

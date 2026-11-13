@@ -50,6 +50,15 @@ library(devtools)
 install_github("sedzinfo/golemcrypto")
 ```
 
+Without devtools, install the source tarball of the [latest release](https://github.com/sedzinfo/golemcrypto/releases/tag/latest), which is rebuilt from `main` on every change, together with the PDF manual:
+
+```r
+install.packages(
+  "https://github.com/sedzinfo/golemcrypto/releases/download/latest/golemcrypto_0.1.0.tar.gz",
+  repos = NULL, type = "source"
+)
+```
+
 ## CoinMarketCap API key
 
 The market data comes from the CoinMarketCap API, which needs a free API key.

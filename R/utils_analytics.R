@@ -7,13 +7,24 @@ consent_script <- "https://sedzinfo.github.io/consent.js"
 ##########################################################################################
 #
 ##########################################################################################
+#' Address of the files shared by the Shiny apps, on sedzinfo.github.io
+#'
+#' The scripts and stylesheets that several apps use (the Google Analytics events, the
+#' keep-alive pings) are kept once,
+#' in the shiny folder of the sedzinfo.github.io repository, and each app loads
+#' them from there: a fix reaches every app without deploying it again.
+#'
+#' @noRd
+shared_url <- "https://sedzinfo.github.io/shiny/"
+##########################################################################################
+#
+##########################################################################################
 #' @title Google Analytics for the public deployment
 #' @description Loads the cookie banner shared with the sites of
 #' sedzinfo.github.io, which loads Google Analytics only after the visitor
-#' accepts, and the script that reports the tabs and the CSV downloads of the
-#' app as pages and downloads. The stylesheet of the app gives the banner the
-#' navy of those sites, because the orange primary color of the app is too
-#' pale behind its white text.
+#' accepts and gives the banner the navy of those sites, and the script shared
+#' by the apps that reports the tabs and the CSV downloads of the app as pages
+#' and downloads (\code{https://sedzinfo.github.io/shiny/analytics.js}).
 #' @return A `tagList` for the head of the page.
 #' @keywords internal
 #' @examples
@@ -21,7 +32,7 @@ consent_script <- "https://sedzinfo.github.io/consent.js"
 analytics_resources <- function() {
   tagList(
     tags$script(src = consent_script, defer = NA),
-    tags$script(src = "www/analytics.js")
+    tags$script(src = paste0(shared_url, "analytics.js"))
   )
 }
 ##########################################################################################
