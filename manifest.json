@@ -2769,17 +2769,11 @@
     "inst/app/about.md": {
       "checksum": "b6857472ec2052bab8198e358fdc9744"
     },
-    "inst/app/www/analytics.js": {
-      "checksum": "1918493ff537401c08c4ecd06ce1b03a"
-    },
     "inst/app/www/favicon.svg": {
       "checksum": "51c68e8b81eb22adcbc380bb8dee01ef"
     },
-    "inst/app/www/keep_alive.js": {
-      "checksum": "84de9cc0ea9c7d485fd4c993ededf1a1"
-    },
     "inst/app/www/styles.css": {
-      "checksum": "104f5e07dc3e1438d7666a6585202c1c"
+      "checksum": "ec6427e25cf7dda6a1ff811b9c104bd5"
     },
     "inst/js/fit_y_axes.js": {
       "checksum": "0fe3cf27a6db9ecafc2ae38cfe946ba1"
@@ -2797,7 +2791,7 @@
       "checksum": "853caf431f4c64aa720c716134fab8eb"
     },
     "R/app_ui.R": {
-      "checksum": "6b937de11ad4fdedb2d9a0a55a263f2b"
+      "checksum": "eb5b46c6526aee863ac7bd7461cb070e"
     },
     "R/fct_calc.R": {
       "checksum": "c9f494f79448562ffa43def5c7c0c5b1"
@@ -2806,7 +2800,7 @@
       "checksum": "b8d45fd2d026e13c529bd314e5907426"
     },
     "R/fct_drawdown.R": {
-      "checksum": "578d31ebe60f9131080fc3a2f7a43659"
+      "checksum": "547a0d1e73252358dbb7c49776c7db47"
     },
     "R/fct_plots.R": {
       "checksum": "e900c4430ce734a11bbbf69da623ff83"
@@ -2848,7 +2842,7 @@
       "checksum": "affd909dc05ec48fa5d6a21caa8040c4"
     },
     "R/utils_analytics.R": {
-      "checksum": "cc6e3f0f54b190a1d642ee064b80edf2"
+      "checksum": "a732c9d27a40b961535363c0e2fb6649"
     },
     "R/utils_download.R": {
       "checksum": "3a9802a0d4b974c57ea24bc0babb9b03"
