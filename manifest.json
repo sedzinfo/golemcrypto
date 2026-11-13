@@ -2773,7 +2773,7 @@
       "checksum": "51c68e8b81eb22adcbc380bb8dee01ef"
     },
     "inst/app/www/styles.css": {
-      "checksum": "ec6427e25cf7dda6a1ff811b9c104bd5"
+      "checksum": "cd8c7830da0fa9c2fd1e8f9657d97373"
     },
     "inst/js/fit_y_axes.js": {
       "checksum": "0fe3cf27a6db9ecafc2ae38cfe946ba1"
@@ -2791,7 +2791,7 @@
       "checksum": "853caf431f4c64aa720c716134fab8eb"
     },
     "R/app_ui.R": {
-      "checksum": "eb5b46c6526aee863ac7bd7461cb070e"
+      "checksum": "d6152b58c147a74ab7b5731b3534acd5"
     },
     "R/fct_calc.R": {
       "checksum": "c9f494f79448562ffa43def5c7c0c5b1"
@@ -2842,7 +2842,7 @@
       "checksum": "affd909dc05ec48fa5d6a21caa8040c4"
     },
     "R/utils_analytics.R": {
-      "checksum": "a732c9d27a40b961535363c0e2fb6649"
+      "checksum": "f90cb6ae747e0fc7747e55f4a3de465f"
     },
     "R/utils_download.R": {
       "checksum": "3a9802a0d4b974c57ea24bc0babb9b03"
