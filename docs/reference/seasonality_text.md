@@ -30,11 +30,11 @@ btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
 seasonality_text(seasonality_analysis(btc, "day"))
 #> $groups
 #> $groups$headline
-#> [1] "Best day: Monday, mean +0.55%; worst: Thursday, −0.03%"
+#> [1] "Best day: Monday, mean +0.55%; worst: Thursday, −0.04%"
 #> 
 #> $groups$points
-#> [1] "Monday: mean +0.55%, median +0.23%, up 380 of 706 times (54%)."           "Thursday: mean −0.03%, median −0.07%, up 346 of 706 times (49%)."        
-#> [3] "All 4,944 days together: mean +0.20%, median +0.10%, up 52% of the time."
+#> [1] "Monday: mean +0.55%, median +0.23%, up 380 of 707 times (54%)."           "Thursday: mean −0.04%, median −0.07%, up 346 of 707 times (49%)."        
+#> [3] "All 4,949 days together: mean +0.19%, median +0.10%, up 52% of the time."
 #> 
 #> 
 #> $chance
@@ -43,7 +43,7 @@ seasonality_text(seasonality_analysis(btc, "day"))
 #> 
 #> $chance$points
 #> [1] "A Kruskal-Wallis test asks whether the returns of the days of the week could all come from the same distribution: p = 0.22, so differences as large as these would turn up in about 22% of histories in which they did not matter."
-#> [2] "The returns run from 30 Apr 2013 to 11 Nov 2026: 4,944 days, 706 to 707 per group."                                                                                                                                                
+#> [2] "The returns run from 30 Apr 2013 to 16 Nov 2026: 4,949 days, 707 per group."                                                                                                                                                       
 #> [3] "With 7 days of the week to pick from, the best one looks good partly by luck, and a pattern of the past need not hold: the crypto market has changed a lot since 2013."                                                            
 #> 
 #> 

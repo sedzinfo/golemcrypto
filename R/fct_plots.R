@@ -774,10 +774,25 @@ listings_table <- function(listings) {
     change_color(seq(0, 1, length.out = sum(breaks >= 0) + 1), gain = TRUE)
   )
 
+  # volumes and market caps as $1.30T, $31.52B, $718.19M; sorting and search keep the full number
+  dollars <- DT::JS(
+    "function(data, type) {",
+    "  if (type !== 'display' || data === null) return data;",
+    "  var x = Number(data), units = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];",
+    "  for (var i = 0; i < units.length; i++) {",
+    "    if (Math.abs(x) >= units[i][0]) return '$' + (x / units[i][0]).toFixed(2) + units[i][1];",
+    "  }",
+    "  return '$' + x.toFixed(2);",
+    "}"
+  )
+  # DT counts the columns from 0, and the row names are column 0
+  big_columns <- match(c("volume_24h", "market_cap", "fully_diluted_market_cap"), names(listings))
+
   DT::datatable(listings, options = list(
     stateSave = TRUE,
     pageLength = 100,
-    lengthMenu = list(c(20, 50, 100, -1), c("20", "50", "100", "All"))
+    lengthMenu = list(c(20, 50, 100, -1), c("20", "50", "100", "All")),
+    columnDefs = list(list(targets = big_columns, render = dollars, className = "dt-right"))
   )) %>%
     DT::formatStyle(change_columns, backgroundColor = DT::styleInterval(breaks, colors)) %>%
     DT::formatCurrency("price", currency = "$", digits = 4) %>%
