@@ -1,0 +1,140 @@
+---
+title: "Volatility, drawdowns and seasonality"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Volatility, drawdowns and seasonality}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%", fig.width = 7, fig.height = 5)
+# The article downloads its prices from CoinMarketCap while it is built. The download is
+# made here first, out of sight, so the chunks below get it from the disk cache, and
+# without it the code is shown without its results instead of failing the build.
+online <- tryCatch(
+  !is.null(golemcrypto::get_history("Bitcoin (BTC)", as.Date("2013-04-29"))),
+  error = function(e) FALSE
+)
+knitr::opts_chunk$set(eval = online)
+```
+
+`r if (!online) "> The prices could not be downloaded when this page was built, so the code is shown without its results."`
+
+The Volatility, Drawdowns and Seasonality tabs of the [golemcrypto app](https://sedzinfo-golemcrypto.share.connect.posit.cloud/) work the same way in R. An `_analysis()` function does the calculations, and its result goes to three functions:
+
+- `_text()` sums it up in sentences, as the app does above its charts;
+- `plot_` draws its chart;
+- `_table()`, for drawdowns and seasonality, shows its numbers as a sortable table.
+
+All three analyses compare the present with a coin's past, so pass them the whole history. [Price charts in R](golemcrypto.html) shows how to find coins and download their prices.
+
+```{r history}
+library(golemcrypto)
+btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
+```
+
+## Volatility
+
+`volatility_analysis()` asks whether the volatility of the last 30 days, and the move of the last 2 days, are normal for the coin. It compares them with the coin's history and with a GARCH(1,1) model, and forecasts the next 7 days. It needs more than a year of history.
+
+```{r volatility}
+analysis <- volatility_analysis(btc)
+volatility_text(analysis)$month
+```
+
+`volatility_text()` has two more parts, `$recent` for the last 2 days and `$forecast` for the next 7. The numbers behind the sentences are in the analysis, such as the forecast ranges of the next closes:
+
+```{r forecast}
+analysis$forecast$days
+```
+
+`plot_volatility()` draws three panels:
+
+- the volatility of every 30-day period of the history, with its median and 95th percentile;
+- each of the last 90 days, as its move in the standard deviations the GARCH model expected;
+- the last 30 closes, followed by the forecast.
+
+```{r plot-volatility, fig.height = 7}
+plot_volatility(analysis)
+```
+
+The arguments of `volatility_analysis()` change the periods. For example, `month_days = 7` and `recent_days = 1` ask about the last week and the last day:
+
+```{r volatility-week}
+volatility_text(volatility_analysis(btc, month_days = 7, recent_days = 1))$recent$headline
+```
+
+`plot_volatility()` takes `days` for the days of the middle panel and `context_days` for the closes before the forecast.
+
+## Drawdowns
+
+`drawdown_analysis()` measures how far the coin is below its all-time high, and lists its earlier falls of 20% or more with how long they took to recover:
+
+```{r drawdowns}
+falls <- drawdown_analysis(btc)
+drawdown_text(falls)$now
+```
+
+The falls are in `falls$episodes`, the deepest first. A fall that has not got back to its high yet is marked `ongoing`:
+
+```{r episodes}
+head(falls$episodes[, c("peak_date", "trough_date", "depth_pct", "recovery_date", "days_total", "ongoing")])
+```
+
+`plot_drawdowns()` draws the close on a log scale with the all-time high so far, and under it the drawdown. The falls are shaded from their peak to their recovery, and their troughs are numbered by depth:
+
+```{r plot-drawdowns, fig.height = 6}
+plot_drawdowns(falls)
+```
+
+`drawdown_table()` shows the same falls as a sortable table:
+
+```{r drawdown-table}
+drawdown_table(falls)
+```
+
+To list smaller falls as well, lower `min_depth`, for example `drawdown_analysis(btc, min_depth = 10)`.
+
+## Seasonality
+
+`seasonality_analysis()` asks whether some periods bring better returns than others. The period is one of:
+
+- `"day"`, the days of the week;
+- `"week"`, the weeks of the year;
+- `"month"`, the months;
+- `"year"`, the years of the four-year halving cycle of Bitcoin.
+
+A Kruskal-Wallis test then asks whether the differences could be chance.
+
+```{r seasonality}
+months <- seasonality_analysis(btc, "month")
+seasonality_text(months)
+```
+
+`plot_seasonality()` shows the mean return of each group, with the median as a diamond, and under it the share of returns above 0. Hover over a bar for all the numbers of its group:
+
+```{r plot-seasonality}
+plot_seasonality(months)
+```
+
+`seasonality_table()` shows the numbers as a table:
+
+```{r seasonality-table}
+seasonality_table(months)
+```
+
+The other periods work the same way, for example the days of the week:
+
+```{r seasonality-day}
+plot_seasonality(seasonality_analysis(btc, "day"))
+```
+
+## Dark mode and saving
+
+Like the price charts, every `plot_` function takes `mode = "dark"` for a dark page. The charts are plotly objects, and the tables are DT tables, so `htmlwidgets::saveWidget()` saves any of them as a web page:
+
+```{r save, eval = FALSE}
+htmlwidgets::saveWidget(plot_drawdowns(falls), "drawdowns.html")
+htmlwidgets::saveWidget(drawdown_table(falls), "drawdowns_table.html")
+```

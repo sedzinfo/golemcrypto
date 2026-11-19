@@ -49,6 +49,15 @@ reference:
       - drawdown_table
       - seasonality_table
 
+# the vignettes, which r-universe shows too, in the order to read them
+articles:
+  - title: Charts in R
+    navbar: ~
+    contents:
+      - golemcrypto
+      - analyses
+      - market
+
 navbar:
   structure:
     left: [intro, reference, articles, news]

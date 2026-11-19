@@ -135,51 +135,51 @@ analysis <- volatility_analysis(btc)
 analysis$month$level
 #> [1] "normal"
 analysis$recent$days
-#>         date return_pct    garch_z one_in_days      volume volume_ratio volume_one_in_days
-#> 1 2026-11-15  1.8354108  0.5661438    4.903329 39757267458     1.557105           7.406003
-#> 2 2026-11-16 -0.6878818 -0.2364929    2.794501 31812410118     1.236067           3.611710
+#>         date  return_pct      garch_z one_in_days      volume volume_ratio volume_one_in_days
+#> 1 2026-11-17  0.05875191  0.005872495    2.014649 34516876177     1.269612           3.905079
+#> 2 2026-11-18 -2.93814808 -1.042695633   11.415478 30351320839     1.106065           2.542005
 analysis$forecast$days
 #>         date    sigma      low   low_50   median  high_50     high
-#> 1 2026-11-17 3.001540 61363.80 64008.26 64881.40 65766.46 68600.64
-#> 2 2026-11-18 3.018514 59930.42 63563.10 64900.32 66275.37 70336.44
-#> 3 2026-11-19 3.035260 58839.40 63228.16 64920.40 66654.50 71653.20
-#> 4 2026-11-20 3.051781 58019.77 62963.83 64961.77 67037.64 72815.69
-#> 5 2026-11-21 3.068082 57316.28 62694.38 65003.31 67363.68 73907.90
-#> 6 2026-11-22 3.084169 56596.35 62489.86 65016.97 67633.18 74796.99
-#> 7 2026-11-23 3.100044 55931.44 62318.30 65045.16 67892.14 75563.61
+#> 1 2026-11-19 2.924955 59674.95 62183.07 63013.23 63854.48 66538.26
+#> 2 2026-11-20 2.941630 58401.23 61774.04 63032.07 64341.63 68078.73
+#> 3 2026-11-21 2.958069 57375.96 61446.64 63051.09 64713.21 69442.10
+#> 4 2026-11-22 2.974278 56560.84 61198.75 63114.77 65070.85 70473.61
+#> 5 2026-11-23 2.990261 55823.03 60965.57 63142.59 65363.38 71400.16
+#> 6 2026-11-24 3.006024 55075.36 60748.83 63168.15 65637.13 72273.95
+#> 7 2026-11-25 3.021572 54529.33 60583.75 63201.90 65902.26 73072.94
 volatility_text(analysis)
 #> $month
 #> $month$headline
 #> [1] "Volatility of the last 30 days: normal"
 #> 
 #> $month$points
-#> [1] "44.3% a year, against 44.3% in the year before and a median of 55.7% for all 30-day periods since 2013: the 30th percentile."             
-#> [2] "No significant difference from the year before (variance ratio 1.00, p = 0.47 and 0.87)."                                                 
+#> [1] "44.7% a year, against 44.2% in the year before and a median of 55.7% for all 30-day periods since 2013: the 31st percentile."             
+#> [2] "No significant difference from the year before (variance ratio 1.02, p = 0.44 and 0.62)."                                                 
 #> [3] "The largest day, 14 Nov (−6.04%), was 2.7 standard deviations of the year before: common, as days that large come about 8.6 times a year."
-#> [4] "The return of the 30 days, −20.3%, is in the 9th percentile of all 30-day periods: a weak month."                                         
+#> [4] "The return of the 30 days, −23.0%, is in the 6th percentile of all 30-day periods: a weak month."                                         
 #> 
 #> 
 #> $recent
 #> $recent$headline
-#> [1] "Last 2 days: +1.1% together, a normal rise"
+#> [1] "Last 2 days: −2.9% together, a normal fall"
 #> 
 #> $recent$points
-#> [1] "Day by day: 15 Nov +1.84%, 16 Nov −0.69%."                                                                                                                                                                     
-#> [2] "Since 2013, 2-day moves this large came about 139 times a year (the 62nd percentile)."                                                                                                                         
-#> [3] "Against the volatility of the year before, the move is +0.3 standard deviations, which came about 113 times a year."                                                                                           
-#> [4] "A GARCH model fitted to the 4 years before saw +0.6 and −0.2 standard deviations (+0.2 together), given the volatility it expected: about 1 in 3 days. The days went opposite ways, so they partly cancel out."
-#> [5] "The most extreme single day, 15 Nov (+1.84%), was +0.6 standard deviations: a normal rise, about 1 in 5 days (about 74 times a year)."                                                                         
-#> [6] "Volume: 15 Nov $39.8bn and 16 Nov $31.8bn, 1.6 and 1.2 times the median of the 30 days before; 15 Nov is normal for the coin, as volume that far above its month came about 49 times a year."                  
+#> [1] "Day by day: 17 Nov +0.06%, 18 Nov −2.94%."                                                                                                                                                                    
+#> [2] "Since 2013, 2-day moves this large came about 68 times a year (the 19th percentile)."                                                                                                                         
+#> [3] "Against the volatility of the year before, the move is −0.9 standard deviations, which came about 42 times a year."                                                                                           
+#> [4] "A GARCH model fitted to the 4 years before saw 0.0 and −1.0 standard deviations (−0.7 together), given the volatility it expected: about 1 in 6 days. The days went opposite ways, so they partly cancel out."
+#> [5] "The most extreme single day, 18 Nov (−2.94%), was −1.0 standard deviations: a normal fall, about 1 in 11 days (about 32 times a year)."                                                                       
+#> [6] "Volume: 17 Nov $34.5bn and 18 Nov $30.4bn, 1.3 and 1.1 times the median of the 30 days before; 17 Nov is normal for the coin, as volume that far above its month came about 93 times a year."                 
 #> 
 #> 
 #> $forecast
 #> $forecast$headline
-#> [1] "Expected move on 17 Nov (95% range): −5.4% to +5.8%"
+#> [1] "Expected move on 19 Nov (95% range): −5.3% to +5.6%"
 #> 
 #> $forecast$points
-#> [1] "Over the next 7 days, to 23 Nov (95% range): −13.8% to +16.5%, a close between $55,931 and $75,564."                                               
-#> [2] "The model expects the volatility on 17 Nov to be 36% below its long-run level of the last 4 years: it should rise towards it, half-way in 87 days."
-#> [3] "Value at risk: on 1 day in 20, the loss on 17 Nov would exceed 4.0%, and average 6.4% on those days (the 95% VaR and expected shortfall)."         
+#> [1] "Over the next 7 days, to 25 Nov (95% range): −13.4% to +16.0%, a close between $54,529 and $73,073."                                               
+#> [2] "The model expects the volatility on 19 Nov to be 35% below its long-run level of the last 4 years: it should rise towards it, half-way in 81 days."
+#> [3] "Value at risk: on 1 day in 20, the loss on 19 Nov would exceed 3.9%, and average 6.3% on those days (the 95% VaR and expected shortfall)."         
 #> [4] "In the last year, the worst 5% of days lost at least 3.5%, and 5.2% on average."                                                                   
 #> [5] "Check: losses beyond the model's daily VaR came on 18 of the last 365 days (4.9%), in line with the 5% expected (Kupiec test p = 0.95)."           
 #> 

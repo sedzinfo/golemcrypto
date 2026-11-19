@@ -1,0 +1,73 @@
+---
+title: "The top 100 coins"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The top 100 coins}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%", fig.width = 7, fig.height = 6)
+# The listings need a CoinMarketCap API key. Where the article is built without one, or the
+# download fails, the code is shown without its results instead of failing the build.
+# The download is made here first, out of sight, so the chunks below reuse it.
+online <- nzchar(Sys.getenv("COINMARKETCAP_APIKEY")) &&
+  !is.null(tryCatch(golemcrypto::get_listings()$data, error = function(e) NULL))
+knitr::opts_chunk$set(eval = online)
+```
+
+`r if (!online) "> This page was built without a CoinMarketCap API key, so the code is shown without its results."`
+
+The Top 100 and Treemap tabs of the [golemcrypto app](https://sedzinfo-golemcrypto.share.connect.posit.cloud/) show the coins with the largest market cap. In R, `get_listings()` downloads them, `plot_treemap()` draws the treemap and `listings_table()` shows the table.
+
+## Set up an API key
+
+The listings come from the CoinMarketCap API, which needs a free API key. The price charts of [Price charts in R](golemcrypto.html) and [Volatility, drawdowns and seasonality](analyses.html) do not need one.
+
+1. Sign up at [coinmarketcap.com/api](https://coinmarketcap.com/api/) and copy your API key.
+2. Open your `.Renviron` file with `usethis::edit_r_environ()`.
+3. Add this line with your own key, save the file and restart R:
+
+```
+COINMARKETCAP_APIKEY=your-api-key
+```
+
+To use a key for the current R session only, set it with `Sys.setenv()`:
+
+```{r key, eval = FALSE}
+Sys.setenv(COINMARKETCAP_APIKEY = "your-api-key")
+```
+
+Keep the key out of your scripts and out of Git: anyone who has it can use your API credits.
+
+## Download the listings
+
+```{r listings}
+library(golemcrypto)
+listings <- get_listings()
+listings$time
+head(listings$data[, c("name_symbol", "USD_price", "USD_percent_change_24h", "USD_market_cap")])
+```
+
+`listings$data` has a row per coin, sorted by market cap, with the price, the volume, the price changes from 24 hours to 90 days, the market cap and the dominance. `listings$time` is when it was downloaded.
+
+Each download uses one credit of your key. `get_listings()` downloads the listings at most once every 10 minutes, and in between it returns the last download. When a download fails, `listings$problem` says why, for example when the key has used up its credits.
+
+## Treemap
+
+`plot_treemap()` draws a box per coin, sized by its market cap and colored from red to green by its price change over 24 hours:
+
+```{r treemap}
+plot_treemap(listings$data)
+```
+
+## Table
+
+`listings_table()` shows the listings as a sortable table. Losses are shaded red and gains green, more strongly the larger the change:
+
+```{r table}
+listings_table(listings$data)
+```
+
+Like the other charts, `plot_treemap()` takes `mode = "dark"` for a dark page, and `htmlwidgets::saveWidget()` saves the treemap or the table as a web page.

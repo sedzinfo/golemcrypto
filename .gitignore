@@ -12,3 +12,7 @@
 # on the "latest" release, so they are not committed
 /*.tar.gz
 /golemcrypto.pdf
+
+# built vignettes, left by devtools::build_vignettes()
+/doc/
+/Meta/
