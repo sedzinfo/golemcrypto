@@ -62,7 +62,9 @@ plot_volatility(analysis)
 The arguments of `volatility_analysis()` change the periods. For example, `month_days = 7` and `recent_days = 1` ask about the last week and the last day:
 
 ```{r volatility-week}
-volatility_text(volatility_analysis(btc, month_days = 7, recent_days = 1))$recent$headline
+week <- volatility_analysis(btc, month_days = 7, recent_days = 1)
+volatility_text(week)$month$headline
+volatility_text(week)$recent$headline
 ```
 
 `plot_volatility()` takes `days` for the days of the middle panel and `context_days` for the closes before the forecast.
@@ -79,7 +81,8 @@ drawdown_text(falls)$now
 The falls are in `falls$episodes`, the deepest first. A fall that has not got back to its high yet is marked `ongoing`:
 
 ```{r episodes}
-head(falls$episodes[, c("peak_date", "trough_date", "depth_pct", "recovery_date", "days_total", "ongoing")])
+columns <- c("peak_date", "trough_date", "depth_pct", "recovery_date", "days_total", "ongoing")
+head(falls$episodes[, columns])
 ```
 
 `plot_drawdowns()` draws the close on a log scale with the all-time high so far, and under it the drawdown. The falls are shaded from their peak to their recovery, and their troughs are numbered by depth:
@@ -109,8 +112,12 @@ A Kruskal-Wallis test then asks whether the differences could be chance.
 
 ```{r seasonality}
 months <- seasonality_analysis(btc, "month")
-seasonality_text(months)
+text <- seasonality_text(months)
+text$groups$headline
+text$chance$headline
 ```
+
+The `$points` of each part give the details, such as the p-value of the test and how many months it compared.
 
 `plot_seasonality()` shows the mean return of each group, with the median as a diamond, and under it the share of returns above 0. Hover over a bar for all the numbers of its group:
 

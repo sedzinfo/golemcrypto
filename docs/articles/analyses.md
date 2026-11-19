@@ -82,7 +82,10 @@ ask about the last week and the last day:
 
 ``` r
 
-volatility_text(volatility_analysis(btc, month_days = 7, recent_days = 1))$recent$headline
+week <- volatility_analysis(btc, month_days = 7, recent_days = 1)
+volatility_text(week)$month$headline
+#> [1] "Volatility of the last 7 days: normal"
+volatility_text(week)$recent$headline
 #> [1] "Last day, 18 Nov: −2.9%, a normal fall"
 ```
 
@@ -114,7 +117,8 @@ not got back to its high yet is marked `ongoing`:
 
 ``` r
 
-head(falls$episodes[, c("peak_date", "trough_date", "depth_pct", "recovery_date", "days_total", "ongoing")])
+columns <- c("peak_date", "trough_date", "depth_pct", "recovery_date", "days_total", "ongoing")
+head(falls$episodes[, columns])
 #>    peak_date trough_date depth_pct recovery_date days_total ongoing
 #> 1 2013-12-04  2015-01-14 -84.52852    2017-01-04       1127   FALSE
 #> 2 2017-12-16  2018-12-15 -83.39901    2020-11-30       1080   FALSE
@@ -161,25 +165,15 @@ A Kruskal-Wallis test then asks whether the differences could be chance.
 ``` r
 
 months <- seasonality_analysis(btc, "month")
-seasonality_text(months)
-#> $groups
-#> $groups$headline
+text <- seasonality_text(months)
+text$groups$headline
 #> [1] "Best month: November, mean +41.8%; worst: September, −2.5%"
-#> 
-#> $groups$points
-#> [1] "November: mean +41.8%, median +8.8%, up 8 of 13 times (62%)."           "September: mean −2.5%, median −2.4%, up 6 of 14 times (43%)."          
-#> [3] "All 162 months together: mean +7.7%, median +2.6%, up 54% of the time."
-#> 
-#> 
-#> $chance
-#> $chance$headline
+text$chance$headline
 #> [1] "The differences between the months could well be chance (p = 0.35)"
-#> 
-#> $chance$points
-#> [1] "A Kruskal-Wallis test asks whether the returns of the months could all come from the same distribution: p = 0.35, so differences as large as these would turn up in about 35% of histories in which they did not matter."
-#> [2] "The returns run from 1 May 2013 to 31 Oct 2026: 162 months, 13 to 14 per group."                                                                                                                                         
-#> [3] "With 12 months to pick from, the best one looks good partly by luck, and a pattern of the past need not hold: the crypto market has changed a lot since 2013."
 ```
+
+The `$points` of each part give the details, such as the p-value of the
+test and how many months it compared.
 
 [`plot_seasonality()`](https://sedzinfo.github.io/golemcrypto/reference/plot_seasonality.md)
 shows the mean return of each group, with the median as a diamond, and

@@ -18,7 +18,8 @@ the market treemap and table.
 
 ``` r
 
-install.packages("golemcrypto", repos = c("https://sedzinfo.r-universe.dev", "https://cloud.r-project.org"))
+install.packages("golemcrypto",
+  repos = c("https://sedzinfo.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
 ``` r

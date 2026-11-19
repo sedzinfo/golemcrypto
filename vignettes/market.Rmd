@@ -47,10 +47,11 @@ Keep the key out of your scripts and out of Git: anyone who has it can use your 
 library(golemcrypto)
 listings <- get_listings()
 listings$time
-head(listings$data[, c("name_symbol", "USD_price", "USD_percent_change_24h", "USD_market_cap")])
+head(listings$data$name_symbol, 10)
+names(listings$data)
 ```
 
-`listings$data` has a row per coin, sorted by market cap, with the price, the volume, the price changes from 24 hours to 90 days, the market cap and the dominance. `listings$time` is when it was downloaded.
+`listings$data` has a row per coin, sorted by market cap, with the price, the volume, the price changes from 24 hours to 90 days, the market cap and the dominance, all in US dollars. `listings$time` is when it was downloaded.
 
 Each download uses one credit of your key. `get_listings()` downloads the listings at most once every 10 minutes, and in between it returns the last download. When a download fails, `listings$problem` says why, for example when the key has used up its credits.
 
@@ -66,8 +67,11 @@ plot_treemap(listings$data)
 
 `listings_table()` shows the listings as a sortable table. Losses are shaded red and gains green, more strongly the larger the change:
 
+<!-- the table is wider than the page: it scrolls sideways instead of running over the side bar -->
+::: {style="overflow-x: auto;"}
 ```{r table}
 listings_table(listings$data)
 ```
+:::
 
 Like the other charts, `plot_treemap()` takes `mode = "dark"` for a dark page, and `htmlwidgets::saveWidget()` saves the treemap or the table as a web page.

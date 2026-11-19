@@ -2758,13 +2758,13 @@
   },
   "files": {
     ".Rbuildignore": {
-      "checksum": "87f9d4ec0ffedff42d9aa1a7e04c6c96"
+      "checksum": "03a5098b0a3336cb87f3ba9c583ace8d"
     },
     "app.R": {
       "checksum": "1a3dd156389b1d5b7901b7fb1a8fe0f8"
     },
     "DESCRIPTION": {
-      "checksum": "0c250acddce62a70b1740505bd31c52a"
+      "checksum": "d102988150bb15d2e4e356337be5de44"
     },
     "inst/app/about.md": {
       "checksum": "b6857472ec2052bab8198e358fdc9744"
@@ -2803,7 +2803,7 @@
       "checksum": "547a0d1e73252358dbb7c49776c7db47"
     },
     "R/fct_plots.R": {
-      "checksum": "e900c4430ce734a11bbbf69da623ff83"
+      "checksum": "45edccaf1e0672547fd1aa68183a064b"
     },
     "R/fct_seasonality.R": {
       "checksum": "483d7a199ccf5ed518e39f7fbb1501e5"

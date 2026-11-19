@@ -47,21 +47,20 @@ use your API credits.
 library(golemcrypto)
 listings <- get_listings()
 listings$time
-#> [1] "2026-11-19 12:33:47 EET"
-head(listings$data[, c("name_symbol", "USD_price", "USD_percent_change_24h", "USD_market_cap")])
-#>           name_symbol    USD_price USD_percent_change_24h USD_market_cap
-#>                <char>        <num>                  <num>          <num>
-#> 1:      Bitcoin (BTC) 6.376272e+04           -0.662035372   1.282497e+12
-#> 2:     Ethereum (ETH) 1.803233e+03            0.205440606   2.204151e+11
-#> 3: Tether USDt (USDT) 9.989683e-01            0.008377362   1.750653e+11
-#> 4:          BNB (BNB) 5.898914e+02            0.154294349   7.757683e+10
-#> 5:        USDC (USDC) 9.998201e-01            0.001723867   6.823068e+10
-#> 6:          XRP (XRP) 9.802060e-01           -1.614150719   6.225936e+10
+#> [1] "2026-11-19 12:40:49 EET"
+head(listings$data$name_symbol, 10)
+#>  [1] "Bitcoin (BTC)"      "Ethereum (ETH)"     "Tether USDt (USDT)" "BNB (BNB)"          "USDC (USDC)"        "XRP (XRP)"          "Solana (SOL)"       "TRON (TRX)"         "Hyperliquid (HYPE)"
+#> [10] "Zcash (ZEC)"
+names(listings$data)
+#>  [1] "name_symbol"                  "USD_price"                    "USD_volume_24h"               "USD_volume_change_24h"        "USD_percent_change_24h"       "USD_percent_change_7d"       
+#>  [7] "USD_percent_change_30d"       "USD_percent_change_60d"       "USD_percent_change_90d"       "USD_market_cap"               "USD_market_cap_dominance"     "USD_fully_diluted_market_cap"
+#> [13] "USD_last_updated"
 ```
 
 `listings$data` has a row per coin, sorted by market cap, with the
 price, the volume, the price changes from 24 hours to 90 days, the
-market cap and the dominance. `listings$time` is when it was downloaded.
+market cap and the dominance, all in US dollars. `listings$time` is when
+it was downloaded.
 
 Each download uses one credit of your key.
 [`get_listings()`](https://sedzinfo.github.io/golemcrypto/reference/get_listings.md)
