@@ -21,7 +21,7 @@ if ("golemcrypto" %in% rownames(installed.packages())) remove.packages("golemcry
 install()
 library(golemcrypto)
 
-pkgdown::build_site(getwd())
+pkgdown::build_site(getwd() ,lazy = TRUE)
 system("R CMD Rd2pdf . --force --no-preview --output=golemcrypto.pdf")
 if (.Platform$OS.type == "windows") shell.exec("golemcrypto.pdf") else system("evince golemcrypto.pdf")
 system("R CMD build . --resave-data")

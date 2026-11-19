@@ -42,6 +42,7 @@ reference:
       - plot_compare
       - plot_returns_calendar
       - plot_volatility
+      - plot_forecast
       - plot_drawdowns
       - plot_seasonality
       - plot_treemap

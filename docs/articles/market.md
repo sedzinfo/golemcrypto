@@ -47,7 +47,7 @@ use your API credits.
 library(golemcrypto)
 listings <- get_listings()
 listings$time
-#> [1] "2026-11-19 12:40:49 EET"
+#> [1] "2026-11-19 12:54:37 EET"
 head(listings$data$name_symbol, 10)
 #>  [1] "Bitcoin (BTC)"      "Ethereum (ETH)"     "Tether USDt (USDT)" "BNB (BNB)"          "USDC (USDC)"        "XRP (XRP)"          "Solana (SOL)"       "TRON (TRX)"         "Hyperliquid (HYPE)"
 #> [10] "Zcash (ZEC)"

@@ -393,7 +393,7 @@ plot_volatility <- function(analysis, mode = "light", days = 90, context_days = 
     )
   }
   lower <- plotly::layout(lower, yaxis = list(title = paste("Last", days, "days, sd")), xaxis = list(title = ""))
-  ahead <- plot_forecast(analysis, context_days)
+  ahead <- plot_forecast(analysis, mode, context_days)
   plotly::subplot(upper, lower, ahead, nrows = 3, heights = c(0.38, 0.31, 0.31), titleY = TRUE, margin = 0.05) %>%
     plotly::layout(
       title = list(text = title, x = 0.01, xanchor = "left"),
@@ -407,20 +407,27 @@ plot_volatility <- function(analysis, mode = "light", days = 90, context_days = 
 ##########################################################################################
 #
 ##########################################################################################
-#' @title Forecast panel of the volatility chart
-#' @description The last closes and the forecast ranges of the next days,
-#' which start from the last close, for [plot_volatility()]. Hover over the
-#' median line for the ranges of a day.
-#' @param analysis The result of [volatility_analysis()], with a forecast.
+#' @title Forecast chart of a coin
+#' @description The last closes of a coin and the forecast of its next days
+#' from the GARCH model of [volatility_analysis()]: the median close, and the
+#' ranges of the middle half and of probability `level`, which start from the
+#' last close. Hover over the median line for the ranges of a day. It is the
+#' lower panel of [plot_volatility()], on its own.
+#' @param analysis The result of [volatility_analysis()], with a forecast:
+#'   there is none when the GARCH model could not be fitted.
 #' @param context_days Closes before the forecast.
+#' @inheritParams plot_timeseries
 #' @return A plotly object.
-#' @keywords internal
+#' @export
 #' @examples
-#' \dontrun{
 #' btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
-#' golemcrypto:::plot_forecast(volatility_analysis(btc), 30)
-#' }
-plot_forecast <- function(analysis, context_days) {
+#' plot_forecast(volatility_analysis(btc))
+#' # the next 14 days after the last 60 closes
+#' plot_forecast(volatility_analysis(btc, forecast_days = 14), context_days = 60)
+plot_forecast <- function(analysis, mode = "light", context_days = 30) {
+  if (is.null(analysis$forecast)) {
+    stop("The analysis has no forecast, as the GARCH model could not be fitted: see volatility_analysis().", call. = FALSE)
+  }
   level <- round(100 * analysis$settings$level)
   closes <- utils::tail(analysis$series, context_days)
   last <- utils::tail(closes, 1)
@@ -456,7 +463,8 @@ plot_forecast <- function(analysis, context_days) {
         level, "%: $%{customdata[0]:,.6~g} to $%{customdata[3]:,.6~g}<extra></extra>"
       )
     ) %>%
-    plotly::layout(yaxis = list(title = "Next days, USD"), xaxis = list(title = ""))
+    plotly::layout(yaxis = list(title = "Next days, USD"), xaxis = list(title = "")) %>%
+    plot_theme(mode)
 }
 ##########################################################################################
 #

@@ -502,6 +502,8 @@ Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/golemcryp
   : Heatmap of monthly returns by year
 - [`plot_volatility()`](https://sedzinfo.github.io/golemcrypto/reference/plot_volatility.md)
   : Volatility chart of a coin
+- [`plot_forecast()`](https://sedzinfo.github.io/golemcrypto/reference/plot_forecast.md)
+  : Forecast chart of a coin
 - [`plot_drawdowns()`](https://sedzinfo.github.io/golemcrypto/reference/plot_drawdowns.md)
   : Drawdown chart of a coin
 - [`plot_seasonality()`](https://sedzinfo.github.io/golemcrypto/reference/plot_seasonality.md)

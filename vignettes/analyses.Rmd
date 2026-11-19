@@ -59,6 +59,12 @@ analysis$forecast$days
 plot_volatility(analysis)
 ```
 
+`plot_forecast()` draws the lower panel on its own: the last 30 closes, then the median close of the next 7 days, with the ranges of the middle half and of 95% around it. Hover over the median line for the ranges of a day:
+
+```{r plot-forecast}
+plot_forecast(analysis)
+```
+
 The arguments of `volatility_analysis()` change the periods. For example, `month_days = 7` and `recent_days = 1` ask about the last week and the last day:
 
 ```{r volatility-week}
@@ -67,7 +73,12 @@ volatility_text(week)$month$headline
 volatility_text(week)$recent$headline
 ```
 
-`plot_volatility()` takes `days` for the days of the middle panel and `context_days` for the closes before the forecast.
+`plot_volatility()` takes `days` for the days of the middle panel and `context_days` for the closes before the forecast, which `plot_forecast()` takes too. The length and the probability of the forecast are set in `volatility_analysis()`, with `forecast_days` and `level`. For example, the next 14 days with 90% ranges, after the last 60 closes:
+
+```{r forecast-options}
+two_weeks <- volatility_analysis(btc, forecast_days = 14, level = 0.9)
+plot_forecast(two_weeks, context_days = 60)
+```
 
 ## Drawdowns
 

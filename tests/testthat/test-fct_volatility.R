@@ -223,3 +223,20 @@ test_that("the window and the recent move can be other lengths, and the text fol
   expect_false(any(grepl("Day by day|together|single day", day$points)))
   expect_match(day$points, "daily moves this large", fixed = TRUE, all = FALSE)
 })
+
+test_that("plot_forecast() draws the last closes and the forecast from the last close, in either mode", {
+  analysis <- volatility_analysis(garch_history())
+  built <- plotly::plotly_build(plot_forecast(analysis))$x
+  expect_length(built$data[[1]]$x, 30)
+  # the median line starts at the last close and runs to the last day forecast
+  expect_equal(built$data[[4]]$y[1], utils::tail(analysis$series$close, 1))
+  expect_length(built$data[[4]]$y, nrow(analysis$forecast$days) + 1)
+  expect_equal(built$layout$font$color, "#212529")
+  dark <- plotly::plotly_build(plot_forecast(analysis, "dark", context_days = 60))$x
+  expect_equal(dark$layout$font$color, "#dee2e6")
+  expect_length(dark$data[[1]]$x, 60)
+})
+
+test_that("plot_forecast() says why an analysis without a model has no forecast", {
+  expect_error(plot_forecast(volatility_analysis(garch_history(450))), "no forecast")
+})

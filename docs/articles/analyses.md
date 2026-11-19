@@ -75,6 +75,16 @@ draws three panels:
 plot_volatility(analysis)
 ```
 
+[`plot_forecast()`](https://sedzinfo.github.io/golemcrypto/reference/plot_forecast.md)
+draws the lower panel on its own: the last 30 closes, then the median
+close of the next 7 days, with the ranges of the middle half and of 95%
+around it. Hover over the median line for the ranges of a day:
+
+``` r
+
+plot_forecast(analysis)
+```
+
 The arguments of
 [`volatility_analysis()`](https://sedzinfo.github.io/golemcrypto/reference/volatility_analysis.md)
 change the periods. For example, `month_days = 7` and `recent_days = 1`
@@ -91,7 +101,18 @@ volatility_text(week)$recent$headline
 
 [`plot_volatility()`](https://sedzinfo.github.io/golemcrypto/reference/plot_volatility.md)
 takes `days` for the days of the middle panel and `context_days` for the
-closes before the forecast.
+closes before the forecast, which
+[`plot_forecast()`](https://sedzinfo.github.io/golemcrypto/reference/plot_forecast.md)
+takes too. The length and the probability of the forecast are set in
+[`volatility_analysis()`](https://sedzinfo.github.io/golemcrypto/reference/volatility_analysis.md),
+with `forecast_days` and `level`. For example, the next 14 days with 90%
+ranges, after the last 60 closes:
+
+``` r
+
+two_weeks <- volatility_analysis(btc, forecast_days = 14, level = 0.9)
+plot_forecast(two_weeks, context_days = 60)
+```
 
 ## Drawdowns
 
