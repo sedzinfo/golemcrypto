@@ -17,3 +17,4 @@
 ^rsconnect$
 ^\.Renviron$
 ^manifest\.json$
+^CITATION\.cff$
