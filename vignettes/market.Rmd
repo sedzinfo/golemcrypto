@@ -1,5 +1,6 @@
 ---
 title: "The top 100 coins"
+description: "The 100 cryptocurrencies with the largest market cap in R, as a treemap and a table, from the CoinMarketCap API."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{The top 100 coins}

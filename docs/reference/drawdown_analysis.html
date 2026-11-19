@@ -17,7 +17,7 @@ falls that went at least as deep as the current one has so far: how many
 days they took to get back to their high.
 The history: the falls of at least min_depth percent, the deepest
 first, the share of days that closed that far below the high, and the
-days that closed at a new all-time high."></head><body>
+days that closed at a new all-time high."><meta property="og:image" content="https://sedzinfo.github.io/golemcrypto/card.png"><meta property="og:image:alt" content="golemcrypto: Interactive Cryptocurrency Time Series and Market Data Explorer, with the candlestick, volume and drawdown chart of Bitcoin since 2013"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -128,6 +128,10 @@ day of the history left out.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">btc</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_history.html">get_history</a></span><span class="op">(</span><span class="st">"Bitcoin (BTC)"</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2013-04-29"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">❯</span> Scraping historical crypto data</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">❯</span> Processing historical crypto data</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu">drawdown_analysis</span><span class="op">(</span><span class="va">btc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">analysis</span><span class="op">$</span><span class="va">now</span><span class="op">$</span><span class="va">drawdown_pct</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -49.51023</span>

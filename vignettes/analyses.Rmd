@@ -1,5 +1,6 @@
 ---
 title: "Volatility, drawdowns and seasonality"
+description: "The volatility, drawdowns and seasonality of a cryptocurrency in R, with a GARCH forecast of its volatility."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Volatility, drawdowns and seasonality}

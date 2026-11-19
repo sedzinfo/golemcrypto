@@ -1,5 +1,6 @@
 ---
 title: "Price charts in R"
+description: "Download cryptocurrency prices in R and draw interactive candlestick charts, compare coins and see their monthly returns."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Price charts in R}
