@@ -69,6 +69,11 @@ footer a {
   .section:has(> svg) {
     overflow-x: auto;
   }
+  /* so do wide data tables (DT), which would otherwise widen the page and put the menu
+     button and the cookie banner off the screen */
+  .dataTables_wrapper {
+    overflow-x: auto;
+  }
   /* bigger tap targets: ~43px menu items; the footer links get vertical padding,
      which on inline links enlarges the tap area without moving the text */
   .navbar-collapse .nav-link {

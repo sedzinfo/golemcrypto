@@ -37,9 +37,11 @@ An interactive R Shiny application for visualizing cryptocurrency exchange rates
 - RStudio IDE (recommended) - [Download here](https://posit.co/downloads/)
 
 ### install R
-installation instructions can be found here: https://cran.r-project.org/  
-### install RStudio IDE (optional but a good idea)  
-installation instructions can be found here: https://posit.co/downloads/  
+installation instructions can be found here: https://cran.r-project.org/
+
+### install RStudio IDE (optional but a good idea)
+
+installation instructions can be found here: https://posit.co/downloads/
 
 Open RStudio (or an R console) and run:
 ```r
