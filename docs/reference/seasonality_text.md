@@ -33,17 +33,17 @@ seasonality_text(seasonality_analysis(btc, "day"))
 #> [1] "Best day: Monday, mean +0.55%; worst: Thursday, −0.04%"
 #> 
 #> $groups$points
-#> [1] "Monday: mean +0.55%, median +0.23%, up 380 of 707 times (54%)."           "Thursday: mean −0.04%, median −0.07%, up 346 of 707 times (49%)."        
-#> [3] "All 4,951 days together: mean +0.19%, median +0.10%, up 52% of the time."
+#> [1] "Monday: mean +0.55%, median +0.23%, up 380 of 707 times (54%)."           "Thursday: mean −0.04%, median −0.07%, up 346 of 708 times (49%)."        
+#> [3] "All 4,952 days together: mean +0.19%, median +0.10%, up 52% of the time."
 #> 
 #> 
 #> $chance
 #> $chance$headline
-#> [1] "The differences between the days of the week could well be chance (p = 0.22)"
+#> [1] "The differences between the days of the week could well be chance (p = 0.21)"
 #> 
 #> $chance$points
-#> [1] "A Kruskal-Wallis test asks whether the returns of the days of the week could all come from the same distribution: p = 0.22, so differences as large as these would turn up in about 22% of histories in which they did not matter."
-#> [2] "The returns run from 30 Apr 2013 to 18 Nov 2026: 4,951 days, 707 to 708 per group."                                                                                                                                                
+#> [1] "A Kruskal-Wallis test asks whether the returns of the days of the week could all come from the same distribution: p = 0.21, so differences as large as these would turn up in about 21% of histories in which they did not matter."
+#> [2] "The returns run from 30 Apr 2013 to 19 Nov 2026: 4,952 days, 707 to 708 per group."                                                                                                                                                
 #> [3] "With 7 days of the week to pick from, the best one looks good partly by luck, and a pattern of the past need not hold: the crypto market has changed a lot since 2013."                                                            
 #> 
 #> 
