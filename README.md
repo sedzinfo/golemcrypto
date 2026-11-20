@@ -27,32 +27,36 @@ An interactive R Shiny application for visualizing cryptocurrency exchange rates
 - **CSV Downloads**: Download the data behind every tab as a CSV file
 - **About Tab**: What every tab shows and how its numbers are calculated, with the formulas
 
-# Quick Start
-
-## Installation Instructions
+## Installation
 
 ### Prerequisites
 
-- R (≥ 4.0.0) - [Download here](https://cran.r-project.org/)
-- RStudio IDE (recommended) - [Download here](https://posit.co/downloads/)
+1. **Install R** (version 4.0 or higher): https://cran.r-project.org/
+2. **Install RStudio** (optional but recommended): https://posit.co/downloads/
 
-### install R
-installation instructions can be found here: https://cran.r-project.org/
-
-### install RStudio IDE (optional but a good idea)
-
-installation instructions can be found here: https://posit.co/downloads/
+### Package Installation
 
 Open RStudio (or an R console) and run:
+
+```r
+install.packages(
+  "golemcrypto",
+  repos = c("https://sedzinfo.r-universe.dev", "https://cloud.r-project.org")
+)
+```
+
+[R-universe](https://sedzinfo.r-universe.dev/golemcrypto) builds golemcrypto from this repository, and CRAN provides the packages it needs.
+
+To install from GitHub instead:
+
 ```r
 # Install devtools if you haven't already
 install.packages("devtools")
-library(devtools)
-# Install the crypto package from GitHub
-install_github("sedzinfo/golemcrypto")
+# Install golemcrypto from GitHub
+devtools::install_github("sedzinfo/golemcrypto")
 ```
 
-Without devtools, install the source tarball of the [latest release](https://github.com/sedzinfo/golemcrypto/releases/tag/latest), which is rebuilt from `main` on every change, together with the PDF manual:
+Or install the source tarball of the [latest release](https://github.com/sedzinfo/golemcrypto/releases/tag/latest), which is rebuilt from `main` on every change, together with the PDF manual:
 
 ```r
 install.packages(
@@ -268,6 +272,7 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ---
 
+[![R-universe](https://sedzinfo.r-universe.dev/golemcrypto/badges/version)](https://sedzinfo.r-universe.dev/golemcrypto)
 ![Stars](https://img.shields.io/github/stars/sedzinfo/golemcrypto)
 ![Watchers](https://img.shields.io/github/watchers/sedzinfo/golemcrypto)
 ![Repo Size](https://img.shields.io/github/repo-size/sedzinfo/golemcrypto)
