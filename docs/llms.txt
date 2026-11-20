@@ -1,10 +1,10 @@
 # Crypto Time Series Analyzer
 
-plot crypto exchange rate time series
-
 **[Open the live
-app](https://sedzinfo-golemcrypto.share.connect.posit.cloud/)** ·
-[Website](https://sedzinfo.github.io/golemcrypto/)
+app](https://sedzinfo-golemcrypto.share.connect.posit.cloud/)** · [Help
+pages](https://sedzinfo.github.io/golemcrypto/reference/)
+
+## What it does
 
 An interactive R Shiny application for visualizing cryptocurrency
 exchange rates and market data with real-time updates and historical
@@ -53,32 +53,56 @@ time series analysis.
 
 ## Installation
 
-### Prerequisites
+### 1. Install R
 
-1.  **Install R** (version 4.0 or higher): <https://cran.r-project.org/>
-2.  **Install RStudio** (optional but recommended):
-    <https://posit.co/downloads/>
+Download R 4.0 or newer from [CRAN](https://cran.r-project.org/), for
+Windows, macOS or Linux, and run the installer.
 
-### Package Installation
+### 2. Install RStudio or Positron
 
-Open RStudio (or an R console) and run:
+An editor makes R easier to use. It is optional, and both are free, from
+Posit:
+
+- [RStudio Desktop](https://posit.co/download/rstudio-desktop/)
+- [Positron](https://positron.posit.co/download.html), which also runs
+  Python
+
+### 3. Install golemcrypto
+
+Run one of these in RStudio, Positron or the R console. Each one also
+installs the packages golemcrypto needs.
+
+#### From R-universe (recommended)
 
 [`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(`` `` ``"golemcrypto"``,`` `` repos ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"https://sedzinfo.r-universe.dev"``, ``"https://cloud.r-project.org"``)`` ``)`
 
 [R-universe](https://sedzinfo.r-universe.dev/golemcrypto) builds
-golemcrypto from this repository, and CRAN provides the packages it
-needs.
+golemcrypto from this repository after every change, ready to install on
+Windows, macOS and Linux, and CRAN provides the packages it needs.
 
-To install from GitHub instead:
+#### From GitHub
 
-`# Install devtools if you haven't already`` `[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"devtools"``)`` ``# Install golemcrypto from GitHub`` ``devtools``::`[`install_github`](https://devtools.r-lib.org/reference/install-deprecated.html)`(``"sedzinfo/golemcrypto"``)`
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"pak"``)`` ``# once`` ``pak``::`[`pak`](https://pak.r-lib.org/reference/pak.html)`(``"sedzinfo/golemcrypto"``)`
 
-Or install the source tarball of the [latest
-release](https://github.com/sedzinfo/golemcrypto/releases/tag/latest),
-which is rebuilt from `main` on every change, together with the PDF
-manual:
+#### From the release tarball
 
-[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(`` `` ``"https://github.com/sedzinfo/golemcrypto/releases/download/latest/golemcrypto_0.1.0.tar.gz"``,`` `` repos ``=`` ``NULL``, type ``=`` ``"source"`` ``)`
+The [latest
+release](https://github.com/sedzinfo/golemcrypto/releases/tag/latest)
+has the source tarball and the PDF manual, rebuilt from `main` on every
+change:
+
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"pak"``)`` ``# once`` ``pak``::`[`pak`](https://pak.r-lib.org/reference/pak.html)`(``"url::https://github.com/sedzinfo/golemcrypto/releases/download/latest/golemcrypto_0.1.0.tar.gz"``)`
+
+#### From a clone of the repository
+
+This repository keeps no files in [Git LFS](https://git-lfs.com), so a
+plain clone with [Git](https://git-scm.com/downloads) has everything:
+
+``` bash
+git clone https://github.com/sedzinfo/golemcrypto.git
+```
+
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"pak"``)`` ``# once`` ``pak``::`[`local_install`](https://pak.r-lib.org/reference/local_install.html)`(``"path/to/golemcrypto"``)`
 
 ## CoinMarketCap API key
 
@@ -116,6 +140,89 @@ The application will open in your default web browser. Any
 [`shiny::shinyApp()`](https://shiny.posit.co/r/reference/shiny/latest/shinyapp.html)
 option can be passed on, for example
 `crypto(options = list(port = 8080))`.
+
+## Screenshots
+
+### Cryptocurrency Price Chart
+
+![Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log
+scale](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png)
+
+Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log
+scale
+
+### Zoomed In
+
+![The last 3 months of Bitcoin, with the vertical axes fitted to the
+days in
+view](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto9.png)
+
+The last 3 months of Bitcoin, with the vertical axes fitted to the days
+in view
+
+### Top 100 Market Overview
+
+![Table of the top 100 coins with color-coded price
+changes](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto2.png)
+
+Table of the top 100 coins with color-coded price changes
+
+### Coin Comparison
+
+![Close prices of Bitcoin, Ethereum and Tether normalized to
+100](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto3.png)
+
+Close prices of Bitcoin, Ethereum and Tether normalized to 100
+
+### Market Treemap (dark mode)
+
+![Treemap of the top 100 coins sized by market cap and colored by 24h
+change](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto4.png)
+
+Treemap of the top 100 coins sized by market cap and colored by 24h
+change
+
+### Returns Calendar (dark mode)
+
+![Monthly returns of Bitcoin by
+year](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto5.png)
+
+Monthly returns of Bitcoin by year
+
+### Seasonality (dark mode)
+
+![Bitcoin’s monthly returns by month since 2013, with the best and the
+worst month and a Kruskal-Wallis test of whether the differences could
+be
+chance](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto8.png)
+
+Bitcoin’s monthly returns by month since 2013, with the best and the
+worst month and a Kruskal-Wallis test of whether the differences could
+be chance
+
+### Volatility
+
+![Whether the volatility of Bitcoin’s last 30 days and the move of its
+last 2 days are normal, and the forecast of its next 7 days with the
+value at risk, with pickers for the length of both windows, its 30-day
+volatility since 2013 and its last 90 days in GARCH standard
+deviations](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
+
+Whether the volatility of Bitcoin’s last 30 days and the move of its
+last 2 days are normal, and the forecast of its next 7 days with the
+value at risk, with pickers for the length of both windows, its 30-day
+volatility since 2013 and its last 90 days in GARCH standard deviations
+
+### Drawdowns
+
+![How far Bitcoin is below its all-time high and its 15 falls of 20% or
+more since 2013, on a log-scale price chart and a chart of the distance
+from the
+high](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto7.png)
+
+How far Bitcoin is below its all-time high and its 15 falls of 20% or
+more since 2013, on a log-scale price chart and a chart of the distance
+from the high
 
 ## Using the Functions in R
 
@@ -225,89 +332,6 @@ minutes.
   when a log scale helps
 - The text is in `inst/app/about.md`, so it can be edited without
   touching the R code
-
-## Screenshots
-
-### Cryptocurrency Price Chart
-
-![Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log
-scale](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto1.png)
-
-Candlestick, volume and drawdown chart of Bitcoin since 2013, on a log
-scale
-
-### Zoomed In
-
-![The last 3 months of Bitcoin, with the vertical axes fitted to the
-days in
-view](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto9.png)
-
-The last 3 months of Bitcoin, with the vertical axes fitted to the days
-in view
-
-### Top 100 Market Overview
-
-![Table of the top 100 coins with color-coded price
-changes](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto2.png)
-
-Table of the top 100 coins with color-coded price changes
-
-### Coin Comparison
-
-![Close prices of Bitcoin, Ethereum and Tether normalized to
-100](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto3.png)
-
-Close prices of Bitcoin, Ethereum and Tether normalized to 100
-
-### Market Treemap (dark mode)
-
-![Treemap of the top 100 coins sized by market cap and colored by 24h
-change](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto4.png)
-
-Treemap of the top 100 coins sized by market cap and colored by 24h
-change
-
-### Returns Calendar (dark mode)
-
-![Monthly returns of Bitcoin by
-year](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto5.png)
-
-Monthly returns of Bitcoin by year
-
-### Seasonality (dark mode)
-
-![Bitcoin’s monthly returns by month since 2013, with the best and the
-worst month and a Kruskal-Wallis test of whether the differences could
-be
-chance](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto8.png)
-
-Bitcoin’s monthly returns by month since 2013, with the best and the
-worst month and a Kruskal-Wallis test of whether the differences could
-be chance
-
-### Volatility
-
-![Whether the volatility of Bitcoin’s last 30 days and the move of its
-last 2 days are normal, and the forecast of its next 7 days with the
-value at risk, with pickers for the length of both windows, its 30-day
-volatility since 2013 and its last 90 days in GARCH standard
-deviations](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto6.png)
-
-Whether the volatility of Bitcoin’s last 30 days and the move of its
-last 2 days are normal, and the forecast of its next 7 days with the
-value at risk, with pickers for the length of both windows, its 30-day
-volatility since 2013 and its last 90 days in GARCH standard deviations
-
-### Drawdowns
-
-![How far Bitcoin is below its all-time high and its 15 falls of 20% or
-more since 2013, on a log-scale price chart and a chart of the distance
-from the
-high](https://github.com/sedzinfo/golemcrypto/raw/main/screenshots/crypto7.png)
-
-How far Bitcoin is below its all-time high and its 15 falls of 20% or
-more since 2013, on a log-scale price chart and a chart of the distance
-from the high
 
 ## Dependencies
 
