@@ -79,10 +79,6 @@ drawdown_analysis(history, min_depth = 20)
 
 ``` r
 btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
-#> ❯ Scraping historical crypto data
-#> 
-#> ❯ Processing historical crypto data
-#> 
 analysis <- drawdown_analysis(btc)
 analysis$now$drawdown_pct
 #> [1] -52.8675
