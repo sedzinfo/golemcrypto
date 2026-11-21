@@ -25,11 +25,11 @@ A list with a `headline` and `points`.
 btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
 golemcrypto:::drawdown_now_text(drawdown_analysis(btc))
 #> $headline
-#> [1] "Now: −50.4% from the all-time high, in its 5th deepest fall"
+#> [1] "Now: −52.9% from the all-time high, in its 5th deepest fall"
 #> 
 #> $points
-#> [1] "The all-time high: $124,753 on 6 Oct 2025, 409 days ago. The lowest close since: $58,559 on 30 Jun 2026, −53.1%."                                                                                                
-#> [2] "Back to the high takes a rise of +101.5% from the last close of $61,902."                                                                                                                                        
-#> [3] "Earlier falls as deep as −53.1% or deeper: 4. They got back to their high 189 to 1,127 days (median 964) after the peak, and 91 to 721 days (median 592) after the trough. This fall has lasted 409 days so far."
+#> [1] "The all-time high: $124,753 on 6 Oct 2025, 410 days ago. The lowest close since: $58,559 on 30 Jun 2026, −53.1%."                                                                                                
+#> [2] "Back to the high takes a rise of +112.2% from the last close of $58,799."                                                                                                                                        
+#> [3] "Earlier falls as deep as −53.1% or deeper: 4. They got back to their high 189 to 1,127 days (median 964) after the peak, and 91 to 721 days (median 592) after the trough. This fall has lasted 410 days so far."
 #> 
 ```
