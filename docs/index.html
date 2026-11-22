@@ -13,8 +13,8 @@
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Interactive Cryptocurrency Time Series and Market Data Explorer">
-<meta name="description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap. Also compares normalized prices of several coins, and shows a market cap treemap, a calendar of monthly returns, whether a coins recent volatility is normal, with a GARCH forecast, and its falls from its all-time high. Market data is retrieved from CoinMarketCap'.">
-<meta property="og:description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap. Also compares normalized prices of several coins, and shows a market cap treemap, a calendar of monthly returns, whether a coins recent volatility is normal, with a GARCH forecast, and its falls from its all-time high. Market data is retrieved from CoinMarketCap'.">
+<meta name="description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap, with Bollinger bands and the relative strength index on the price charts. Also compares normalized prices of several coins, on their own or relative to one of them, and shows a market cap treemap, a calendar of monthly returns, their seasonality by day of the week, week of the year, month, year of the halving cycle and calendar effects such as the turn of the month, whether a coins recent volatility is normal, with a GARCH forecast, and its falls from its all-time high. Market data is retrieved from CoinMarketCap'.">
+<meta property="og:description" content="A shiny application for exploring cryptocurrency exchange rates. Plots interactive candlestick and volume charts of historical prices since 2013 for any active cryptocurrency, and shows a table of the top 100 cryptocurrencies by market capitalisation with price changes over 24 hours to 90 days, market dominance and fully diluted market cap, with Bollinger bands and the relative strength index on the price charts. Also compares normalized prices of several coins, on their own or relative to one of them, and shows a market cap treemap, a calendar of monthly returns, their seasonality by day of the week, week of the year, month, year of the halving cycle and calendar effects such as the turn of the month, whether a coins recent volatility is normal, with a GARCH forecast, and its falls from its all-time high. Market data is retrieved from CoinMarketCap'.">
 <meta property="og:image" content="https://sedzinfo.github.io/golemcrypto/card.png">
 <meta property="og:image:alt" content="golemcrypto: Interactive Cryptocurrency Time Series and Market Data Explorer, with the candlestick, volume and drawdown chart of Bitcoin since 2013">
 </head>
@@ -85,17 +85,19 @@
 <li>
 <strong>Moving Averages and Drawdown</strong>: 50- and 200-day moving averages on the price chart, and a chart of how far the price is below its all-time high</li>
 <li>
+<strong>Bollinger Bands and RSI</strong>: Optional 20-day Bollinger bands around the prices and a panel of the 14-day relative strength index</li>
+<li>
 <strong>Market Metrics</strong>: Comprehensive market data including market cap, dominance, and 24h/7d/30d/60d/90d price changes</li>
 <li>
 <strong>Color-Coded Performance</strong>: Heat-map style coloring for quick visual identification of price movements</li>
 <li>
-<strong>Coin Comparison</strong>: Compare up to 10 coins, with their prices normalized to start at 100</li>
+<strong>Coin Comparison</strong>: Compare up to 10 coins, with their prices normalized to start at 100, or relative to one of them, such as Ethereum against Bitcoin</li>
 <li>
 <strong>Market Treemap</strong>: The top 100 coins sized by market cap and colored by their 24h change</li>
 <li>
 <strong>Returns Calendar</strong>: Monthly returns by year for any coin</li>
 <li>
-<strong>Seasonality</strong>: Whether some days of the week, weeks of the year, months or years of the halving cycle bring better returns than others, with a test of whether the differences could be chance, in words, as a chart and as a table</li>
+<strong>Seasonality</strong>: Whether some days of the week, weeks of the year, months or years of the halving cycle bring better returns than others, and whether the turn of the month, the Santa rally and Sell in May of the stock market reach crypto, with a test of whether the differences could be chance, in words, as a chart and as a table</li>
 <li>
 <strong>Volatility</strong>: Whether the volatility of the last month and the move of the last 2 days are normal, against the coin’s history and a GARCH model, and a forecast of the next 7 days with the value at risk, in words and as a chart</li>
 <li>
@@ -182,7 +184,7 @@
 <pre><code><span><span class="va">COINMARKETCAP_APIKEY</span><span class="op">=</span><span class="va">your</span><span class="op">-</span><span class="va">api</span><span class="op">-</span><span class="va">key</span></span></code></pre>
 </li>
 </ol>
-<p>You can also pass the key directly with <code>crypto(api_key = "your-api-key")</code>. Keep the key out of your code and out of Git, because anyone who has it can use your API credits.</p>
+<p>You can also pass the key directly with <code>run_app(api_key = "your-api-key")</code>. Keep the key out of your code and out of Git, because anyone who has it can use your API credits.</p>
 <p>Only the market listings of the Top 100 and Treemap tabs use the key: one credit per download, at most one download every 10 minutes while the app runs. When the key has used up its credits, the app still starts; those two tabs tell the visitors when the limit resets, and the other tabs work as usual.</p>
 </div>
 <div class="section level2">
@@ -191,8 +193,8 @@
 <p>Launch the Shiny app with just two lines of code:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sedzinfo.github.io/golemcrypto/">golemcrypto</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/crypto.html">crypto</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The application will open in your default web browser. Any <a href="https://shiny.posit.co/r/reference/shiny/latest/shinyapp.html" class="external-link"><code>shiny::shinyApp()</code></a> option can be passed on, for example <code>crypto(options = list(port = 8080))</code>.</p>
+<span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>The application will open in your default web browser. Any <a href="https://shiny.posit.co/r/reference/shiny/latest/shinyapp.html" class="external-link"><code>shiny::shinyApp()</code></a> option can be passed on, for example <code>run_app(options = list(port = 8080))</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="screenshots">Screenshots<a class="anchor" aria-label="anchor" href="#screenshots"></a>
@@ -272,6 +274,7 @@
 <span><span class="va">btc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_history.html">get_history</a></span><span class="op">(</span><span class="st">"Bitcoin (BTC)"</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">btc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">btc</span>, averages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>   <span class="co"># other moving averages</span></span>
+<span><span class="fu"><a href="reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">btc</span>, bollinger <span class="op">=</span> <span class="cn">TRUE</span>, show_rsi <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># with the Bollinger bands and the RSI</span></span>
 <span><span class="fu"><a href="reference/plot_returns_calendar.html">plot_returns_calendar</a></span><span class="op">(</span><span class="fu"><a href="reference/monthly_returns.html">monthly_returns</a></span><span class="op">(</span><span class="va">btc</span><span class="op">)</span>, <span class="st">"Bitcoin (BTC)"</span>, mode <span class="op">=</span> <span class="st">"dark"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># is the recent volatility normal? (needs more than a year of history)</span></span>
@@ -289,6 +292,12 @@
 <span><span class="co"># several coins over the last year, starting at 100</span></span>
 <span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_history.html">get_history</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bitcoin (BTC)"</span>, <span class="st">"Ethereum (ETH)"</span>, <span class="st">"Solana (SOL)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plot_compare.html">plot_compare</a></span><span class="op">(</span><span class="fu"><a href="reference/normalize_prices.html">normalize_prices</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># the same, relative to Bitcoin: above 100, better than Bitcoin</span></span>
+<span><span class="fu"><a href="reference/plot_compare.html">plot_compare</a></span><span class="op">(</span><span class="fu"><a href="reference/relative_prices.html">relative_prices</a></span><span class="op">(</span><span class="fu"><a href="reference/normalize_prices.html">normalize_prices</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span>, <span class="st">"Bitcoin (BTC)"</span><span class="op">)</span>, base <span class="op">=</span> <span class="st">"Bitcoin (BTC)"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># calendar effects: the "turn" of the month, the "santa" rally, Sell in May ("half")</span></span>
+<span><span class="fu"><a href="reference/seasonality_text.html">seasonality_text</a></span><span class="op">(</span><span class="fu"><a href="reference/seasonality_analysis.html">seasonality_analysis</a></span><span class="op">(</span><span class="fu"><a href="reference/get_history.html">get_history</a></span><span class="op">(</span><span class="st">"Bitcoin (BTC)"</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2013-04-29"</span><span class="op">)</span><span class="op">)</span>, <span class="st">"turn"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># the top 100 coins, which needs the API key</span></span>
 <span><span class="va">listings</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_listings.html">get_listings</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
@@ -309,6 +318,7 @@
 <li>Built-in date range selector with preset options</li>
 <li>Volume chart synchronized with the main price chart</li>
 <li>50- and 200-day moving averages; click a legend entry to hide or show a line</li>
+<li>Optional 20-day Bollinger bands, and a panel of the 14-day RSI with lines at 30 and 70</li>
 <li>The vertical axes follow the days in view, so a week’s candles fill the chart; a Linear/Log switch shows the whole history in proportion</li>
 <li>Drawdown chart: how far the price is below its all-time high</li>
 </ul>
@@ -338,6 +348,7 @@
 <li>Pick up to 10 coins and a start date</li>
 <li>Each coin’s close price starts at 100 on the first date all of them have data, so their performance can be compared directly</li>
 <li>Switch between a linear and a log scale</li>
+<li>Show the coins relative to one of them: a line that rises did better than that coin, so Ethereum relative to Bitcoin is the ETH/BTC ratio</li>
 </ul>
 </div>
 <div class="section level3">
@@ -359,6 +370,7 @@
 </h3>
 <ul>
 <li>For the coin selected in the Timeseries tab, the returns of complete days, weeks, months or years, grouped by day of the week, ISO week of the year, month or year of Bitcoin’s 4-year halving cycle</li>
+<li>Or a calendar effect of the stock market against the rest: the turn of the month, the Santa rally, or Sell in May (May to October against November to April)</li>
 <li>Two cards name the best and the worst group, by their mean return with its median and how often it rose, and say whether the differences could be chance, with a Kruskal-Wallis test</li>
 <li>A chart of the mean and median return of each group and of the share of its returns that were gains, and a table of the groups with their best and worst return</li>
 </ul>
@@ -378,7 +390,7 @@
 </h3>
 <ul>
 <li>For the coin selected in the Timeseries tab, two cards say in words how far the coin is below its all-time high, the rise it needs to get back there, and how long the earlier falls that went as deep took to recover, and sum up the falls of its history</li>
-<li>A chart of the close on a log scale and of how far it is below its high, with each fall of 10%, 20%, 30% or 50% or more shaded and its trough numbered</li>
+<li>A chart of the close on a log scale and of how far it is below its high, with each fall of 10%, 20%, 30%, 40% or 50% or more shaded and its trough numbered</li>
 <li>A table of those falls, the deepest first: peak, trough, depth, days to the trough and back to the high</li>
 </ul>
 </div>
@@ -386,7 +398,7 @@
 <h3 id="about-tab">About Tab<a class="anchor" aria-label="anchor" href="#about-tab"></a>
 </h3>
 <ul>
-<li>What every tab shows and how its numbers are calculated: the candles, moving averages and drawdown, the index of the Compare tab, the Top 100 columns, and the colors of the tables and charts</li>
+<li>What every tab shows and how its numbers are calculated: the candles, moving averages, Bollinger bands, RSI and drawdown, the index of the Compare tab and its relative strength, the calendar effects of the Seasonality tab, the Top 100 columns, and the colors of the tables and charts</li>
 <li>Linear and log scales: how each is drawn, with an example chart, and when a log scale helps</li>
 <li>The text is in <code>inst/app/about.md</code>, so it can be edited without touching the R code</li>
 </ul>
@@ -440,7 +452,7 @@
 <tr>
 <td><code>R/run_app.R</code></td>
 <td>
-<code><a href="reference/crypto.html">crypto()</a></code>, which starts the app</td>
+<code><a href="reference/run_app.html">run_app()</a></code>, which starts the app</td>
 </tr>
 <tr>
 <td>

@@ -15,12 +15,13 @@ An interactive R Shiny application for visualizing cryptocurrency exchange rates
 - **Multiple Timeframes**: Flexible date range selectors (7 days to all-time) with custom range slider
 - **Volume Analysis**: Dedicated volume charts to track trading activity
 - **Moving Averages and Drawdown**: 50- and 200-day moving averages on the price chart, and a chart of how far the price is below its all-time high
+- **Bollinger Bands and RSI**: Optional 20-day Bollinger bands around the prices and a panel of the 14-day relative strength index
 - **Market Metrics**: Comprehensive market data including market cap, dominance, and 24h/7d/30d/60d/90d price changes
 - **Color-Coded Performance**: Heat-map style coloring for quick visual identification of price movements
-- **Coin Comparison**: Compare up to 10 coins, with their prices normalized to start at 100
+- **Coin Comparison**: Compare up to 10 coins, with their prices normalized to start at 100, or relative to one of them, such as Ethereum against Bitcoin
 - **Market Treemap**: The top 100 coins sized by market cap and colored by their 24h change
 - **Returns Calendar**: Monthly returns by year for any coin
-- **Seasonality**: Whether some days of the week, weeks of the year, months or years of the halving cycle bring better returns than others, with a test of whether the differences could be chance, in words, as a chart and as a table
+- **Seasonality**: Whether some days of the week, weeks of the year, months or years of the halving cycle bring better returns than others, and whether the turn of the month, the Santa rally and Sell in May of the stock market reach crypto, with a test of whether the differences could be chance, in words, as a chart and as a table
 - **Volatility**: Whether the volatility of the last month and the move of the last 2 days are normal, against the coin's history and a GARCH model, and a forecast of the next 7 days with the value at risk, in words and as a chart
 - **Drawdowns**: How far the coin is below its all-time high, and how deep its earlier falls went and how long they took to recover, in words, as a chart and as a table
 - **Light and Dark Mode**: Switch with the toggle in the navigation bar
@@ -98,7 +99,7 @@ The market data comes from the CoinMarketCap API, which needs a free API key.
    COINMARKETCAP_APIKEY=your-api-key
    ```
 
-You can also pass the key directly with `crypto(api_key = "your-api-key")`. Keep the key out of your code and out of Git, because anyone who has it can use your API credits.
+You can also pass the key directly with `run_app(api_key = "your-api-key")`. Keep the key out of your code and out of Git, because anyone who has it can use your API credits.
 
 Only the market listings of the Top 100 and Treemap tabs use the key: one credit per download, at most one download every 10 minutes while the app runs. When the key has used up its credits, the app still starts; those two tabs tell the visitors when the limit resets, and the other tabs work as usual.
 
@@ -108,10 +109,10 @@ Launch the Shiny app with just two lines of code:
 
 ```r
 library(golemcrypto)
-crypto()
+run_app()
 ```
 
-The application will open in your default web browser. Any [`shiny::shinyApp()`](https://shiny.posit.co/r/reference/shiny/latest/shinyapp.html) option can be passed on, for example `crypto(options = list(port = 8080))`.
+The application will open in your default web browser. Any [`shiny::shinyApp()`](https://shiny.posit.co/r/reference/shiny/latest/shinyapp.html) option can be passed on, for example `run_app(options = list(port = 8080))`.
 
 ## Screenshots
 
@@ -153,6 +154,7 @@ library(golemcrypto)
 btc <- get_history("Bitcoin (BTC)", as.Date("2020-01-01"))
 plot_timeseries(btc)
 plot_timeseries(btc, averages = c(20, 100))   # other moving averages
+plot_timeseries(btc, bollinger = TRUE, show_rsi = TRUE)   # with the Bollinger bands and the RSI
 plot_returns_calendar(monthly_returns(btc), "Bitcoin (BTC)", mode = "dark")
 
 # is the recent volatility normal? (needs more than a year of history)
@@ -171,6 +173,12 @@ plot_drawdowns(falls)
 history <- get_history(c("Bitcoin (BTC)", "Ethereum (ETH)", "Solana (SOL)"))
 plot_compare(normalize_prices(history))
 
+# the same, relative to Bitcoin: above 100, better than Bitcoin
+plot_compare(relative_prices(normalize_prices(history), "Bitcoin (BTC)"), base = "Bitcoin (BTC)")
+
+# calendar effects: the "turn" of the month, the "santa" rally, Sell in May ("half")
+seasonality_text(seasonality_analysis(get_history("Bitcoin (BTC)", as.Date("2013-04-29")), "turn"))
+
 # the top 100 coins, which needs the API key
 listings <- get_listings()$data
 plot_treemap(listings)
@@ -188,6 +196,7 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 - Built-in date range selector with preset options
 - Volume chart synchronized with the main price chart
 - 50- and 200-day moving averages; click a legend entry to hide or show a line
+- Optional 20-day Bollinger bands, and a panel of the 14-day RSI with lines at 30 and 70
 - The vertical axes follow the days in view, so a week's candles fill the chart; a Linear/Log switch shows the whole history in proportion
 - Drawdown chart: how far the price is below its all-time high
 
@@ -206,6 +215,7 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 - Pick up to 10 coins and a start date
 - Each coin's close price starts at 100 on the first date all of them have data, so their performance can be compared directly
 - Switch between a linear and a log scale
+- Show the coins relative to one of them: a line that rises did better than that coin, so Ethereum relative to Bitcoin is the ETH/BTC ratio
 
 ### Treemap Tab
 - The top 100 coins, each box sized by market cap and colored from red to green by its 24h change
@@ -215,6 +225,7 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 
 ### Seasonality Tab
 - For the coin selected in the Timeseries tab, the returns of complete days, weeks, months or years, grouped by day of the week, ISO week of the year, month or year of Bitcoin's 4-year halving cycle
+- Or a calendar effect of the stock market against the rest: the turn of the month, the Santa rally, or Sell in May (May to October against November to April)
 - Two cards name the best and the worst group, by their mean return with its median and how often it rose, and say whether the differences could be chance, with a Kruskal-Wallis test
 - A chart of the mean and median return of each group and of the share of its returns that were gains, and a table of the groups with their best and worst return
 
@@ -226,11 +237,11 @@ Coins are picked by their label, such as `"Bitcoin (BTC)"`, and `get_coins()$nam
 
 ### Drawdowns Tab
 - For the coin selected in the Timeseries tab, two cards say in words how far the coin is below its all-time high, the rise it needs to get back there, and how long the earlier falls that went as deep took to recover, and sum up the falls of its history
-- A chart of the close on a log scale and of how far it is below its high, with each fall of 10%, 20%, 30% or 50% or more shaded and its trough numbered
+- A chart of the close on a log scale and of how far it is below its high, with each fall of 10%, 20%, 30%, 40% or 50% or more shaded and its trough numbered
 - A table of those falls, the deepest first: peak, trough, depth, days to the trough and back to the high
 
 ### About Tab
-- What every tab shows and how its numbers are calculated: the candles, moving averages and drawdown, the index of the Compare tab, the Top 100 columns, and the colors of the tables and charts
+- What every tab shows and how its numbers are calculated: the candles, moving averages, Bollinger bands, RSI and drawdown, the index of the Compare tab and its relative strength, the calendar effects of the Seasonality tab, the Top 100 columns, and the colors of the tables and charts
 - Linear and log scales: how each is drawn, with an example chart, and when a log scale helps
 - The text is in `inst/app/about.md`, so it can be edited without touching the R code
 
@@ -263,7 +274,7 @@ The package follows the layout of a [golem](https://thinkr-open.github.io/golem/
 
 | File | Contents |
 |---|---|
-| `R/run_app.R` | `crypto()`, which starts the app |
+| `R/run_app.R` | `run_app()`, which starts the app |
 | `R/app_ui.R`, `R/app_server.R` | The page layout and the server, which connect the modules |
 | `R/mod_*.R` | One Shiny module per tab |
 | `R/fct_data.R` | Downloads, and the cache of the market listings |

@@ -82,6 +82,19 @@ Choose other moving averages with `averages`, or none with `averages = NULL`. Le
 plot_timeseries(btc, averages = c(20, 100), show_drawdown = FALSE)
 ```
 
+`bollinger = TRUE` adds the Bollinger bands around the prices: the 20-day average and two standard deviations of the last 20 closes above and below it. `show_rsi = TRUE` adds a panel under the prices with the 14-day relative strength index, from 0 to 100, with dashed lines at 30 and 70:
+
+```{r timeseries-indicators, eval = FALSE}
+plot_timeseries(btc, bollinger = TRUE, show_rsi = TRUE)
+```
+
+`bollinger_bands()` and `rsi()` calculate them, for your own charts or tables:
+
+```{r indicators}
+indicators <- data.frame(date = btc$timestamp, close = btc$close, bollinger_bands(btc$close), rsi = rsi(btc$close))
+tail(indicators, 3)
+```
+
 ## Compare coins
 
 To compare several coins, download them together and pass them through `normalize_prices()`. It starts every coin at 100 on the first date on which all of them have data, so 150 means the price rose by half since that date:
@@ -91,6 +104,12 @@ history <- get_history(c("Bitcoin (BTC)", "Ethereum (ETH)", "Solana (SOL)"))
 prices <- normalize_prices(history)
 tail(prices[, c("name_symbol", "timestamp", "close", "index")])
 plot_compare(prices)
+```
+
+To see how the coins did against one of them, pass the normalized prices to `relative_prices()` with the `name_symbol` of that coin, the base. Each of the other lines is then its ratio to the base, 100 at the start: above 100 the coin did better than the base since then, below it worse, so Ethereum relative to Bitcoin is the ETH/BTC ratio. Tell `plot_compare()` the base, for the title and a dashed line at 100:
+
+```{r relative, fig.height = 7}
+plot_compare(relative_prices(prices, "Bitcoin (BTC)"), base = "Bitcoin (BTC)")
 ```
 
 ## Monthly returns

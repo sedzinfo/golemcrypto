@@ -2,9 +2,10 @@
 #
 ##########################################################################################
 #' @title Timeseries module - UI
-#' @description A coin picker with live search, a button that downloads the
-#' coin's daily prices as CSV, and a candlestick chart of those prices, with the
-#' trading volume underneath.
+#' @description A coin picker with live search, boxes that add the Bollinger
+#' bands and the RSI, a button that downloads the coin's daily prices as CSV,
+#' and a candlestick chart of those prices, with the trading volume
+#' underneath.
 #' @param id Character. Module namespace id.
 #' @param coins Data frame of coins from [get_coins()], whose `name_symbol`
 #'   labels fill the picker.
@@ -25,6 +26,8 @@ mod_timeseries_ui <- function(id, coins) {
         # the page's own colors follow the light/dark mode, the default light button stays white
         options = list(`live-search` = TRUE, style = "border bg-body text-body")
       ),
+      checkboxGroupInput(ns("indicators"), label = "Indicators", inline = TRUE,
+                         choices = c("Bollinger bands" = "bollinger", "RSI" = "rsi")),
       div(class = "mb-3", downloadButton(ns("csv"), "CSV"))
     ),
     shinycssloaders::withSpinner(
@@ -38,7 +41,8 @@ mod_timeseries_ui <- function(id, coins) {
 ##########################################################################################
 #' @title Timeseries module - server
 #' @description Downloads the full price history of the selected coin, renders
-#' its candlestick chart and serves it as a CSV file named like
+#' its candlestick chart, with the Bollinger bands and the RSI when their
+#' boxes are ticked, and serves it as a CSV file named like
 #' `bitcoin-btc-history-2026-10-24.csv`, with the columns `date`, `name_symbol`,
 #' `open`, `high`, `low`, `close`, `volume` and `market_cap`.
 #' @param id Character. Module namespace id, must match the id used in
@@ -64,7 +68,9 @@ mod_timeseries_server <- function(id, coins, dark_mode) {
 
     output$plot <- plotly::renderPlotly({
       validate(need(history(), "Data not available for this coin"))
-      plot_timeseries(history(), dark_mode())
+      plot_timeseries(history(), dark_mode(),
+        bollinger = "bollinger" %in% input$indicators, show_rsi = "rsi" %in% input$indicators
+      )
     })
 
     output$csv <- csv_download(

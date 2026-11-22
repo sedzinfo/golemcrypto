@@ -15,7 +15,9 @@ A list with a \code{headline} and \code{points}.
 \description{
 By the mean return, among the groups with at least half the
 returns of the largest group: week 53, which only some years have, would
-otherwise often come first or last by luck.
+otherwise often come first or last by luck. A calendar effect gives both
+of its groups, however few the returns of the effect, and how the effect
+is defined.
 }
 \examples{
 btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))

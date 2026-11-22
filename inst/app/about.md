@@ -32,7 +32,27 @@ It is 0% on a day that closes at a new high, and −50% at half of it. The high 
 rise needed = (100 / (100 + from high) − 1) × 100
 ```
 
-**Zoom** with the buttons above the chart (7 days to all) or the slider under it; the averages and the drawdown always use the whole history. The buttons count back from the right edge of the chart as it is, so after dragging the slider, *7 days* shows the week before the new edge, and *all* brings back the whole history. Each vertical axis follows the days in view, from their lowest to their highest value, so the candles of a week fill the chart and their lows and highs can be compared; the volume and the drawdown keep 0 in view. Click a legend entry to hide or show its line.
+**Indicators.** Two boxes above the chart add two common tools of chart readers. Like the averages, they describe the past and do not predict.
+
+*Bollinger bands*, John Bollinger's, are a grey band around the 20-day average (the dotted line), two standard deviations of the last 20 closes above and below it:
+
+```
+middle(t) = average of the last 20 closes
+upper(t) = middle(t) + 2 × sd(last 20 closes)        lower(t) = middle(t) − 2 × sd(last 20 closes)
+```
+
+The standard deviation divides by 20, not 19, as Bollinger defined it. The band widens when the coin swings and narrows when it is calm; a long narrow stretch, the *squeeze*, often comes before a larger move, in either direction. A close outside the band is far from its recent level: with normally distributed closes about 1 in 20 would be, but prices follow trends, so in a strong rise the coin can ride along the upper band for weeks. Crypto trades every day, so 20 days are under three weeks, not the four weeks that 20 trading days make for shares.
+
+*RSI*, J. Welles Wilder's relative strength index of 1978, is a panel under the prices, from 0 to 100, of the 14-day balance of rises and falls:
+
+```
+RSI(t) = 100 − 100 / (1 + average rise(t) / average fall(t))
+average rise(t) = (13 × average rise(t−1) + rise(t)) / 14
+```
+
+A day's rise is its gain from the close before, or 0 on a fall, and its fall the loss, or 0 on a rise. The first averages are the means of the first 14 days; after that each day counts for 1/14, as Wilder smoothed them. The RSI is 100 when the coin only rose, 0 when it only fell, and 50 when the rises and falls balance. Traders read above 70, the upper dashed line, as *overbought*, a run up that may pause, and below 30 as *oversold*; in a strong trend it can stay beyond either for long. Its axis always runs from 0 to 100.
+
+**Zoom** with the buttons above the chart (7 days to all) or the slider under it; the averages and the drawdown always use the whole history. The buttons count back from the right edge of the chart as it is, so after dragging the slider, *7 days* shows the week before the new edge, and *all* brings back the whole history. Each vertical axis follows the days in view, from their lowest to their highest value, so the candles of a week fill the chart and their lows and highs can be compared; the volume and the drawdown keep 0 in view, and the RSI its axis from 0 to 100. Click a legend entry to hide or show its line.
 
 **Linear and Log** switch the axis of the prices (see [Linear and log scales](#about-scales)). Over the whole history the log axis is the fairer view: on the linear one Bitcoin's first four years, all below $1,200, lie flat next to today's tens of thousands, while on the log axis a 10% move is equally tall in any year.
 
@@ -47,6 +67,14 @@ index(t) = 100 × close(t) / close(t₀)
 t₀ is the first day, on or after the start date, on which every selected coin has a price; a coin that started trading after the start date moves t₀ to its first day. The chart title shows t₀.
 
 The index has no unit: it is the price as a percentage of the price on t₀. Read it as what 100 dollars put into the coin at the close of t₀ would be worth, before fees: 150 means +50% since t₀, 80 means −20%, and 1,000 means ten times as much. The ratio of two lines compares two coins: when A is at 300 and B at 150, A has done twice as well as B since t₀.
+
+**Relative to.** Pick one of the selected coins as the base, and the chart shows the others relative to it, their relative strength: the ratio of the two lines, so 100 on t₀ again:
+
+```
+relative(t) = 100 × index(t) / index of the base(t)
+```
+
+A line that rises did better than the base over that stretch, one that falls did worse, and 120 means 20% better since t₀. Ethereum relative to Bitcoin is the ETH/BTC ratio, which traders watch to see whether the rest of the market leads Bitcoin or lags it, scaled to 100 on t₀. The dashed line at 100 is where a coin did as well as the base. On a day the base has no price, its last close before stands in. The CSV file then holds the base and the relative line of each coin next to its normalized close.
 
 The average growth per year (the compound annual growth rate) after d days is
 
@@ -129,6 +157,16 @@ Do some days, weeks, months or years bring better returns than others? The tab a
 | months | the month |
 | years | the year of the 4-year cycle of Bitcoin's halvings |
 
+Or a calendar effect of the stock market, its returns against the rest, in two groups:
+
+| Effect | The returns | In the effect |
+|---|---|---|
+| days, turn of the month | of the days | the last day of a month and the first 3 of the next, when salaries and pension contributions tend to be invested in shares |
+| days, Santa rally | of the days | the last 5 days of December, from the 27th, and the first 2 of January, after Yale Hirsch's *Stock Trader's Almanac* of 1972, which counted trading days |
+| half-years, Sell in May | of the halves of the year | "Sell in May and go away": May to October, from the close of 30 April to that of 31 October, against November to April, from there to the close of the next 30 April |
+
+Crypto trades every day, so the days of the effects are those of the calendar. The effects were found in shares, and whether they reach crypto is what the tab tests: in Bitcoin's history from 2013 to November 2026, none of the three differs by more than chance usually gives. The turn of the month and the Santa rally compare a few days with many, so their cards and table give the mean of a day, not of the whole stretch.
+
 Each return covers a whole period, from the last close of the period before to the last close of the period:
 
 ```
@@ -139,9 +177,9 @@ so a Monday's return is the move from Sunday's close to Monday's, and the monthl
 
 **The halving cycle.** About every four years the reward for mining a Bitcoin block halves, which slows the supply of new coins: in 2012, 2016, 2020 and 2024, all years divisible by 4. Many traders see a 4-year cycle in the market around them. The tab puts each year in it: *Halving year* (2016, 2020, 2024), *Halving + 1* (2017, 2021, 2025), *Halving + 2* (2014, 2018, 2022) and *Halving + 3* (2015, 2019, 2023). The halvings are Bitcoin's, but as the rest of the market tends to follow Bitcoin, the cycle is applied to every coin. With Bitcoin's prices starting in 2013, each year of the cycle has only a handful of returns, too few for firm conclusions.
 
-**Best and worst.** The first card names the groups with the highest and lowest mean return, with their median and how often they rose. The mean is the average return, and one huge month can carry it, as Bitcoin's +454% of November 2013 does for its Novembers; the median, the middle return, is the typical one. When the two disagree, the median is the safer guide. Groups with fewer than half the returns of the others, such as week 53, are left out of the best and the worst, as a group of one or two returns ranks by luck. The last point gives the same numbers for all the returns together, to compare each group with.
+**Best and worst.** The first card names the groups with the highest and lowest mean return, with their median and how often they rose. The mean is the average return, and one huge month can carry it, as Bitcoin's +454% of November 2013 does for its Novembers; the median, the middle return, is the typical one. When the two disagree, the median is the safer guide. Groups with fewer than half the returns of the others, such as week 53, are left out of the best and the worst, as a group of one or two returns ranks by luck. A calendar effect instead compares its two groups, however few the days of the effect, and the card ends with how the effect is defined. The last point gives the same numbers for all the returns together, to compare each group with.
 
-**Chance.** Any history has a best and a worst group, so the second card asks whether the differences are larger than chance would give. The Kruskal-Wallis test compares the ranks of the returns of the groups rather than their values, so a few extreme returns do not decide it. Its p-value is the probability of differences at least as large as these in a history in which the group made no difference: below 0.05 they are unlikely to be chance alone, above it they could well be. A p-value says nothing about the size of a difference, nor whether it will last. The test takes the returns as independent, which crypto returns are only roughly, as calm and wild stretches come in runs, and the more groups there are, the more one of them stands out by luck: with 52 weeks to choose from, the best week of a coin's history usually looks remarkable.
+**Chance.** Any history has a best and a worst group, so the second card asks whether the differences are larger than chance would give. The Kruskal-Wallis test compares the ranks of the returns of the groups rather than their values, so a few extreme returns do not decide it. Its p-value is the probability of differences at least as large as these in a history in which the group made no difference: below 0.05 they are unlikely to be chance alone, above it they could well be. A p-value says nothing about the size of a difference, nor whether it will last. The test takes the returns as independent, which crypto returns are only roughly, as calm and wild stretches come in runs, and the more groups there are, the more one of them stands out by luck: with 52 weeks to choose from, the best week of a coin's history usually looks remarkable. A calendar effect has only two groups, and the test is then the same as the Wilcoxon rank-sum test.
 
 **The chart.** At the top, the mean return of each group as a bar, green for gains and red for losses, with the median as a diamond. At the bottom, the share of the group's returns that were gains, with a dashed line at 50%. Hover over a bar for all the numbers of its group.
 
@@ -222,7 +260,7 @@ and its days are calendar days: from the peak to the trough, from the trough bac
 
 **Now.** How far the last close is below the all-time high, and the rise it needs to get back there (the formula of the Timeseries tab). The lowest close since the high gives the depth of the current fall so far, which ranks it among all the falls of the history, and the card lists the earlier falls that went at least as deep: how many days they took to get back to their high, from the peak and from the trough. Every earlier fall did get back, as only the last fall can still be open: coins that never recovered from a fall are the coins whose current fall is open. The days of the earlier falls describe the past, not when the current one will end.
 
-**The history.** The falls of 10%, 20% (the default), 30% or 50% or more, as picked above the chart: how many there were, the deepest, the median fall with the median days to its trough and back to its high, the share of days that closed that far below the high, and the days that closed at a new all-time high.
+**The history.** The falls of 10%, 20% (the default), 30%, 40% or 50% or more, as picked above the chart: how many there were, the deepest, the median fall with the median days to its trough and back to its high, the share of days that closed that far below the high, and the days that closed at a new all-time high.
 
 **The chart.** At the top, the close on a log scale, on which equal distances are equal percentages, with the all-time high so far as a dotted line. At the bottom, how far each close is below that high, with a dashed line at the depth picked. Each fall of that depth or more is shaded from its peak to its recovery, the current one in amber, and its trough carries its rank; hover over a trough for its dates.
 

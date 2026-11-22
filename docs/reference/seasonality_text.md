@@ -2,8 +2,9 @@
 
 Sentences built from the numbers of
 [`seasonality_analysis()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_analysis.md),
-for the Seasonality tab: the best and the worst group, and whether the
-differences between the groups could be chance.
+for the Seasonality tab: the best and the worst group, or for a calendar
+effect its two groups, and whether the differences between the groups
+could be chance.
 
 ## Usage
 
@@ -34,7 +35,7 @@ seasonality_text(seasonality_analysis(btc, "day"))
 #> 
 #> $groups$points
 #> [1] "Monday: mean +0.55%, median +0.23%, up 380 of 707 times (54%)."           "Thursday: mean −0.04%, median −0.07%, up 346 of 708 times (49%)."        
-#> [3] "All 4,953 days together: mean +0.19%, median +0.10%, up 52% of the time."
+#> [3] "All 4,954 days together: mean +0.19%, median +0.10%, up 52% of the time."
 #> 
 #> 
 #> $chance
@@ -43,7 +44,7 @@ seasonality_text(seasonality_analysis(btc, "day"))
 #> 
 #> $chance$points
 #> [1] "A Kruskal-Wallis test asks whether the returns of the days of the week could all come from the same distribution: p = 0.21, so differences as large as these would turn up in about 21% of histories in which they did not matter."
-#> [2] "The returns run from 30 Apr 2013 to 20 Nov 2026: 4,953 days, 707 to 708 per group."                                                                                                                                                
+#> [2] "The returns run from 30 Apr 2013 to 21 Nov 2026: 4,954 days, 707 to 708 per group."                                                                                                                                                
 #> [3] "With 7 days of the week to pick from, the best one looks good partly by luck, and a pattern of the past need not hold: the crypto market has changed a lot since 2013."                                                            
 #> 
 #> 

@@ -1,8 +1,8 @@
 # Compare module - UI
 
-A picker for up to 10 coins, a start date, a button that downloads the
-normalized prices as CSV, and a chart of the coins' close prices
-normalized to 100.
+A picker for up to 10 coins, a start date, a coin to show the others
+relative to, a button that downloads the normalized prices as CSV, and a
+chart of the coins' close prices normalized to 100.
 
 ## Usage
 

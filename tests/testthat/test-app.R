@@ -38,3 +38,14 @@ test_that("the stylesheet shared by the apps is in the page, before the app's ow
   own <- regexpr("href=\"www/[A-Za-z0-9_.-]+\\.css\"", page)
   if (own > 0) expect_lt(shared, own)
 })
+
+test_that("run_app() builds the app, and crypto() is gone", {
+  local_mocked_bindings(
+    use_api_key = function(api_key) invisible(api_key),
+    get_coins = function() coins,
+    get_listings = function() list(data = listings)
+  )
+  expect_s3_class(run_app(api_key = "test-key"), "shiny.appobj")
+  expect_true("run_app" %in% getNamespaceExports("golemcrypto"))
+  expect_false("crypto" %in% getNamespaceExports("golemcrypto"))
+})

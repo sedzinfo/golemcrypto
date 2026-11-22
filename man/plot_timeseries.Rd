@@ -8,7 +8,9 @@ plot_timeseries(
   history,
   mode = "light",
   averages = c(50, 200),
-  show_drawdown = TRUE
+  show_drawdown = TRUE,
+  bollinger = FALSE,
+  show_rsi = FALSE
 )
 }
 \arguments{
@@ -23,6 +25,12 @@ page.}
 \code{\link[=moving_average]{moving_average()}}), or \code{NULL} for none.}
 
 \item{show_drawdown}{\code{TRUE} to add the drawdown chart (see \code{\link[=drawdown]{drawdown()}}).}
+
+\item{bollinger}{\code{TRUE} to add the 20-day Bollinger bands to the prices
+(see \code{\link[=bollinger_bands]{bollinger_bands()}}).}
+
+\item{show_rsi}{\code{TRUE} to add a chart of the 14-day relative strength
+index under the prices (see \code{\link[=rsi]{rsi()}}), with dashed lines at 30 and 70.}
 }
 \value{
 A plotly object.
@@ -32,7 +40,9 @@ Plots the daily open, high, low and close prices, with a line
 through the close, its moving averages, date range buttons and a range
 slider. Underneath, smaller charts show the trading volume and the
 drawdown: how far the price is below its all-time high so far. A click on
-a legend entry hides or shows that line.
+a legend entry hides or shows that line. On request, the Bollinger bands
+are drawn around the prices, and a panel of the relative strength index,
+whose axis always runs from 0 to 100, right under them.
 
 The vertical axes follow the days in view: zoomed in, each runs from the
 lowest to the highest value of those days, so a week's candles fill the
@@ -45,4 +55,6 @@ btc <- get_history("Bitcoin (BTC)", as.Date("2013-04-29"))
 plot_timeseries(btc)
 # shorter averages, and no drawdown chart
 plot_timeseries(btc, averages = c(20, 100), show_drawdown = FALSE)
+# with the Bollinger bands and the RSI
+plot_timeseries(btc, bollinger = TRUE, show_rsi = TRUE)
 }

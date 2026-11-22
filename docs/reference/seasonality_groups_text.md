@@ -2,7 +2,9 @@
 
 By the mean return, among the groups with at least half the returns of
 the largest group: week 53, which only some years have, would otherwise
-often come first or last by luck.
+often come first or last by luck. A calendar effect gives both of its
+groups, however few the returns of the effect, and how the effect is
+defined.
 
 ## Usage
 

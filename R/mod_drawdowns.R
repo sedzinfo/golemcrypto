@@ -27,7 +27,7 @@ mod_drawdowns_ui <- function(id) {
           class = "d-flex align-items-center gap-2",
           tags$label(`for` = ns("min_depth"), class = "form-label mb-0", "Falls of"),
           selectInput(ns("min_depth"), NULL,
-            choices = c("10% or more" = 10, "20% or more" = 20, "30% or more" = 30, "50% or more" = 50),
+            choices = c("10% or more" = 10, "20% or more" = 20, "30% or more" = 30, "40% or more" = 40, "50% or more" = 50),
             selected = 20, selectize = FALSE, width = "9rem"
           )
         ),

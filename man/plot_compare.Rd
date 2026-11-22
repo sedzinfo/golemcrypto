@@ -4,13 +4,17 @@
 \alias{plot_compare}
 \title{Line chart of normalized close prices}
 \usage{
-plot_compare(prices, mode = "light")
+plot_compare(prices, mode = "light", base = NULL)
 }
 \arguments{
 \item{prices}{Prices from \code{\link[=normalize_prices]{normalize_prices()}}.}
 
 \item{mode}{\code{"light"} (the default) or \code{"dark"}, to suit a light or dark
 page.}
+
+\item{base}{\code{NULL} for the normalized prices, or the \code{name_symbol} of the
+coin that \code{prices}, from \code{\link[=relative_prices]{relative_prices()}}, are relative to, for the
+title and a dashed line at 100, where a coin did as well as the base.}
 }
 \value{
 A plotly object.
@@ -22,4 +26,6 @@ a linear and a log scale.
 \examples{
 history <- get_history(c("Bitcoin (BTC)", "Ethereum (ETH)", "Solana (SOL)"))
 plot_compare(normalize_prices(history))
+# against Bitcoin
+plot_compare(relative_prices(normalize_prices(history), "Bitcoin (BTC)"), base = "Bitcoin (BTC)")
 }

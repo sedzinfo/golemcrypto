@@ -5,7 +5,11 @@ renders their close prices normalized to 100, and serves them as a CSV
 file named like `compare-2026-10-24.csv`, with the columns `date`,
 `name_symbol`, `close` and `index`. The download waits until the
 selection has not changed for 1.5 seconds, instead of starting on every
-click in the picker.
+click in the picker. With a coin picked under "Relative to", the chart
+shows the others relative to it with
+[`relative_prices()`](https://sedzinfo.github.io/golemcrypto/reference/relative_prices.md),
+and the CSV file, named like `compare-vs-bitcoin-btc-2026-10-24.csv`,
+adds `base` and `relative`.
 
 ## Usage
 

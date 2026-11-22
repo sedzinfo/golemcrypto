@@ -10,10 +10,18 @@ test compares the ranks of the returns, so a few extreme months do not
 decide it, but it takes the returns as independent, which crypto returns
 are only roughly: calm and wild stretches come in runs.
 
+The calendar effects (`"turn"`, `"santa"` and `"half"`, see
+[`seasonal_returns()`](https://sedzinfo.github.io/golemcrypto/reference/seasonal_returns.md))
+have two groups, the returns in the effect and the rest, for which the
+test is the same as a Wilcoxon rank-sum test.
+
 ## Usage
 
 ``` r
-seasonality_analysis(history, period = c("day", "week", "month", "year"))
+seasonality_analysis(
+  history,
+  period = c("day", "week", "month", "year", "turn", "santa", "half")
+)
 ```
 
 ## Arguments
@@ -26,7 +34,9 @@ seasonality_analysis(history, period = c("day", "week", "month", "year"))
 
 - period:
 
-  `"day"`, `"week"`, `"month"` or `"year"`.
+  `"day"`, `"week"`, `"month"` or `"year"`, or a calendar effect:
+  `"turn"` (the turn of the month), `"santa"` (the Santa rally) or
+  `"half"` (Sell in May).
 
 ## Value
 

@@ -24,7 +24,9 @@ date, renders their close prices normalized to 100, and serves them as a CSV
 file named like \verb{compare-2026-10-24.csv}, with the columns \code{date},
 \code{name_symbol}, \code{close} and \code{index}. The download waits until the selection
 has not changed for 1.5 seconds, instead of starting on every click in the
-picker.
+picker. With a coin picked under "Relative to", the chart shows the others
+relative to it with \code{\link[=relative_prices]{relative_prices()}}, and the CSV file, named like
+\verb{compare-vs-bitcoin-btc-2026-10-24.csv}, adds \code{base} and \code{relative}.
 }
 \examples{
 \dontrun{

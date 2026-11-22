@@ -27,7 +27,7 @@ destination: docs
 reference:
   - title: App
     contents:
-      - crypto
+      - run_app
   - title: Data
     contents:
       - get_coins
@@ -36,8 +36,11 @@ reference:
   - title: Calculations
     contents:
       - normalize_prices
+      - relative_prices
       - monthly_returns
       - moving_average
+      - bollinger_bands
+      - rsi
       - drawdown
       - drawdown_episodes
       - drawdown_analysis

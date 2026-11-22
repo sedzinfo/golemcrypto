@@ -17,7 +17,8 @@ period_bounds(date, period)
 
 - period:
 
-  `"day"`, `"week"`, `"month"` or `"year"`.
+  `"day"`, `"week"`, `"month"`, `"year"` or `"half"`, the halves of the
+  year from May to October and from November to April.
 
 ## Value
 

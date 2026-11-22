@@ -107,3 +107,33 @@ test_that("the timeseries chart switches between a linear and a log axis and fit
   expect_match(hook, "plotly_relayout", fixed = TRUE)
   expect_match(hook, "candlestick", fixed = TRUE)
 })
+
+test_that("plot_timeseries() adds the Bollinger bands and an RSI panel of a fixed range when asked", {
+  alpha <- garch_history(300)
+  alpha$open <- alpha$close
+  alpha$high <- alpha$close
+  alpha$low <- alpha$close
+  alpha$volume <- 1000
+  names_of <- function(built) vapply(built$data, function(trace) if (is.null(trace$name)) "" else trace$name, "")
+  plain <- plotly::plotly_build(plot_timeseries(alpha))$x
+  built <- plotly::plotly_build(plot_timeseries(alpha, bollinger = TRUE, show_rsi = TRUE))$x
+  names <- names_of(built)
+  expect_equal(sum(names == "Bollinger bands"), 3)
+  expect_false(any(grepl("Bollinger|RSI", names_of(plain))))
+  # the RSI right under the prices, from 0 to 100, with lines at 30 and 70
+  expect_equal(built$data[[which(names == "RSI (14 days)")]]$yaxis, "y2")
+  expect_equal(built$data[[which(names == "Volume")]]$yaxis, "y3")
+  expect_equal(built$layout$yaxis2$range, c(0, 100))
+  expect_true(built$layout$yaxis2$fixedrange)
+  expect_equal(vapply(built$layout$shapes, function(shape) shape$y0, 0), c(30, 70))
+  expect_match(paste(unlist(plot_timeseries(alpha, show_rsi = TRUE)$jsHooks$render), collapse = "\n"), "fixedrange", fixed = TRUE)
+})
+
+test_that("plot_compare() shows the coins relative to a base, with a line at 100", {
+  relative <- relative_prices(normalize_prices(history), "Beta (B)")
+  built <- plotly::plotly_build(plot_compare(relative, base = "Beta (B)"))$x
+  expect_length(built$data, 1)
+  expect_match(unname(unlist(built$layout$title))[1], "Relative to Beta (B)", fixed = TRUE)
+  expect_equal(built$layout$shapes[[1]]$y0, 100)
+  expect_null(plotly::plotly_build(plot_compare(normalize_prices(history)))$x$layout$shapes)
+})

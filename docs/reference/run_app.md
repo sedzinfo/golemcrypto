@@ -6,7 +6,7 @@ exchange rates and market data from 'CoinMarketCap'.
 ## Usage
 
 ``` r
-crypto(
+run_app(
   api_key = Sys.getenv("COINMARKETCAP_APIKEY"),
   analytics = FALSE,
   keep_alive = TRUE,
@@ -46,8 +46,8 @@ crypto(
 ## Value
 
 A [`shiny::shinyApp()`](https://rdrr.io/pkg/shiny/man/shinyApp.html)
-object. Printing it, or calling `crypto()` at the console, opens the app
-in the browser.
+object. Printing it, or calling `run_app()` at the console, opens the
+app in the browser.
 
 ## Details
 
@@ -57,8 +57,9 @@ The application has the following tabs:
 
   Candlestick chart of daily open, high, low and close prices in USD
   since 2013 for any active cryptocurrency, with its 50- and 200-day
-  moving averages, and charts of the volume and of the drawdown (how far
-  the price is below its all-time high) underneath.
+  moving averages, optional Bollinger bands and relative strength index,
+  and charts of the volume and of the drawdown (how far the price is
+  below its all-time high) underneath.
 
 - Top 100:
 
@@ -69,7 +70,7 @@ The application has the following tabs:
 - Compare:
 
   Close prices of up to 10 coins, normalized to 100 on the first date
-  all of them have data.
+  all of them have data, or relative to one of them.
 
 - Treemap:
 
@@ -82,8 +83,25 @@ The application has the following tabs:
 - Seasonality:
 
   The returns of the coin selected in the Timeseries tab by day of the
-  week, week of the year, month or year of the halving cycle, with a
-  test of whether the differences could be chance.
+  week, week of the year, month or year of the halving cycle, or a
+  calendar effect of the stock market against the rest (the turn of the
+  month, the Santa rally or Sell in May), with a test of whether the
+  differences could be chance.
+
+- Volatility:
+
+  Whether the volatility of the last weeks and the move of the last days
+  of the coin are normal, and a GARCH forecast of the next days with the
+  value at risk.
+
+- Drawdowns:
+
+  How far the coin is below its all-time high, and how deep its earlier
+  falls went and how long they took to recover.
+
+- About:
+
+  What every tab shows, and how its numbers are calculated.
 
 Market listings are downloaded when the app starts and refreshed every
 10 minutes. When they cannot be downloaded, for example because the API
@@ -99,8 +117,8 @@ required. When 'CoinMarketCap' limits the requests, crypto2 prints
 ## Examples
 
 ``` r
-if (interactive()) crypto()
+if (interactive()) run_app()
 
 # with the API key passed directly, on a fixed port
-if (interactive()) crypto(api_key = "your-api-key", options = list(port = 8080))
+if (interactive()) run_app(api_key = "your-api-key", options = list(port = 8080))
 ```

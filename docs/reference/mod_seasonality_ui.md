@@ -2,10 +2,11 @@
 
 For the coin selected in the Timeseries tab: a choice of the returns to
 compare (days by day of the week, weeks by week of the year, months by
-month or years by year of the halving cycle), a button that downloads
-the numbers as CSV, the seasonality chart, the table of the groups, and
-under it two cards that name the best and the worst group and say
-whether the differences could be chance.
+month or years by year of the halving cycle, or a calendar effect
+against the rest: the turn of the month, the Santa rally or Sell in
+May), a button that downloads the numbers as CSV, the seasonality chart,
+the table of the groups, and under it two cards that name the best and
+the worst group and say whether the differences could be chance.
 
 ## Usage
 

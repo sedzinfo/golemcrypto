@@ -4,6 +4,7 @@
 # R CMD check golemcrypto
 # R CMD Rd2pdf golemcrypto
 # R CMD build golemcrypto --resave-data
+# .rs.restartR()
 library(devtools)
 library(roxygen2)
 rm(list = ls())
@@ -28,6 +29,6 @@ system("R CMD build . --resave-data")
 
 readRenviron("~/GitHub/golemcrypto/.Renviron")
 Sys.getenv("COINMARKETCAP_APIKEY")
-crypto()
+golemcrypto::run_app()
 
 

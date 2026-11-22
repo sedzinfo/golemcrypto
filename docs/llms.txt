@@ -26,19 +26,23 @@ time series analysis.
 - **Moving Averages and Drawdown**: 50- and 200-day moving averages on
   the price chart, and a chart of how far the price is below its
   all-time high
+- **Bollinger Bands and RSI**: Optional 20-day Bollinger bands around
+  the prices and a panel of the 14-day relative strength index
 - **Market Metrics**: Comprehensive market data including market cap,
   dominance, and 24h/7d/30d/60d/90d price changes
 - **Color-Coded Performance**: Heat-map style coloring for quick visual
   identification of price movements
 - **Coin Comparison**: Compare up to 10 coins, with their prices
-  normalized to start at 100
+  normalized to start at 100, or relative to one of them, such as
+  Ethereum against Bitcoin
 - **Market Treemap**: The top 100 coins sized by market cap and colored
   by their 24h change
 - **Returns Calendar**: Monthly returns by year for any coin
 - **Seasonality**: Whether some days of the week, weeks of the year,
   months or years of the halving cycle bring better returns than others,
-  with a test of whether the differences could be chance, in words, as a
-  chart and as a table
+  and whether the turn of the month, the Santa rally and Sell in May of
+  the stock market reach crypto, with a test of whether the differences
+  could be chance, in words, as a chart and as a table
 - **Volatility**: Whether the volatility of the last month and the move
   of the last 2 days are normal, against the coin’s history and a GARCH
   model, and a forecast of the next 7 days with the value at risk, in
@@ -74,7 +78,13 @@ installs the packages golemcrypto needs.
 
 #### From R-universe (recommended)
 
-[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(`` `` ``"golemcrypto"``,`` `` repos ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"https://sedzinfo.r-universe.dev"``, ``"https://cloud.r-project.org"``)`` ``)`
+``` r
+
+install.packages(
+  "golemcrypto",
+  repos = c("https://sedzinfo.r-universe.dev", "https://cloud.r-project.org")
+)
+```
 
 [R-universe](https://sedzinfo.r-universe.dev/golemcrypto) builds
 golemcrypto from this repository after every change, ready to install on
@@ -82,7 +92,11 @@ Windows, macOS and Linux, and CRAN provides the packages it needs.
 
 #### From GitHub
 
-[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"pak"``)`` ``# once`` ``pak``::`[`pak`](https://pak.r-lib.org/reference/pak.html)`(``"sedzinfo/golemcrypto"``)`
+``` r
+
+install.packages("pak")   # once
+pak::pak("sedzinfo/golemcrypto")
+```
 
 #### From the release tarball
 
@@ -91,7 +105,11 @@ release](https://github.com/sedzinfo/golemcrypto/releases/tag/latest)
 has the source tarball and the PDF manual, rebuilt from `main` on every
 change:
 
-[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"pak"``)`` ``# once`` ``pak``::`[`pak`](https://pak.r-lib.org/reference/pak.html)`(``"url::https://github.com/sedzinfo/golemcrypto/releases/download/latest/golemcrypto_0.1.0.tar.gz"``)`
+``` r
+
+install.packages("pak")   # once
+pak::pak("url::https://github.com/sedzinfo/golemcrypto/releases/download/latest/golemcrypto_0.1.0.tar.gz")
+```
 
 #### From a clone of the repository
 
@@ -102,7 +120,11 @@ plain clone with [Git](https://git-scm.com/downloads) has everything:
 git clone https://github.com/sedzinfo/golemcrypto.git
 ```
 
-[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"pak"``)`` ``# once`` ``pak``::`[`local_install`](https://pak.r-lib.org/reference/local_install.html)`(``"path/to/golemcrypto"``)`
+``` r
+
+install.packages("pak")   # once
+pak::local_install("path/to/golemcrypto")
+```
 
 ## CoinMarketCap API key
 
@@ -114,14 +136,17 @@ key.
 
 2.  Open your `.Renviron` file:
 
-    `usethis``::`[`edit_r_environ`](https://usethis.r-lib.org/reference/edit.html)`(``)`
+    ``` r
+
+    usethis::edit_r_environ()
+    ```
 
 3.  Add this line with your own key, save the file and restart R:
 
         COINMARKETCAP_APIKEY=your-api-key
 
 You can also pass the key directly with
-`crypto(api_key = "your-api-key")`. Keep the key out of your code and
+`run_app(api_key = "your-api-key")`. Keep the key out of your code and
 out of Git, because anyone who has it can use your API credits.
 
 Only the market listings of the Top 100 and Treemap tabs use the key:
@@ -134,12 +159,16 @@ tabs work as usual.
 
 Launch the Shiny app with just two lines of code:
 
-[`library`](https://rdrr.io/r/base/library.html)`(`[`golemcrypto`](https://sedzinfo.github.io/golemcrypto/)`)`` `[`crypto`](https://sedzinfo.github.io/golemcrypto/reference/crypto.md)`(``)`
+``` r
+
+library(golemcrypto)
+run_app()
+```
 
 The application will open in your default web browser. Any
 [`shiny::shinyApp()`](https://shiny.posit.co/r/reference/shiny/latest/shinyapp.html)
 option can be passed on, for example
-`crypto(options = list(port = 8080))`.
+`run_app(options = list(port = 8080))`.
 
 ## Screenshots
 
@@ -229,7 +258,44 @@ from the high
 The data, calculations and charts of the app are also available as
 functions, for scripts and R Markdown reports:
 
-[`library`](https://rdrr.io/r/base/library.html)`(`[`golemcrypto`](https://sedzinfo.github.io/golemcrypto/)`)`` `` ``# one coin since 2020: candlestick chart and monthly returns`` ``btc`` ``<-`` `[`get_history`](https://sedzinfo.github.io/golemcrypto/reference/get_history.md)`(``"Bitcoin (BTC)"``, `[`as.Date`](https://rdrr.io/r/base/as.Date.html)`(``"2020-01-01"``)``)`` `[`plot_timeseries`](https://sedzinfo.github.io/golemcrypto/reference/plot_timeseries.md)`(``btc``)`` `[`plot_timeseries`](https://sedzinfo.github.io/golemcrypto/reference/plot_timeseries.md)`(``btc``, averages ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``20``, ``100``)``)`` ``# other moving averages`` `[`plot_returns_calendar`](https://sedzinfo.github.io/golemcrypto/reference/plot_returns_calendar.md)`(`[`monthly_returns`](https://sedzinfo.github.io/golemcrypto/reference/monthly_returns.md)`(``btc``)``, ``"Bitcoin (BTC)"``, mode ``=`` ``"dark"``)`` `` ``# is the recent volatility normal? (needs more than a year of history)`` ``analysis`` ``<-`` `[`volatility_analysis`](https://sedzinfo.github.io/golemcrypto/reference/volatility_analysis.md)`(`[`get_history`](https://sedzinfo.github.io/golemcrypto/reference/get_history.md)`(``"Bitcoin (BTC)"``, `[`as.Date`](https://rdrr.io/r/base/as.Date.html)`(``"2013-04-29"``)``)``)`` `[`volatility_text`](https://sedzinfo.github.io/golemcrypto/reference/volatility_text.md)`(``analysis``)`` ``analysis``$``forecast``$``days`` ``# the 95% range of the next 7 closes`` `[`plot_volatility`](https://sedzinfo.github.io/golemcrypto/reference/plot_volatility.md)`(``analysis``)`` `` ``# how far below its all-time high, against its earlier falls`` ``falls`` ``<-`` `[`drawdown_analysis`](https://sedzinfo.github.io/golemcrypto/reference/drawdown_analysis.md)`(`[`get_history`](https://sedzinfo.github.io/golemcrypto/reference/get_history.md)`(``"Bitcoin (BTC)"``, `[`as.Date`](https://rdrr.io/r/base/as.Date.html)`(``"2013-04-29"``)``)``)`` `[`drawdown_text`](https://sedzinfo.github.io/golemcrypto/reference/drawdown_text.md)`(``falls``)`` ``falls``$``episodes`` ``# the falls of 20% or more, the deepest first`` `[`plot_drawdowns`](https://sedzinfo.github.io/golemcrypto/reference/plot_drawdowns.md)`(``falls``)`` `` ``# several coins over the last year, starting at 100`` ``history`` ``<-`` `[`get_history`](https://sedzinfo.github.io/golemcrypto/reference/get_history.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"Bitcoin (BTC)"``, ``"Ethereum (ETH)"``, ``"Solana (SOL)"``)``)`` `[`plot_compare`](https://sedzinfo.github.io/golemcrypto/reference/plot_compare.md)`(`[`normalize_prices`](https://sedzinfo.github.io/golemcrypto/reference/normalize_prices.md)`(``history``)``)`` `` ``# the top 100 coins, which needs the API key`` ``listings`` ``<-`` `[`get_listings`](https://sedzinfo.github.io/golemcrypto/reference/get_listings.md)`(``)``$``data`` `[`plot_treemap`](https://sedzinfo.github.io/golemcrypto/reference/plot_treemap.md)`(``listings``)`` `[`listings_table`](https://sedzinfo.github.io/golemcrypto/reference/listings_table.md)`(``listings``)`
+``` r
+
+library(golemcrypto)
+
+# one coin since 2020: candlestick chart and monthly returns
+btc <- get_history("Bitcoin (BTC)", as.Date("2020-01-01"))
+plot_timeseries(btc)
+plot_timeseries(btc, averages = c(20, 100))   # other moving averages
+plot_timeseries(btc, bollinger = TRUE, show_rsi = TRUE)   # with the Bollinger bands and the RSI
+plot_returns_calendar(monthly_returns(btc), "Bitcoin (BTC)", mode = "dark")
+
+# is the recent volatility normal? (needs more than a year of history)
+analysis <- volatility_analysis(get_history("Bitcoin (BTC)", as.Date("2013-04-29")))
+volatility_text(analysis)
+analysis$forecast$days   # the 95% range of the next 7 closes
+plot_volatility(analysis)
+
+# how far below its all-time high, against its earlier falls
+falls <- drawdown_analysis(get_history("Bitcoin (BTC)", as.Date("2013-04-29")))
+drawdown_text(falls)
+falls$episodes   # the falls of 20% or more, the deepest first
+plot_drawdowns(falls)
+
+# several coins over the last year, starting at 100
+history <- get_history(c("Bitcoin (BTC)", "Ethereum (ETH)", "Solana (SOL)"))
+plot_compare(normalize_prices(history))
+
+# the same, relative to Bitcoin: above 100, better than Bitcoin
+plot_compare(relative_prices(normalize_prices(history), "Bitcoin (BTC)"), base = "Bitcoin (BTC)")
+
+# calendar effects: the "turn" of the month, the "santa" rally, Sell in May ("half")
+seasonality_text(seasonality_analysis(get_history("Bitcoin (BTC)", as.Date("2013-04-29")), "turn"))
+
+# the top 100 coins, which needs the API key
+listings <- get_listings()$data
+plot_treemap(listings)
+listings_table(listings)
+```
 
 Coins are picked by their label, such as `"Bitcoin (BTC)"`, and
 `get_coins()$name_symbol` lists all of them. Downloads are reused: the
@@ -248,6 +314,8 @@ minutes.
 - Volume chart synchronized with the main price chart
 - 50- and 200-day moving averages; click a legend entry to hide or show
   a line
+- Optional 20-day Bollinger bands, and a panel of the 14-day RSI with
+  lines at 30 and 70
 - The vertical axes follow the days in view, so a week’s candles fill
   the chart; a Linear/Log switch shows the whole history in proportion
 - Drawdown chart: how far the price is below its all-time high
@@ -271,6 +339,8 @@ minutes.
 - Each coin’s close price starts at 100 on the first date all of them
   have data, so their performance can be compared directly
 - Switch between a linear and a log scale
+- Show the coins relative to one of them: a line that rises did better
+  than that coin, so Ethereum relative to Bitcoin is the ETH/BTC ratio
 
 ### Treemap Tab
 
@@ -286,6 +356,9 @@ minutes.
 - For the coin selected in the Timeseries tab, the returns of complete
   days, weeks, months or years, grouped by day of the week, ISO week of
   the year, month or year of Bitcoin’s 4-year halving cycle
+- Or a calendar effect of the stock market against the rest: the turn of
+  the month, the Santa rally, or Sell in May (May to October against
+  November to April)
 - Two cards name the best and the worst group, by their mean return with
   its median and how often it rose, and say whether the differences
   could be chance, with a Kruskal-Wallis test
@@ -318,16 +391,18 @@ minutes.
   back there, and how long the earlier falls that went as deep took to
   recover, and sum up the falls of its history
 - A chart of the close on a log scale and of how far it is below its
-  high, with each fall of 10%, 20%, 30% or 50% or more shaded and its
-  trough numbered
+  high, with each fall of 10%, 20%, 30%, 40% or 50% or more shaded and
+  its trough numbered
 - A table of those falls, the deepest first: peak, trough, depth, days
   to the trough and back to the high
 
 ### About Tab
 
 - What every tab shows and how its numbers are calculated: the candles,
-  moving averages and drawdown, the index of the Compare tab, the Top
-  100 columns, and the colors of the tables and charts
+  moving averages, Bollinger bands, RSI and drawdown, the index of the
+  Compare tab and its relative strength, the calendar effects of the
+  Seasonality tab, the Top 100 columns, and the colors of the tables and
+  charts
 - Linear and log scales: how each is drawn, with an example chart, and
   when a log scale helps
 - The text is in `inst/app/about.md`, so it can be edited without
@@ -375,7 +450,7 @@ golem:
 
 | File | Contents |
 |----|----|
-| `R/run_app.R` | [`crypto()`](https://sedzinfo.github.io/golemcrypto/reference/crypto.md), which starts the app |
+| `R/run_app.R` | [`run_app()`](https://sedzinfo.github.io/golemcrypto/reference/run_app.md), which starts the app |
 | `R/app_ui.R`, `R/app_server.R` | The page layout and the server, which connect the modules |
 | `R/mod_*.R` | One Shiny module per tab |
 | `R/fct_data.R` | Downloads, and the cache of the market listings |
@@ -428,7 +503,7 @@ Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/golemcryp
 
 ## App
 
-- [`crypto()`](https://sedzinfo.github.io/golemcrypto/reference/crypto.md)
+- [`run_app()`](https://sedzinfo.github.io/golemcrypto/reference/run_app.md)
   : Launch the Crypto Time Series Analyzer
 
 ## Data
@@ -444,10 +519,16 @@ Status](https://img.shields.io/github/actions/workflow/status/sedzinfo/golemcryp
 
 - [`normalize_prices()`](https://sedzinfo.github.io/golemcrypto/reference/normalize_prices.md)
   : Normalize close prices to 100
+- [`relative_prices()`](https://sedzinfo.github.io/golemcrypto/reference/relative_prices.md)
+  : Normalized prices relative to one of the coins
 - [`monthly_returns()`](https://sedzinfo.github.io/golemcrypto/reference/monthly_returns.md)
   : Monthly returns of a coin
 - [`moving_average()`](https://sedzinfo.github.io/golemcrypto/reference/moving_average.md)
   : Moving average of prices
+- [`bollinger_bands()`](https://sedzinfo.github.io/golemcrypto/reference/bollinger_bands.md)
+  : Bollinger bands of prices
+- [`rsi()`](https://sedzinfo.github.io/golemcrypto/reference/rsi.md) :
+  Relative strength index of prices
 - [`drawdown()`](https://sedzinfo.github.io/golemcrypto/reference/drawdown.md)
   : Drawdown of prices
 - [`drawdown_episodes()`](https://sedzinfo.github.io/golemcrypto/reference/drawdown_episodes.md)

@@ -1,7 +1,8 @@
 # Seasonality module - server
 
 Analyses the returns of the coin selected in the Timeseries tab by day
-of the week, week of the year, month or year of the halving cycle with
+of the week, week of the year, month or year of the halving cycle, or by
+a calendar effect, with
 [`seasonality_analysis()`](https://sedzinfo.github.io/golemcrypto/reference/seasonality_analysis.md),
 and shows them in words, as a chart and as a table. The CSV file, named
 like `bitcoin-btc-seasonality-month-2026-11-07.csv`, holds

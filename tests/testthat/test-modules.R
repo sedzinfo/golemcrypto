@@ -76,6 +76,18 @@ test_that("the timeseries and compare CSV downloads hold the prices", {
     csv <- utils::read.csv(output$csv)
     expect_equal(names(csv), c("date", "name_symbol", "close", "index"))
     expect_equal(csv$index[csv$date == "2024-02-29"], c(100, 100))
+    # relative to Beta: Alpha's line, and its ratio to Beta
+    session$setInputs(base = "Beta (B)")
+    csv <- utils::read.csv(output$csv)
+    expect_equal(names(csv), c("date", "name_symbol", "close", "index", "base", "relative"))
+    expect_equal(unique(csv$name_symbol), "Alpha (A)")
+    # 31 March: Alpha at 110 (121 / 110), Beta at 50 (25 / 50)
+    expect_equal(csv$relative[csv$date == "2024-03-31"], 110 / 50 * 100)
+    expect_no_error(output$plot)
+    # a base that is no longer selected is dropped
+    session$setInputs(coins = "Alpha (A)")
+    session$elapse(2000)
+    expect_equal(names(utils::read.csv(output$csv)), c("date", "name_symbol", "close", "index"))
   })
 })
 
@@ -169,6 +181,9 @@ test_that("the drawdowns module explains, charts and lists the falls of the sele
     expect_true(all(csv$fall_pct <= -20))
     session$setInputs(min_depth = "10")
     expect_gt(nrow(utils::read.csv(output$csv)), nrow(csv))
+    session$setInputs(min_depth = "40")
+    expect_true(all(utils::read.csv(output$csv)$fall_pct <= -40))
+    expect_match(output$summary$html, "of 40% or more")
   })
   one_day <- reactive(history[history$name_symbol == "Alpha (A)", ][1, ])
   testServer(mod_drawdowns_server, args = list(history = one_day, dark_mode = light), {
@@ -195,4 +210,12 @@ test_that("the seasonality module explains, charts and lists the returns of the 
     session$setInputs(period = "year")
     expect_error(output$plot, "Not enough history: the returns need at least two complete years in a row")
   })
+})
+
+test_that("the drawdowns picker offers falls of 10%, 20%, 30%, 40% or 50% or more, 20% at first", {
+  html <- as.character(mod_drawdowns_ui("drawdowns"))
+  for (depth in c(10, 20, 30, 40, 50)) {
+    expect_match(html, sprintf('<option value="%d"', depth), fixed = TRUE, label = depth)
+  }
+  expect_match(html, '<option value="20" selected>', fixed = TRUE)
 })

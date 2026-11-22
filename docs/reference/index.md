@@ -2,7 +2,7 @@
 
 ## App
 
-- [`crypto()`](https://sedzinfo.github.io/golemcrypto/reference/crypto.md)
+- [`run_app()`](https://sedzinfo.github.io/golemcrypto/reference/run_app.md)
   : Launch the Crypto Time Series Analyzer
 
 ## Data
@@ -18,10 +18,16 @@
 
 - [`normalize_prices()`](https://sedzinfo.github.io/golemcrypto/reference/normalize_prices.md)
   : Normalize close prices to 100
+- [`relative_prices()`](https://sedzinfo.github.io/golemcrypto/reference/relative_prices.md)
+  : Normalized prices relative to one of the coins
 - [`monthly_returns()`](https://sedzinfo.github.io/golemcrypto/reference/monthly_returns.md)
   : Monthly returns of a coin
 - [`moving_average()`](https://sedzinfo.github.io/golemcrypto/reference/moving_average.md)
   : Moving average of prices
+- [`bollinger_bands()`](https://sedzinfo.github.io/golemcrypto/reference/bollinger_bands.md)
+  : Bollinger bands of prices
+- [`rsi()`](https://sedzinfo.github.io/golemcrypto/reference/rsi.md) :
+  Relative strength index of prices
 - [`drawdown()`](https://sedzinfo.github.io/golemcrypto/reference/drawdown.md)
   : Drawdown of prices
 - [`drawdown_episodes()`](https://sedzinfo.github.io/golemcrypto/reference/drawdown_episodes.md)

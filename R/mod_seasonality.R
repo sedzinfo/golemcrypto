@@ -4,7 +4,9 @@
 #' @title Seasonality module - UI
 #' @description For the coin selected in the Timeseries tab: a choice of
 #' the returns to compare (days by day of the week, weeks by week of the
-#' year, months by month or years by year of the halving cycle), a button
+#' year, months by month or years by year of the halving cycle, or a
+#' calendar effect against the rest: the turn of the month, the Santa rally
+#' or Sell in May), a button
 #' that downloads the numbers as CSV, the seasonality chart, the table of the
 #' groups, and under it two cards that name the best and the worst group and
 #' say whether the differences could be chance.
@@ -28,11 +30,18 @@ mod_seasonality_ui <- function(id) {
           class = "d-flex align-items-center gap-2",
           tags$label(`for` = ns("period"), class = "form-label mb-0", "Returns of"),
           selectInput(ns("period"), NULL,
-            choices = c(
-              "days, by day of the week" = "day",
-              "weeks, by week of the year" = "week",
-              "months, by month" = "month",
-              "years, by halving cycle" = "year"
+            choices = list(
+              "Grouped" = c(
+                "days, by day of the week" = "day",
+                "weeks, by week of the year" = "week",
+                "months, by month" = "month",
+                "years, by halving cycle" = "year"
+              ),
+              "Calendar effects" = c(
+                "days, turn of the month" = "turn",
+                "days, Santa rally" = "santa",
+                "half-years, Sell in May" = "half"
+              )
             ),
             selected = "month", selectize = FALSE, width = "17rem"
           )
@@ -53,7 +62,8 @@ mod_seasonality_ui <- function(id) {
 #' @title Seasonality module - server
 #' @description Analyses the returns of the coin selected in the Timeseries
 #' tab by day of the week, week of the year, month or year of the halving
-#' cycle with [seasonality_analysis()], and shows them in words, as a chart
+#' cycle, or by a calendar effect, with [seasonality_analysis()], and shows
+#' them in words, as a chart
 #' and as a table. The CSV file, named like
 #' `bitcoin-btc-seasonality-month-2026-11-07.csv`, holds [seasonality_csv()]:
 #' a row per group.

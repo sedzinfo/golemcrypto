@@ -4,13 +4,17 @@
 \alias{seasonal_returns}
 \title{The return of each complete period of a coin}
 \usage{
-seasonal_returns(history, period = c("day", "week", "month", "year"))
+seasonal_returns(
+  history,
+  period = c("day", "week", "month", "year", "turn", "santa", "half")
+)
 }
 \arguments{
 \item{history}{Price history of one coin from \code{\link[=get_history]{get_history()}}, with
 \code{timestamp} and \code{close} columns.}
 
-\item{period}{\code{"day"}, \code{"week"}, \code{"month"} or \code{"year"}.}
+\item{period}{\code{"day"}, \code{"week"}, \code{"month"} or \code{"year"}, or a calendar
+effect: \code{"turn"}, \code{"santa"} or \code{"half"}.}
 }
 \value{
 A data frame with a row per complete period, the oldest first:
@@ -30,6 +34,12 @@ week of the year for weeks (Monday to Sunday), the month for months, and
 the year of the 4-year cycle of Bitcoin's halvings for years. The
 halvings came in 2012, 2016, 2020 and 2024, so a year divisible by 4 is a
 halving year and 2025 is "Halving + 1".
+
+The calendar effects put the returns in two groups: \code{"turn"} and
+\code{"santa"} the returns of the days, in or out of the turn of the month or
+the Santa rally (see \code{\link[=effect_days]{effect_days()}}), and \code{"half"} the returns of the
+halves of the year, May to October and November to April, of "Sell in May
+and go away".
 }
 \examples{
 history <- data.frame(

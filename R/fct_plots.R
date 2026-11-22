@@ -28,7 +28,9 @@ average_colors <- c("#3b82f6", "#a855f7", "#14b8a6", "#eab308")
 #' through the close, its moving averages, date range buttons and a range
 #' slider. Underneath, smaller charts show the trading volume and the
 #' drawdown: how far the price is below its all-time high so far. A click on
-#' a legend entry hides or shows that line.
+#' a legend entry hides or shows that line. On request, the Bollinger bands
+#' are drawn around the prices, and a panel of the relative strength index,
+#' whose axis always runs from 0 to 100, right under them.
 #'
 #' The vertical axes follow the days in view: zoomed in, each runs from the
 #' lowest to the highest value of those days, so a week's candles fill the
@@ -43,6 +45,10 @@ average_colors <- c("#3b82f6", "#a855f7", "#14b8a6", "#eab308")
 #' @param averages Days of the moving averages to draw (see
 #'   [moving_average()]), or `NULL` for none.
 #' @param show_drawdown `TRUE` to add the drawdown chart (see [drawdown()]).
+#' @param bollinger `TRUE` to add the 20-day Bollinger bands to the prices
+#'   (see [bollinger_bands()]).
+#' @param show_rsi `TRUE` to add a chart of the 14-day relative strength
+#'   index under the prices (see [rsi()]), with dashed lines at 30 and 70.
 #' @return A plotly object.
 #' @export
 #' @examples
@@ -50,7 +56,10 @@ average_colors <- c("#3b82f6", "#a855f7", "#14b8a6", "#eab308")
 #' plot_timeseries(btc)
 #' # shorter averages, and no drawdown chart
 #' plot_timeseries(btc, averages = c(20, 100), show_drawdown = FALSE)
-plot_timeseries <- function(history, mode = "light", averages = c(50, 200), show_drawdown = TRUE) {
+#' # with the Bollinger bands and the RSI
+#' plot_timeseries(btc, bollinger = TRUE, show_rsi = TRUE)
+plot_timeseries <- function(history, mode = "light", averages = c(50, 200), show_drawdown = TRUE,
+                            bollinger = FALSE, show_rsi = FALSE) {
   check_one_coin(history)
   hover_text <- paste0(
     "\nDate=", history$timestamp,
@@ -87,6 +96,29 @@ plot_timeseries <- function(history, mode = "light", averages = c(50, 200), show
       name = paste0(averages[i], "-day average"),
       hovertemplate = paste0("%{x}<br>", averages[i], "-day average: %{y:,.2f}<extra></extra>")
     )
+  }
+  if (bollinger) {
+    bands <- bollinger_bands(history$close)
+    band_line <- list(width = 1, color = "#64748b")
+    # one legend entry for the three lines, which hide and show together; the lower band fills up
+    # to the upper one
+    price <- price %>%
+      plotly::add_lines(
+        x = history$timestamp, y = bands$upper, line = band_line, inherit = FALSE,
+        name = "Bollinger bands", legendgroup = "bollinger",
+        hovertemplate = "%{x}<br>Upper band: %{y:,.2f}<extra></extra>"
+      ) %>%
+      plotly::add_lines(
+        x = history$timestamp, y = bands$lower, line = band_line, inherit = FALSE,
+        fill = "tonexty", fillcolor = "rgba(100,116,139,0.12)",
+        name = "Bollinger bands", legendgroup = "bollinger", showlegend = FALSE,
+        hovertemplate = "%{x}<br>Lower band: %{y:,.2f}<extra></extra>"
+      ) %>%
+      plotly::add_lines(
+        x = history$timestamp, y = bands$middle, line = c(band_line, list(dash = "dot")), inherit = FALSE,
+        name = "Bollinger bands", legendgroup = "bollinger", showlegend = FALSE,
+        hovertemplate = "%{x}<br>20-day average: %{y:,.2f}<extra></extra>"
+      )
   }
   price <- price %>%
     plotly::layout(
@@ -128,7 +160,32 @@ plot_timeseries <- function(history, mode = "light", averages = c(50, 200), show
     panels <- c(panels, list(from_high))
     heights <- c(0.65, 0.15, 0.2)
   }
-  plotly::subplot(panels, heights = heights, nrows = length(panels), shareX = TRUE, titleY = TRUE) %>%
+  if (show_rsi) {
+    strength <- plotly::plot_ly(
+      x = history$timestamp,
+      y = round(rsi(history$close), 1),
+      type = "scatter",
+      mode = "lines",
+      line = list(width = 1, color = average_colors[3]),
+      name = "RSI (14 days)",
+      hovertemplate = "%{x}<br>RSI: %{y:.1f}<extra></extra>"
+    ) %>%
+      # always 0 to 100: fit_y_axes.js leaves an axis of a fixed range alone
+      plotly::layout(yaxis = list(title = "", range = c(0, 100), fixedrange = TRUE, tickvals = c(30, 70)))
+    # under the prices, from their share of the height
+    panels <- c(panels[1], list(strength), panels[-1])
+    heights <- c(heights[1] - 0.18, 0.18, heights[-1])
+  }
+  chart <- plotly::subplot(panels, heights = heights, nrows = length(panels), shareX = TRUE, titleY = TRUE)
+  if (show_rsi) {
+    # overbought above 70 and oversold below 30; set directly, as layout() drops a list of shapes
+    # without names
+    chart$x$layout$shapes <- lapply(c(30, 70), function(level) {
+      list(type = "line", xref = "paper", x0 = 0, x1 = 1, yref = "y2", y0 = level, y1 = level,
+           line = list(width = 1, dash = "dash", color = text_color(mode)))
+    })
+  }
+  chart %>%
     plotly::layout(updatemenus = list(list(
       type = "buttons",
       direction = "right",
@@ -155,14 +212,25 @@ plot_timeseries <- function(history, mode = "light", averages = c(50, 200), show
 #' @description One line per coin, with buttons that switch the y axis between
 #' a linear and a log scale.
 #' @param prices Prices from [normalize_prices()].
+#' @param base `NULL` for the normalized prices, or the `name_symbol` of the
+#'   coin that `prices`, from [relative_prices()], are relative to, for the
+#'   title and a dashed line at 100, where a coin did as well as the base.
 #' @inheritParams plot_timeseries
 #' @return A plotly object.
 #' @export
 #' @examples
 #' history <- get_history(c("Bitcoin (BTC)", "Ethereum (ETH)", "Solana (SOL)"))
 #' plot_compare(normalize_prices(history))
-plot_compare <- function(prices, mode = "light") {
-  plotly::plot_ly(prices,
+#' # against Bitcoin
+#' plot_compare(relative_prices(normalize_prices(history), "Bitcoin (BTC)"), base = "Bitcoin (BTC)")
+plot_compare <- function(prices, mode = "light", base = NULL) {
+  title <- if (is.null(base)) {
+    paste0("Normalized close (", min(prices$timestamp), " = 100)")
+  } else {
+    paste0("Relative to ", base, " (", min(prices$timestamp), " = 100)",
+           "<br><sup>Above 100: better than the base since then</sup>")
+  }
+  chart <- plotly::plot_ly(prices,
     x = ~timestamp,
     y = ~index,
     color = ~name_symbol,
@@ -171,10 +239,10 @@ plot_compare <- function(prices, mode = "light") {
     hovertemplate = "%{x}<br>%{y:.2f}"
   ) %>%
     plotly::layout(
-      title = paste0("Normalized close (", min(prices$timestamp), " = 100)"),
+      title = title,
       legend = list(orientation = "h", x = 0.5, xanchor = "center"),
       xaxis = list(title = "Date"),
-      yaxis = list(title = "Index"),
+      yaxis = list(title = if (is.null(base)) "Index" else paste("Relative to", base)),
       updatemenus = list(list(
         type = "buttons",
         direction = "right",
@@ -189,8 +257,15 @@ plot_compare <- function(prices, mode = "light") {
           list(label = "Log", method = "relayout", args = list("yaxis.type", "log"))
         )
       ))
-    ) %>%
-    plot_theme(mode)
+    )
+  if (!is.null(base)) {
+    # set directly: layout() merges with modifyList(), which drops a list of shapes without names
+    chart$x$layout$shapes <- list(list(
+      type = "line", xref = "paper", x0 = 0, x1 = 1, y0 = 100, y1 = 100,
+      line = list(width = 1, dash = "dash", color = text_color(mode))
+    ))
+  }
+  plot_theme(chart, mode)
 }
 ##########################################################################################
 #

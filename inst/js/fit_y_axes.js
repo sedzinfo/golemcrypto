@@ -3,7 +3,8 @@
 // top of an axis from 0 to the all-time high. After every change of the days in view (the range buttons,
 // the range slider, zooming, a double click back to all) and of the Linear/Log switch, each axis
 // runs from the lowest to the highest value in view, with 5% to spare; the panels under the price
-// keep 0 in view. Run by htmlwidgets::onRender() with the chart's element.
+// keep 0 in view, and an axis of a fixed range, such as that of the RSI, keeps its range. Run by
+// htmlwidgets::onRender() with the chart's element.
 function(el) {
   // dates as milliseconds, in UTC, from "2026-11-06" or "2026-11-06 12:00:00"
   function toTime(value) {
@@ -23,7 +24,10 @@ function(el) {
     var keys = Object.keys(event || {});
     var moved = keys.some(function(key) { return key.indexOf('xaxis') === 0 || /^yaxis[0-9]*\.type$/.test(key); });
     if (!moved) return;
-    var axes = Object.keys(el.layout).filter(function(key) { return /^yaxis[0-9]*$/.test(key); });
+    // an axis of a fixed range, such as that of the RSI, from 0 to 100, keeps it
+    var axes = Object.keys(el.layout).filter(function(key) {
+      return /^yaxis[0-9]*$/.test(key) && !el.layout[key].fixedrange;
+    });
     var update = {};
     if (el.layout.xaxis.autorange) {
       axes.forEach(function(axis) { update[axis + '.autorange'] = true; });

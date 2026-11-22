@@ -9,7 +9,8 @@ period_bounds(date, period)
 \arguments{
 \item{date}{Dates.}
 
-\item{period}{\code{"day"}, \code{"week"}, \code{"month"} or \code{"year"}.}
+\item{period}{\code{"day"}, \code{"week"}, \code{"month"}, \code{"year"} or \code{"half"}, the
+halves of the year from May to October and from November to April.}
 }
 \value{
 A list with the \code{start} and the \code{end} of the period of each date.

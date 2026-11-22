@@ -14,10 +14,20 @@ months, and the year of the 4-year cycle of Bitcoin's halvings for
 years. The halvings came in 2012, 2016, 2020 and 2024, so a year
 divisible by 4 is a halving year and 2025 is "Halving + 1".
 
+The calendar effects put the returns in two groups: `"turn"` and
+`"santa"` the returns of the days, in or out of the turn of the month or
+the Santa rally (see
+[`effect_days()`](https://sedzinfo.github.io/golemcrypto/reference/effect_days.md)),
+and `"half"` the returns of the halves of the year, May to October and
+November to April, of "Sell in May and go away".
+
 ## Usage
 
 ``` r
-seasonal_returns(history, period = c("day", "week", "month", "year"))
+seasonal_returns(
+  history,
+  period = c("day", "week", "month", "year", "turn", "santa", "half")
+)
 ```
 
 ## Arguments
@@ -30,7 +40,8 @@ seasonal_returns(history, period = c("day", "week", "month", "year"))
 
 - period:
 
-  `"day"`, `"week"`, `"month"` or `"year"`.
+  `"day"`, `"week"`, `"month"` or `"year"`, or a calendar effect:
+  `"turn"`, `"santa"` or `"half"`.
 
 ## Value
 

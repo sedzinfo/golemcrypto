@@ -112,3 +112,55 @@ test_that("seasonality_csv() names the group column after the period", {
   expect_equal(names(csv), c("month", "returns", "mean_pct", "median_pct", "up_pct", "best_pct", "worst_pct"))
   expect_equal(as.character(csv$month), month.abb)
 })
+
+test_that("period_bounds() splits the year into May to October and November to April", {
+  halves <- period_bounds(as.Date(c("2024-01-15", "2024-05-01", "2024-10-31", "2024-11-01", "2024-12-31")), "half")
+  expect_equal(halves$start, as.Date(c("2023-11-01", "2024-05-01", "2024-05-01", "2024-11-01", "2024-11-01")))
+  expect_equal(halves$end, as.Date(c("2024-04-30", "2024-10-31", "2024-10-31", "2025-04-30", "2025-04-30")))
+})
+
+test_that("effect_days() finds the turn of the month and the Santa rally on the calendar", {
+  days <- as.Date("2024-01-28") + 0:35
+  turn <- days[effect_days(days, "turn") == "Turn of the month"]
+  # 2024 is a leap year, so 29 February is the last day of its month
+  expect_equal(turn, as.Date(c(
+    "2024-01-31", "2024-02-01", "2024-02-02", "2024-02-03", "2024-02-29", "2024-03-01", "2024-03-02", "2024-03-03"
+  )))
+  expect_equal(levels(effect_days(days, "turn")), c("Turn of the month", "Rest of the month"))
+  holidays <- as.Date("2024-12-20") + 0:20
+  expect_equal(
+    holidays[effect_days(holidays, "santa") == "Santa rally"],
+    as.Date(c("2024-12-27", "2024-12-28", "2024-12-29", "2024-12-30", "2024-12-31", "2025-01-01", "2025-01-02"))
+  )
+})
+
+test_that("the calendar effects of days compare the days of the effect with the rest", {
+  long <- garch_history(1500, seed = 3)
+  days <- seasonal_returns(long, "day")
+  for (period in c("turn", "santa")) {
+    returns <- seasonal_returns(long, period)
+    expect_equal(returns$return_pct, days$return_pct, label = period)
+    expect_equal(nlevels(returns$group), 2, label = period)
+  }
+  turn <- seasonality_analysis(long, "turn")
+  expect_equal(turn$groups$returns[1], sum(as.POSIXlt(days$start)$mday <= 3 | as.POSIXlt(days$start + 1)$mday == 1))
+  text <- seasonality_text(turn)
+  expect_match(text$groups$headline, "^Turn of the month: mean [+−-][0-9.]+% a day; rest of the month: ")
+  expect_match(text$groups$points, "last day of a month and the first 3 of the next", fixed = TRUE, all = FALSE)
+  expect_match(text$chance$points, "The effect got its name in the stock market", fixed = TRUE, all = FALSE)
+  expect_false(is.na(turn$p_value))
+  expect_equal(names(seasonality_csv(turn))[1], "days")
+})
+
+test_that("Sell in May compares the halves of the year", {
+  long <- garch_history(1500, seed = 4)
+  returns <- seasonal_returns(long, "half")
+  expect_equal(levels(returns$group), c("May to October", "November to April"))
+  # the first half, from November 2021, has no close before it
+  expect_equal(returns$start[1], as.Date("2022-05-01"))
+  expect_true(all(returns$start[-1] == returns$end[-nrow(returns)] + 1))
+  close_on <- function(day) long$close[long$timestamp == day]
+  expect_equal(returns$return_pct[1], (close_on(as.Date("2022-10-31")) / close_on(as.Date("2022-04-30")) - 1) * 100)
+  text <- seasonality_text(seasonality_analysis(long, "half"))
+  expect_match(text$groups$headline, "a half-year; November to April:", fixed = TRUE)
+})

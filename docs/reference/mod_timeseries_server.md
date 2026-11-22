@@ -1,7 +1,8 @@
 # Timeseries module - server
 
 Downloads the full price history of the selected coin, renders its
-candlestick chart and serves it as a CSV file named like
+candlestick chart, with the Bollinger bands and the RSI when their boxes
+are ticked, and serves it as a CSV file named like
 `bitcoin-btc-history-2026-10-24.csv`, with the columns `date`,
 `name_symbol`, `open`, `high`, `low`, `close`, `volume` and
 `market_cap`.

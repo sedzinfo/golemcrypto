@@ -1,8 +1,8 @@
 # Timeseries module - UI
 
-A coin picker with live search, a button that downloads the coin's daily
-prices as CSV, and a candlestick chart of those prices, with the trading
-volume underneath.
+A coin picker with live search, boxes that add the Bollinger bands and
+the RSI, a button that downloads the coin's daily prices as CSV, and a
+candlestick chart of those prices, with the trading volume underneath.
 
 ## Usage
 
